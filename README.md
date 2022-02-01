@@ -7,9 +7,9 @@ Create components that are open to the user while providing some base themes and
 ### VS Code
  Open workspace as remote container which will create a docker container.
  dotnet watch run for hot reload
- https://localhost:7017
- http://localhost:5096
+ [https://localhost:7017](https://localhost:7017)
+ [http://localhost:5096](http://localhost:5096)
 
 #### Dependencies
-Remote Containers is a helpful VS Code Extension when running VS Code. Open the project with a remote container.
-Docker Desktop
+- Remote Containers is a helpful VS Code Extension when running VS Code. Open the project with a remote container.
+- Docker Desktop
