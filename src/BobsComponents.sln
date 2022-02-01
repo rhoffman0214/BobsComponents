@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BobsComponent.Library", "BobsComponent.Library\BobsComponent.Library.csproj", "{BAAC6457-DED6-45A3-B3B3-B425C246A750}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BobsComponent.Client", "BobsComponent.Client\BobsComponent.Client.csproj", "{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAAC6457-DED6-45A3-B3B3-B425C246A750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAAC6457-DED6-45A3-B3B3-B425C246A750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAAC6457-DED6-45A3-B3B3-B425C246A750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAAC6457-DED6-45A3-B3B3-B425C246A750}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

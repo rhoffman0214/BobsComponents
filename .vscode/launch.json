@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Client WASM",
+            "type": "blazorwasm",
+            "request": "launch",
+            "url":"https://localhost:7017",
+            "cwd": "${workspaceFolder}/src/BobsComponent.Client"
+        }
+    ]
+}
