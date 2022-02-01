@@ -1,7 +1,7 @@
-# BobsBlazingComponents
+# Bobs Components
 
 # Project Goal
-Create components that are open to the user while providing some base themes and functionality. Allow user to toggle themeing, while including a straightforward component build.
+Create components that are open to the user while providing some base themes and functionality. Allow user to toggle themeing, while including a straightforward component interface.
 
 # Running Project
 ### VS Code
@@ -11,5 +11,6 @@ Create components that are open to the user while providing some base themes and
  [http://localhost:5096](http://localhost:5096)
 
 #### Dependencies
-- Remote Containers is a helpful VS Code Extension when running VS Code. Open the project with a remote container.
+***Alterntaively you don't need these dependencies if you have the .NET runtimes and SDKs installed locally.***
+- Remote Containers VS Code Extension
 - Docker Desktop
