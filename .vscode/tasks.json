@@ -36,6 +36,11 @@
                 "${workspaceFolder}/src/BobsComponents.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "shellBuildRun",
+            "type": "shell",
+            "command": "./run.sh"
         }
     ]
 }

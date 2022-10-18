@@ -1,0 +1,26 @@
+{
+  "name": "bobscomponents",
+  "version": "1.0.0",
+  "description": "Create components that are open to the user while providing some base themes and functionality. Allow user to toggle themeing, while including a straightforward component interface.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhoffman0214/BobsComponents.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rhoffman0214/BobsComponents/issues"
+  },
+  "homepage": "https://github.com/rhoffman0214/BobsComponents#readme",
+  "devDependencies": {
+    "eslint": "^8.25.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.1.0"
+  }
+}

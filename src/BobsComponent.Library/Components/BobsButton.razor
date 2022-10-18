@@ -1,0 +1,13 @@
+<button type="@Type" @onclick="OnClickEvent">@ChildContent</button>
+
+@code {
+  [Parameter, EditorRequired]
+  public string Type { get; set; } = string.Empty;
+  [Parameter]
+  public RenderFragment ChildContent { get; set; } = default!;
+
+  private void OnClickEvent()
+  {
+    Console.WriteLine($"You pressed a button of type: {Type}");
+  }
+}
