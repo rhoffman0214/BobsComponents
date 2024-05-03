@@ -1,0 +1,7 @@
+<Project>
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <PropertyGroup>
+    <NetVersion>net8.0</NetVersion>
+    <RunAOTCompilation>true</RunAOTCompilation>
+  </PropertyGroup>
+</Project>

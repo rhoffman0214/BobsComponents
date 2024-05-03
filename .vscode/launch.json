@@ -5,7 +5,8 @@
             "name": "Client WASM",
             "type": "blazorwasm",
             "request": "launch",
-            "url":"https://localhost:7017",
+            "browser": "chrome",
+            "url": "https://localhost:7017",
             "cwd": "${workspaceFolder}/src/BobsComponent.Client"
         }
     ]
