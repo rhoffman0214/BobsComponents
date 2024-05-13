@@ -5,189 +5,78 @@
 <h1>Bobs Components</h1>
 
 <style>
-  .loading-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 1;
-    pointer-events: all;
-    transition: opacity .2s ease-in-out, background-color .2s ease-in-out;
-    z-index: 2100
-  }
-
-  .loading-page__loader-wrapper {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 8;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity .1s ease-in-out
-  }
-
-  .loading-page__loader-wrapper--loading-active {
-    opacity: 1;
-    transition: opacity .3s ease-in-out
-  }
-
-  .loading-page__loader-logo {
-    width: 140px;
-    will-change: transform;
-    flex-shrink: 0
-  }
-
-  .loading-page__loader-logo svg {
-    display: block;
-    width: 100%;
-    height: auto;
+  .fold {
     transform-style: preserve-3d;
-    -webkit-animation: loadingLogoAnim 1.5s linear .2s infinite forwards;
-    animation: loadingLogoAnim 1.5s linear .2s infinite forwards
   }
 
-  .loading-page__loader-logo--paused svg {
-    -webkit-animation-play-state: paused;
-    animation-play-state: paused
+  @@keyframes fold-in {
+    to {
+      transform: rotateX(-180deg) translateZ(1px);
+      background-color: rgb(250, 17, 17);
+    }
   }
 
-  .loading-page__animation-wrapper {
-    width: 100%;
-    height: 100%;
+  @@keyframes hide-bob {
+    to {
+      transform: rotateX(180deg) translateZ(-1px);
+      display: none;
+    }
+  }
+
+  .bobs-container {
+    --duration: 2000ms;
+    --easing: cubic-bezier(0.92, -0.29, 0, 1.23);
+    --totalfold: 4;
+    --fold-duration: calc(var(--duration) / var(--totalfold));
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 6
-  }
+    z-index: 1;
+    overflow: hidden;
+    width: 100dvw;
+    height: 100dvh;
 
-  .loading-page__animation {
-    width: 100%;
-    height: 100%;
-    overflow: hidden
-  }
+    .fold {
 
-  @@supports(-webkit - backdrop - filter:blur(1px)) {
-    .loading-page__animation-svg {
-      height: intrinsic
-    }
-  }
-
-  .loading-page--show-loader {
-    opacity: 1;
-    pointer-events: all
-  }
-
-  .loading-page--remove-transition {
-    display: none
-  }
-
-  .loading-page--initial {
-    opacity: 1;
-    background-color: rgba(24, 24, 24, 0.836);
-  }
-
-  .loading-page-fade-enter,
-  .loading-page-fade-leave-to {
-    opacity: 0;
-    pointer-events: none
-  }
-
-  @@-webkit-keyframes loadingLogoAnim {
-    0% {
-      transform: rotateY(0)
+      position: absolute;
+      top: 100%;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      transform-origin: bottom center;
+      background-color: #8af7ff;
+      backface-visibility: visible;
+      outline: 2px solid rgb(250, 17, 17);
+      animation: fold-in var(--fold-duration) var(--easing) both;
+      animation-delay: calc(var(--fold) * var(--fold-duration) * 0.8);
     }
 
-    to {
-      transform: rotateY(1turn)
+    >.fold {
+      height: 25%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      outline: 2px solid rgb(250, 246, 17);
+      animation: fold-in var(--fold-duration) var(--easing) both;
+      animation-delay: calc(var(--fold) * var(--fold-duration) * 0.8);
     }
-  }
 
-  @@keyframesloadingLogoAnim {
-    0% {
-      transform: rotateY(0)
-    }
-
-    to {
-      transform: rotateY(1turn)
-    }
-  }
-
-  .cls-1 {
-    fill: #070303
-  }
-
-  .cls-2 {
-    fill: #fff
-  }
-
-  .cls-3 {
-    fill: #e3002c
   }
 </style>
-<div id="page-loader" class="loading-page" style="" data-uw-cer-popup-wrapper="">
-  <div class=".loading-page__loader-wrapper--loading-active">
-    <div class="loading-page__loader-logo"><svg id="Layer_1" fill="none" data-name="Layer 1"
-        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 925.88 620.05">
-        <path
-          d="M679.48,414.72H576.38L383.71,581.59V295.12H274L158.75,159.56H382.37V142.82H144.55L38,17.57H883.39L758.17,142.49H538.88V271.81H822.52ZM284.64,272H407.4V530.52L568.57,391H670.7l96-95.83H516.25V119.06H749.46l78.22-78.27H88.1l67.18,79H406.05v61.93H207.91Z"
-          class="cls-1"></path>
-        <path
-          d="M284.64,272l-76.73-90.26H406.05V119.8H155.28l-67.18-79H827.68l-78.22,78.27H516.25V295.13H766.71L670.7,391H568.57L407.4,530.52V272Z"
-          class="cls-2"></path>
-        <path
-          d="M883.39,17.57,758.17,142.49H538.88V271.81H822.52l-143,142.91H576.38L383.71,581.59V295.12H274L158.75,159.56H382.37V142.82H144.55L38,17.57H883.39M925.88,0H0L24.63,29l87.64,103,8.51,10h0l24.62,28.95L224,263.43l36.62,43.07,5.27,6.19H366.14V620.05l29.07-25.18L582.93,432.29H686.76l5.14-5.14,143-142.92,30-30H556.45V160.06h209l5.15-5.13L895.8,30,925.88,0Z"
-          class="cls-3"></path>
-      </svg></div>
-  </div>
-  <div class="loading-page__animation-wrapper">
-    <div id="page-transition-animation" class="loading-page__animation"><svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 375 812" width="375" height="812" class="loading-page__animation-svg" preserveAspectRatio="none"
-        style="width: 100%; height: 100%; transform: translate3d(0px, 0px, 0px);">
-        <defs>
-          <clipPath id="__lottie_element_2">
-            <rect width="375" height="812" x="0" y="0"></rect>
-          </clipPath>
-          <mask id="__lottie_element_3" mask-type="alpha">
-            <g transform="matrix(1,0,0,1,187.5,406)" opacity="1" style="display: block;">
-              <g opacity="1" transform="matrix(1,0,0,1,0,0)">
-                <path fill="rgb(255,255,255)" fill-opacity="1"
-                  d=" M-211.5,-411 C-211.5,-411 -211.5,409 -211.5,409 C-211.5,409 -191.5,408 -191.5,408 C-191.5,408 -192.5,185 -192.5,185 C-192.5,185 -192.5,-15 -192.5,-15 C-192.5,-15 -192.5,-148 -192.5,-148 C-192.5,-148 -191.5,-409 -191.5,-409 C-191.5,-409 -211.5,-411 -211.5,-411z">
-                </path>
-              </g>
-            </g>
-          </mask>
-          <mask id="__lottie_element_6" mask-type="alpha">
-            <g transform="matrix(1,0,0,1,187.5,406)" opacity="1" style="display: block;">
-              <g opacity="1" transform="matrix(1,0,0,1,0,0)">
-                <path fill="rgb(255,255,255)" fill-opacity="1"
-                  d=" M-211.5,-411 C-211.5,-411 -211.5,409 -211.5,409 C-211.5,409 -191.5,408 -191.5,408 C-191.5,408 -192.5,185 -192.5,185 C-192.5,185 -192.5,-15 -192.5,-15 C-192.5,-15 -192.5,-148 -192.5,-148 C-192.5,-148 -191.5,-409 -191.5,-409 C-191.5,-409 -211.5,-411 -211.5,-411z">
-                </path>
-              </g>
-            </g>
-          </mask>
-        </defs>
-        <g clip-path="url(#__lottie_element_2)">
-          <g style="display: block;" transform="matrix(1,0,0,1,187.5,406)" opacity="1">
-            <g opacity="1" transform="matrix(1,0,0,1,0,0)">
-              <path fill="rgb(237,0,0)" fill-opacity="1"
-                d=" M-211.5,-411 C-211.5,-411 -211.5,409 -211.5,409 C-211.5,409 -191.5,408 -191.5,408 C-191.5,408 -192.5,185 -192.5,185 C-192.5,185 -192.5,-15 -192.5,-15 C-192.5,-15 -192.5,-148 -192.5,-148 C-192.5,-148 -191.5,-409 -191.5,-409 C-191.5,-409 -211.5,-411 -211.5,-411z">
-              </path>
-            </g>
-          </g>
-          <g style="display: block;" transform="matrix(1,0,0,1,187.5,406)" opacity="1">
-            <g opacity="1" transform="matrix(1,0,0,1,0,0)">
-              <path fill="rgb(0,0,0)" fill-opacity="1"
-                d=" M-211.5,-411 C-211.5,-411 -211.5,409 -211.5,409 C-211.5,409 -191.5,408 -191.5,408 C-191.5,408 -192.5,185 -192.5,185 C-192.5,185 -192.5,-15 -192.5,-15 C-192.5,-15 -192.5,-148 -192.5,-148 C-192.5,-148 -191.5,-409 -191.5,-409 C-191.5,-409 -211.5,-411 -211.5,-411z">
-              </path>
-            </g>
-          </g>
-        </g>
-      </svg></div>
+
+
+<div class="bobs-container">
+  <div class="fold" style="--fold: 0">
+    <div class="fold" style="--fold: 1">
+      <div class="fold" style="--fold: 2">
+        <div class="fold" style="--fold: 3">
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
+@code {
+  // https://codepen.io/team/keyframers/pen/bGdebPM
+  // example here
+}
