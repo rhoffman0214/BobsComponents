@@ -1,19 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BobsComponent.Library", "BobsComponent.Library\BobsComponent.Library.csproj", "{BAAC6457-DED6-45A3-B3B3-B425C246A750}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BobsComponent.Library", "BobsComponent.Library\BobsComponent.Library.csproj", "{BAAC6457-DED6-45A3-B3B3-B425C246A750}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BobsComponent.Client", "BobsComponent.Client\BobsComponent.Client.csproj", "{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BobsComponent.Client", "BobsComponent.Client\BobsComponent.Client.csproj", "{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EC16C625-4011-44FB-B1D9-FDE275B6B56B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BAAC6457-DED6-45A3-B3B3-B425C246A750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -24,5 +27,23 @@ Global
 		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBE8AAC7-DB4D-41FA-A9BE-534E521022FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6603BBB2-8EAA-4D78-B0E9-F7D957CE04D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6603BBB2-8EAA-4D78-B0E9-F7D957CE04D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6603BBB2-8EAA-4D78-B0E9-F7D957CE04D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6603BBB2-8EAA-4D78-B0E9-F7D957CE04D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB2928D5-2C73-4015-9FE8-D6AA42291ED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB2928D5-2C73-4015-9FE8-D6AA42291ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB2928D5-2C73-4015-9FE8-D6AA42291ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB2928D5-2C73-4015-9FE8-D6AA42291ED3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{983F2C40-8565-4963-9611-AE041A13A253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{983F2C40-8565-4963-9611-AE041A13A253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{983F2C40-8565-4963-9611-AE041A13A253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{983F2C40-8565-4963-9611-AE041A13A253}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3AE8BCCF-A57F-4BBF-BB65-18FF0E99598E}
 	EndGlobalSection
 EndGlobal

@@ -4,6 +4,7 @@
     <TargetFramework>$(NetVersion)</TargetFramework>
     <Nullable>enable</Nullable>
 	  <OutputType>Library</OutputType>
+	  <Title>BobsComponents</Title>
   </PropertyGroup>
 
 
