@@ -144,6 +144,41 @@ When creating new components for this library:
 - **Educational value**: Code should serve as a learning resource, showing best practices and integration patterns
 - **Practical over trivial**: Focus on components that solve real problems developers face, not just basic examples
 
+## Refactoring Policy
+
+**IMPORTANT:** Do NOT rename existing files, functions, classes, or components without explicit user approval.
+
+### Rules for Renaming
+
+1. **Never rename existing code elements** unless:
+   - The user explicitly requests the rename
+   - You ask first and receive approval
+   - The element is brand new (created in the current session)
+
+2. **Always ask before refactoring** that involves:
+   - Renaming files (e.g., `Component.razor` → `BetterComponent.razor`)
+   - Renaming functions/methods (e.g., `GetData()` → `FetchData()`)
+   - Renaming classes/interfaces (e.g., `DataService` → `ApiService`)
+   - Renaming properties or parameters
+   - Moving code between files
+
+3. **Why this matters:**
+   - Breaking changes affect other developers
+   - Existing code may depend on current names
+   - Git history becomes harder to track
+   - Refactoring should be intentional, not incidental
+
+4. **What you CAN do without asking:**
+   - Create new files, functions, or classes
+   - Fix bugs in existing code (keeping the same names)
+   - Add new functionality to existing files
+   - Update implementation details without changing signatures
+
+**Example:**
+- ❌ DON'T: Rename `MicroActions.razor` to `UserActions.razor` while fixing a bug
+- ✅ DO: Ask "I noticed MicroActions.razor might be better named UserActions.razor. Would you like me to rename it?"
+- ✅ DO: Create a new component called `UserActions.razor` if that's what the task requires
+
 ## Git Workflow
 
 ### Syncing with Master Branch
