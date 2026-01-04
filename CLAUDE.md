@@ -143,3 +143,16 @@ When creating new components for this library:
 - **Package integration**: Demonstrate how to combine popular NuGet packages effectively (e.g., FluentValidation, AutoMapper, popular charting libraries, state management solutions)
 - **Educational value**: Code should serve as a learning resource, showing best practices and integration patterns
 - **Practical over trivial**: Focus on components that solve real problems developers face, not just basic examples
+
+## Git Workflow
+
+### Commit Guidelines
+
+**IMPORTANT:** Always fix git commit warnings before proceeding with commits or pull requests.
+
+When working with git:
+- Review `git status` output carefully before committing
+- Address any warnings about uncommitted changes
+- Stage only files related to the current work/feature
+- Ensure commit messages are clear and descriptive
+- Keep commits focused on a single logical change
