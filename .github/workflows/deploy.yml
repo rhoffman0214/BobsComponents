@@ -1,0 +1,170 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy (leave empty for current branch)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: false
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  CONFIGURATION: 'Release'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.branch || github.ref }}
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Install wasm-tools workload
+      run: dotnet workload install wasm-tools
+
+    - name: Restore dependencies
+      run: dotnet restore src/BobsComponents.sln
+
+    - name: Build solution
+      run: dotnet build src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-restore
+
+    - name: Run tests
+      id: test
+      continue-on-error: true
+      run: |
+        if dotnet test src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal; then
+          echo "tests_passed=true" >> $GITHUB_OUTPUT
+        else
+          if dotnet test src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal 2>&1 | grep -q "No test is available"; then
+            echo "tests_passed=no_tests" >> $GITHUB_OUTPUT
+            echo "⚠️ No test projects found. Continuing deployment." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "tests_passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+        fi
+
+    - name: Check test results
+      if: steps.test.outputs.tests_passed == 'false'
+      run: |
+        echo "❌ Tests failed! Blocking deployment." >> $GITHUB_STEP_SUMMARY
+        exit 1
+
+    - name: Publish Blazor WASM
+      run: dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output publish
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: 'publish/wwwroot'
+
+    - name: Notify Discord on Build Failure
+      if: failure()
+      uses: sarisia/actions-status-discord@v1
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        status: ${{ job.status }}
+        title: "🔴 BobsComponents Build Failed"
+        description: |
+          **Branch**: `${{ github.ref_name }}`
+          **Commit**: `${{ github.sha }}`
+          **Author**: ${{ github.actor }}
+          **Message**: ${{ github.event.head_commit.message }}
+
+          [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        color: 0xff0000
+        username: "BobsComponents CI/CD"
+
+    - name: Notify Discord on Test Failure
+      if: steps.test.outputs.tests_passed == 'false'
+      uses: sarisia/actions-status-discord@v1
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        status: 'failure'
+        title: "🟠 BobsComponents Tests Failed"
+        description: |
+          **Branch**: `${{ github.ref_name }}`
+          **Commit**: `${{ github.sha }}`
+          **Author**: ${{ github.actor }}
+
+          ❌ Tests failed and deployment has been blocked.
+
+          [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        color: 0xff6600
+        username: "BobsComponents CI/CD"
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    - name: Notify Discord on Deployment Failure
+      if: failure()
+      uses: sarisia/actions-status-discord@v1
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        status: 'failure'
+        title: "🔴 BobsComponents Deployment Failed"
+        description: |
+          **Branch**: `${{ github.ref_name }}`
+          **Environment**: GitHub Pages
+
+          Build succeeded but deployment failed.
+
+          [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        color: 0xff0000
+        username: "BobsComponents CI/CD"
+
+    - name: Notify Discord on Success
+      if: success()
+      uses: sarisia/actions-status-discord@v1
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        status: 'success'
+        title: "🟢 BobsComponents Deployed Successfully"
+        description: |
+          **Branch**: `${{ github.ref_name }}`
+          **Commit**: `${{ github.sha }}`
+          **Author**: ${{ github.actor }}
+
+          🚀 Deployed to: ${{ steps.deployment.outputs.page_url }}
+        color: 0x00ff00
+        username: "BobsComponents CI/CD"
