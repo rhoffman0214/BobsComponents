@@ -78,7 +78,7 @@ jobs:
         exit 1
 
     - name: Publish Blazor WASM
-      run: dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output publish
+      run: dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration ${{ env.CONFIGURATION }} --output publish
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
