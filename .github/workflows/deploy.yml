@@ -103,6 +103,8 @@ jobs:
         status: ${{ job.status }}
         title: "🔴 BobsComponents Build Failed"
         description: |
+          <@&${{ secrets.DISCORD_CODE_MONKEYS_ROLE_ID }}>
+
           **Branch**: `${{ github.ref_name }}`
           **Commit**: `${{ github.sha }}`
           **Author**: ${{ github.actor }}
@@ -120,6 +122,8 @@ jobs:
         status: 'failure'
         title: "🟠 BobsComponents Tests Failed"
         description: |
+          <@&${{ secrets.DISCORD_CODE_MONKEYS_ROLE_ID }}>
+
           **Branch**: `${{ github.ref_name }}`
           **Commit**: `${{ github.sha }}`
           **Author**: ${{ github.actor }}
@@ -151,6 +155,8 @@ jobs:
         status: 'failure'
         title: "🔴 BobsComponents Deployment Failed"
         description: |
+          <@&${{ secrets.DISCORD_CODE_MONKEYS_ROLE_ID }}>
+
           **Branch**: `${{ github.ref_name }}`
           **Environment**: GitHub Pages
 
