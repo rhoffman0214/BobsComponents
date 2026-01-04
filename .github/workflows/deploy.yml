@@ -50,10 +50,10 @@ jobs:
       run: dotnet workload install wasm-tools
 
     - name: Restore dependencies
-      run: dotnet restore src/BobsComponents.sln
+      run: dotnet restore src/BobsComponents.sln --parallel
 
     - name: Build solution
-      run: dotnet build src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: dotnet build src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-restore -maxcpucount
 
     - name: Run tests
       id: test
@@ -77,8 +77,15 @@ jobs:
         echo "❌ Tests failed! Blocking deployment." >> $GITHUB_STEP_SUMMARY
         exit 1
 
-    - name: Publish Blazor WASM
-      run: dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration ${{ env.CONFIGURATION }} --output publish
+    - name: Publish Blazor WASM (with AOT for master, without AOT for feature branches)
+      run: |
+        if [ "${{ github.ref_name }}" = "master" ]; then
+          echo "📦 Publishing with AOT compilation for production deployment..."
+          dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration ${{ env.CONFIGURATION }} --output publish
+        else
+          echo "⚡ Publishing without AOT compilation for faster feature branch deployment..."
+          dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration ${{ env.CONFIGURATION }} --output publish -p:RunAOTCompilation=false
+        fi
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
@@ -165,6 +172,7 @@ jobs:
           **Commit**: `${{ github.sha }}`
           **Author**: ${{ github.actor }}
           **Message**: ${{ github.event.head_commit.message }}
+          **Build**: ${{ github.ref_name == 'master' && '📦 AOT Compiled (Production)' || '⚡ Fast Build (No AOT)' }}
 
           ## 🚀 Live Site
           **[${{ steps.deployment.outputs.page_url }}](${{ steps.deployment.outputs.page_url }})**
