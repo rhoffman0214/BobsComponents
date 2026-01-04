@@ -7,9 +7,6 @@
 
     <!-- .NET 10 Breaking Change -->
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-
-    <!-- GitHub Pages deployment configuration -->
-    <StaticWebAssetBasePath Condition="'$(Configuration)' == 'Release'">BobsComponents</StaticWebAssetBasePath>
   </PropertyGroup>
 
   <ItemGroup>
