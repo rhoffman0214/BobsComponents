@@ -159,12 +159,16 @@ jobs:
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
         status: 'success'
-        title: "🟢 BobsComponents Deployed Successfully"
+        title: "🎉 BobsComponents Deployed Successfully!"
         description: |
           **Branch**: `${{ github.ref_name }}`
           **Commit**: `${{ github.sha }}`
           **Author**: ${{ github.actor }}
+          **Message**: ${{ github.event.head_commit.message }}
 
-          🚀 Deployed to: ${{ steps.deployment.outputs.page_url }}
+          ## 🚀 Live Site
+          **[${{ steps.deployment.outputs.page_url }}](${{ steps.deployment.outputs.page_url }})**
+
+          [View Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         color: 0x00ff00
         username: "BobsComponents CI/CD"
