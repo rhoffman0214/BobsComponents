@@ -1,0 +1,65 @@
+@namespace BobsComponent.Library.Components
+
+<div class="loading-spinner loading-spinner-@Size.ToString().ToLower() loading-spinner-@Style.ToString().ToLower()"
+     style="@(Color != null ? $"color: {Color};" : "")">
+    @if (Style == SpinnerStyle.Circle)
+    {
+        <div class="spinner-circle"></div>
+    }
+    else if (Style == SpinnerStyle.Dots)
+    {
+        <div class="spinner-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    }
+    else if (Style == SpinnerStyle.Pulse)
+    {
+        <div class="spinner-pulse"></div>
+    }
+    else if (Style == SpinnerStyle.Bars)
+    {
+        <div class="spinner-bars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// The style of the loading spinner
+    /// </summary>
+    [Parameter]
+    public SpinnerStyle Style { get; set; } = SpinnerStyle.Circle;
+
+    /// <summary>
+    /// The size of the spinner
+    /// </summary>
+    [Parameter]
+    public SpinnerSize Size { get; set; } = SpinnerSize.Medium;
+
+    /// <summary>
+    /// Optional custom color (CSS color value)
+    /// </summary>
+    [Parameter]
+    public string? Color { get; set; }
+
+    public enum SpinnerStyle
+    {
+        Circle,
+        Dots,
+        Pulse,
+        Bars
+    }
+
+    public enum SpinnerSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+}

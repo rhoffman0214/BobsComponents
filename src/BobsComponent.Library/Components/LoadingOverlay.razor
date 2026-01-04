@@ -1,0 +1,52 @@
+@namespace BobsComponent.Library.Components
+
+@if (IsVisible)
+{
+    <div class="loading-overlay @(Fullscreen ? "fullscreen" : "") @(BlurBackground ? "blur" : "")">
+        <div class="overlay-content">
+            <LoadingSpinner Style="@SpinnerStyle" Size="@SpinnerSize" />
+            @if (!string.IsNullOrEmpty(Text))
+            {
+                <p class="loading-text">@Text</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Whether the overlay is visible
+    /// </summary>
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    /// <summary>
+    /// Cover the entire viewport (true) or just the parent container (false)
+    /// </summary>
+    [Parameter]
+    public bool Fullscreen { get; set; } = false;
+
+    /// <summary>
+    /// Blur the background
+    /// </summary>
+    [Parameter]
+    public bool BlurBackground { get; set; } = true;
+
+    /// <summary>
+    /// Optional loading text to display
+    /// </summary>
+    [Parameter]
+    public string? Text { get; set; }
+
+    /// <summary>
+    /// Spinner style to use
+    /// </summary>
+    [Parameter]
+    public LoadingSpinner.SpinnerStyle SpinnerStyle { get; set; } = LoadingSpinner.SpinnerStyle.Circle;
+
+    /// <summary>
+    /// Spinner size to use
+    /// </summary>
+    [Parameter]
+    public LoadingSpinner.SpinnerSize SpinnerSize { get; set; } = LoadingSpinner.SpinnerSize.Large;
+}

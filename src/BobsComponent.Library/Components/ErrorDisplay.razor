@@ -1,0 +1,89 @@
+@namespace BobsComponent.Library.Components
+
+<div class="error-display @(Dismissible && !isDismissed ? "" : "dismissed")">
+    @if (!isDismissed)
+    {
+        <div class="error-content">
+            <div class="error-icon">
+                <span class="icon">⚠</span>
+            </div>
+            <div class="error-message">
+                <strong>@Title</strong>
+                @if (!string.IsNullOrEmpty(Message))
+                {
+                    <p>@Message</p>
+                }
+            </div>
+            <div class="error-actions">
+                @if (ShowRetry && OnRetry.HasDelegate)
+                {
+                    <button class="btn-retry" @onclick="HandleRetry">Retry</button>
+                }
+                @if (Dismissible)
+                {
+                    <button class="btn-dismiss" @onclick="HandleDismiss">✕</button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Error title/heading
+    /// </summary>
+    [Parameter]
+    public string Title { get; set; } = "Error";
+
+    /// <summary>
+    /// Error message details
+    /// </summary>
+    [Parameter]
+    public string? Message { get; set; }
+
+    /// <summary>
+    /// Show retry button
+    /// </summary>
+    [Parameter]
+    public bool ShowRetry { get; set; } = true;
+
+    /// <summary>
+    /// Can be dismissed by user
+    /// </summary>
+    [Parameter]
+    public bool Dismissible { get; set; } = true;
+
+    /// <summary>
+    /// Event triggered when retry is clicked
+    /// </summary>
+    [Parameter]
+    public EventCallback OnRetry { get; set; }
+
+    /// <summary>
+    /// Event triggered when dismissed
+    /// </summary>
+    [Parameter]
+    public EventCallback OnDismiss { get; set; }
+
+    private bool isDismissed = false;
+
+    private async Task HandleRetry()
+    {
+        await OnRetry.InvokeAsync();
+    }
+
+    private async Task HandleDismiss()
+    {
+        isDismissed = true;
+        await OnDismiss.InvokeAsync();
+    }
+
+    /// <summary>
+    /// Resets the dismissed state (useful for showing error again)
+    /// </summary>
+    public void Reset()
+    {
+        isDismissed = false;
+        StateHasChanged();
+    }
+}

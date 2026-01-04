@@ -1,0 +1,238 @@
+@using System.Threading
+@using BobsComponent.Library.Enums
+@namespace BobsComponent.Library.Components
+
+<button type="button"
+        class="async-button btn-@Style.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
+        disabled="@(IsDisabled || State == LoadingState.Loading)"
+        @onclick="HandleClick">
+
+    @if (State == LoadingState.Loading)
+    {
+        <LoadingSpinner Style="LoadingSpinner.SpinnerStyle.Circle"
+                        Size="LoadingSpinner.SpinnerSize.Small" />
+        <span class="button-text">@(LoadingText ?? Text)</span>
+    }
+    else if (State == LoadingState.Success)
+    {
+        <span class="success-icon">✓</span>
+        <span class="button-text">@(SuccessText ?? "Success")</span>
+    }
+    else if (State == LoadingState.Error)
+    {
+        <span class="error-icon">✕</span>
+        <span class="button-text">@(ErrorText ?? "Error")</span>
+    }
+    else
+    {
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            <span class="button-text">@Text</span>
+        }
+    }
+</button>
+
+@if (State == LoadingState.Error && ShowErrorRetry)
+{
+    <button type="button" class="retry-button" @onclick="HandleRetry">
+        ↻ Retry
+    </button>
+}
+
+@if (ShowProgress && Progress > 0 && State == LoadingState.Loading)
+{
+    <ProgressBar Percentage="@Progress"
+                 ColorVariant="ProgressBar.ProgressColorVariant.Primary"
+                 ShowPercentage="false"
+                 Animated="true" />
+}
+
+@code {
+    /// <summary>
+    /// Button text
+    /// </summary>
+    [Parameter]
+    public string Text { get; set; } = "Click me";
+
+    /// <summary>
+    /// Text to show when loading
+    /// </summary>
+    [Parameter]
+    public string? LoadingText { get; set; }
+
+    /// <summary>
+    /// Text to show on success
+    /// </summary>
+    [Parameter]
+    public string? SuccessText { get; set; }
+
+    /// <summary>
+    /// Text to show on error
+    /// </summary>
+    [Parameter]
+    public string? ErrorText { get; set; }
+
+    /// <summary>
+    /// Button style variant
+    /// </summary>
+    [Parameter]
+    public ButtonStyle Style { get; set; } = ButtonStyle.Primary;
+
+    /// <summary>
+    /// Current loading state
+    /// </summary>
+    [Parameter]
+    public LoadingState State { get; set; } = LoadingState.Idle;
+
+    /// <summary>
+    /// Progress percentage (0-100) if tracking progress
+    /// </summary>
+    [Parameter]
+    public int Progress { get; set; } = 0;
+
+    /// <summary>
+    /// Show progress bar below button
+    /// </summary>
+    [Parameter]
+    public bool ShowProgress { get; set; } = false;
+
+    /// <summary>
+    /// Show retry button on error
+    /// </summary>
+    [Parameter]
+    public bool ShowErrorRetry { get; set; } = true;
+
+    /// <summary>
+    /// Button is disabled
+    /// </summary>
+    [Parameter]
+    public bool IsDisabled { get; set; } = false;
+
+    /// <summary>
+    /// Button takes full width of container
+    /// </summary>
+    [Parameter]
+    public bool FullWidth { get; set; } = false;
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    /// <summary>
+    /// Child content (alternative to Text parameter)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Async operation to execute when clicked
+    /// </summary>
+    [Parameter]
+    public Func<Task>? OnClickAsync { get; set; }
+
+    /// <summary>
+    /// Event triggered when state changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<LoadingState> OnStateChanged { get; set; }
+
+    /// <summary>
+    /// Event triggered when progress updates
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> OnProgressChanged { get; set; }
+
+    /// <summary>
+    /// Auto-reset to idle after success (milliseconds, 0 to disable)
+    /// </summary>
+    [Parameter]
+    public int AutoResetDelay { get; set; } = 2000;
+
+    private CancellationTokenSource? _cancellationTokenSource;
+
+    private async Task HandleClick()
+    {
+        if (OnClickAsync == null || State == LoadingState.Loading)
+            return;
+
+        await SetStateAsync(LoadingState.Loading);
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            await OnClickAsync();
+            await SetStateAsync(LoadingState.Success);
+
+            if (AutoResetDelay > 0)
+            {
+                await Task.Delay(AutoResetDelay);
+                await SetStateAsync(LoadingState.Idle);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            await SetStateAsync(LoadingState.Error);
+        }
+        catch
+        {
+            await SetStateAsync(LoadingState.Error);
+        }
+        finally
+        {
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    private async Task HandleRetry()
+    {
+        await SetStateAsync(LoadingState.Idle);
+        await HandleClick();
+    }
+
+    private async Task SetStateAsync(LoadingState newState)
+    {
+        State = newState;
+        await OnStateChanged.InvokeAsync(State);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Updates the progress percentage
+    /// </summary>
+    public async Task UpdateProgressAsync(int progress)
+    {
+        Progress = Math.Clamp(progress, 0, 100);
+        await OnProgressChanged.InvokeAsync(Progress);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Cancels the current operation
+    /// </summary>
+    public void Cancel()
+    {
+        _cancellationTokenSource?.Cancel();
+    }
+
+    /// <summary>
+    /// Resets the button to idle state
+    /// </summary>
+    public async Task ResetAsync()
+    {
+        await SetStateAsync(LoadingState.Idle);
+        Progress = 0;
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource?.Dispose();
+    }
+}
