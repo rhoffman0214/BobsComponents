@@ -1,0 +1,22 @@
+<Project>
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <PropertyGroup>
+    <NetVersion>net10.0</NetVersion>
+    <RunAOTCompilation>true</RunAOTCompilation>
+
+    <!-- Package metadata for future NuGet publishing -->
+    <Authors>Virtual Ventures LLC</Authors>
+    <Company>Virtual Ventures LLC</Company>
+    <Product>Bobs Components</Product>
+    <Copyright>Copyright (c) 2026</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>blazor;components;ui</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+</Project>

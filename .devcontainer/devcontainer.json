@@ -5,9 +5,9 @@
 	"build": {
 		"dockerfile": "Dockerfile",
 		"args": {
-			// Update 'VARIANT' to pick a .NET Core version: 3.1, 5.0, 6.0
+			// Update 'VARIANT' to pick a .NET Core version: 3.1, 5.0, 6.0, 10.0
 			// Append -bullseye or -focal to pin to an OS version.
-			"VARIANT": "6.0",
+			"VARIANT": "10.0",
 			// Options
 			"NODE_VERSION": "lts/*"
 		}
@@ -43,7 +43,7 @@
 	//    * If only using Remote - Containers with a local container, uncomment this line instead:
 	//      "mounts": [ "source=${env:HOME}${env:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind" ],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "dotnet restore",
+	"postCreateCommand": "dotnet workload install wasm-tools && dotnet restore src/BobsComponents.sln",
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
 }

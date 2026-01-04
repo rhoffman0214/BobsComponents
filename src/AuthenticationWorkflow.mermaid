@@ -1,0 +1,33 @@
+
+graph TD
+    Start[Start]
+    LoginPage[Login Page]
+    AuthRequest[Send Authentication Request]
+    AuthSuccess{Authentication Success?}
+    AuthFail{Authentication Fail?}
+    TokenStore[Store Token]
+    RedirectHome[Redirect to Home]
+    ShowError[Show Error Message]
+    HomePage[Home Page]
+    FetchData[Fetch User Data]
+    DataAvailable{Data Available?}
+    ShowData[Show User Data]
+    Logout[Logout]
+    ClearToken[Clear Token]
+    RedirectLogin[Redirect to Login Page]
+
+    Start --> LoginPage
+    LoginPage --> AuthRequest
+    AuthRequest --> AuthSuccess
+    AuthSuccess -->|Yes| TokenStore
+    AuthSuccess -->|No| AuthFail
+    AuthFail --> ShowError
+    TokenStore --> RedirectHome
+    RedirectHome --> HomePage
+    HomePage --> FetchData
+    FetchData --> DataAvailable
+    DataAvailable -->|Yes| ShowData
+    DataAvailable -->|No| ShowError
+    ShowData --> Logout
+    Logout --> ClearToken
+    ClearToken --> RedirectLogin

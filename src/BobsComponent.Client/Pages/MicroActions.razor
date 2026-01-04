@@ -1,0 +1,17 @@
+﻿<p>This is the Micro Actions Component!</p>
+<p>@foreach (var msg in _componentMessages) 
+    {
+        @($"{msg}");
+        <br />
+    }
+</p>
+
+@code {
+    private HashSet<string> _componentMessages = [];
+
+    protected override void OnInitialized()
+    {
+        _componentMessages.Add("Micro Actions Component Initialized");
+        StateHasChanged();
+    }
+}

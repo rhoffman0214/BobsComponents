@@ -396,3 +396,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Claude Code
+.claude/
+
+# Windows nul files
+nul
+
+# EditorConfig
+src/.editorconfig

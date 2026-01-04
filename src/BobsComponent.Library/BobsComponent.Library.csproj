@@ -1,9 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>$(NetVersion)</TargetFramework>
     <Nullable>enable</Nullable>
-	  <OutputType>Library</OutputType>
+    <OutputType>Library</OutputType>
+    <Title>BobsComponents</Title>
+
+    <!-- NuGet package-specific properties -->
+    <Description>A collection of customizable Blazor components with theming support</Description>
+    <Version>1.0.0</Version>
+    <PackageVersion>1.0.0</PackageVersion>
   </PropertyGroup>
 
 
@@ -12,8 +18,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- Include README for NuGet package -->
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

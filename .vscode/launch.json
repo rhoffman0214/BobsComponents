@@ -5,6 +5,7 @@
             "name": "Launch",
             "type": "blazorwasm",
             "request": "launch",
+            "browser": "chrome",
             "url": "https://localhost:7017",
             "cwd": "${workspaceFolder}/src/BobsComponent.Client",
             "preLaunchTask": "build",
