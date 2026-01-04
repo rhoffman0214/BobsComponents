@@ -9,6 +9,16 @@ on:
         description: 'Branch to deploy (leave empty for current branch)'
         required: false
         default: ''
+      discord_notify:
+        description: 'Discord notification mode'
+        required: false
+        default: 'failures_with_ping'
+        type: choice
+        options:
+          - 'all_with_ping'
+          - 'all_no_ping'
+          - 'failures_with_ping'
+          - 'off'
 
 permissions:
   contents: read
@@ -22,6 +32,8 @@ concurrency:
 env:
   DOTNET_VERSION: '10.0.x'
   CONFIGURATION: 'Release'
+  # Discord notification mode: all_with_ping, all_no_ping, failures_with_ping, off
+  DISCORD_NOTIFY: ${{ github.event.inputs.discord_notify || 'failures_with_ping' }}
 
 jobs:
   build-and-test:
@@ -96,14 +108,14 @@ jobs:
         path: 'publish/wwwroot'
 
     - name: Notify Discord on Build Failure
-      if: failure()
+      if: failure() && env.DISCORD_NOTIFY != 'off'
       uses: sarisia/actions-status-discord@v1
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
         status: ${{ job.status }}
         title: "🔴 BobsComponents Build Failed"
         description: |
-          <@&${{ secrets.DISCORD_CODE_MONKEYS_ROLE_ID }}>
+          ${{ (env.DISCORD_NOTIFY == 'failures_with_ping' || env.DISCORD_NOTIFY == 'all_with_ping') && format('<@&{0}>', secrets.DISCORD_CODE_MONKEYS_ROLE_ID) || '' }}
 
           **Branch**: `${{ github.ref_name }}`
           **Commit**: `${{ github.sha }}`
@@ -115,14 +127,14 @@ jobs:
         username: "BobsComponents CI/CD"
 
     - name: Notify Discord on Test Failure
-      if: steps.test.outputs.tests_passed == 'false'
+      if: steps.test.outputs.tests_passed == 'false' && env.DISCORD_NOTIFY != 'off'
       uses: sarisia/actions-status-discord@v1
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
         status: 'failure'
         title: "🟠 BobsComponents Tests Failed"
         description: |
-          <@&${{ secrets.DISCORD_CODE_MONKEYS_ROLE_ID }}>
+          ${{ (env.DISCORD_NOTIFY == 'failures_with_ping' || env.DISCORD_NOTIFY == 'all_with_ping') && format('<@&{0}>', secrets.DISCORD_CODE_MONKEYS_ROLE_ID) || '' }}
 
           **Branch**: `${{ github.ref_name }}`
           **Commit**: `${{ github.sha }}`
@@ -148,14 +160,14 @@ jobs:
       uses: actions/deploy-pages@v4
 
     - name: Notify Discord on Deployment Failure
-      if: failure()
+      if: failure() && env.DISCORD_NOTIFY != 'off'
       uses: sarisia/actions-status-discord@v1
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
         status: 'failure'
         title: "🔴 BobsComponents Deployment Failed"
         description: |
-          <@&${{ secrets.DISCORD_CODE_MONKEYS_ROLE_ID }}>
+          ${{ (env.DISCORD_NOTIFY == 'failures_with_ping' || env.DISCORD_NOTIFY == 'all_with_ping') && format('<@&{0}>', secrets.DISCORD_CODE_MONKEYS_ROLE_ID) || '' }}
 
           **Branch**: `${{ github.ref_name }}`
           **Environment**: GitHub Pages
@@ -167,13 +179,15 @@ jobs:
         username: "BobsComponents CI/CD"
 
     - name: Notify Discord on Success
-      if: success()
+      if: success() && (env.DISCORD_NOTIFY == 'all_with_ping' || env.DISCORD_NOTIFY == 'all_no_ping')
       uses: sarisia/actions-status-discord@v1
       with:
         webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
         status: 'success'
         title: "🎉 BobsComponents Deployed Successfully!"
         description: |
+          ${{ env.DISCORD_NOTIFY == 'all_with_ping' && format('<@&{0}>', secrets.DISCORD_CODE_MONKEYS_ROLE_ID) || '' }}
+
           **Branch**: `${{ github.ref_name }}`
           **Commit**: `${{ github.sha }}`
           **Author**: ${{ github.actor }}
