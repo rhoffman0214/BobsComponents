@@ -177,6 +177,33 @@ When creating new components for this library:
 
 5. **Only after conflicts are resolved**, push to remote
 
+### Pre-Push Testing
+
+**CRITICAL:** Before pushing to remote as the FINAL action, ALWAYS verify your changes:
+
+1. **Run the application locally for testing:**
+   ```bash
+   cd src/BobsComponent.Client
+   dotnet watch run
+   ```
+   - Verify application starts without errors
+   - Test affected functionality manually
+   - Check for console errors or warnings
+
+2. **Run tests for the application:**
+   ```bash
+   dotnet test
+   ```
+   - Ensure all tests pass
+   - Fix any failing tests before pushing
+
+3. **Manual verification:**
+   - For now, ask the user to verify changes manually
+   - Automation of this verification will be implemented in the future
+   - Document what was tested in commit messages or PR description
+
+**Remember:** Never push broken code to the remote repository. Local testing is mandatory before every push.
+
 ### Commit Guidelines
 
 **IMPORTANT:** Always fix git commit warnings before proceeding with commits or pull requests.
