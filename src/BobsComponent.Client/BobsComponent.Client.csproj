@@ -10,6 +10,7 @@
 
     <!-- Disable fingerprinting for GitHub Pages deployment -->
     <WasmFingerprintAssets>false</WasmFingerprintAssets>
+    <WasmEnableFingerprintFiles>false</WasmEnableFingerprintFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +20,13 @@
   <ItemGroup>
     <ProjectReference Include="../BobsComponent.Library/BobsComponent.Library.csproj" />
   </ItemGroup>
+
+  <!-- Custom target to create non-fingerprinted copies for GitHub Pages -->
+  <Target Name="CreateNonFingerprintedCopies" AfterTargets="Publish">
+    <ItemGroup>
+      <FingerprintedFiles Include="$(PublishDir)wwwroot\_framework\blazor.webassembly.*.js" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FingerprintedFiles)" DestinationFiles="$(PublishDir)wwwroot\_framework\blazor.webassembly.js" />
+  </Target>
 
 </Project>
