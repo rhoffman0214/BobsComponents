@@ -1,0 +1,27 @@
+@page "/inputexamples/dropdown"
+@using BobsComponent.Library.Components
+
+<BobsDropdown SelectItems=@TireList @bind-SelectedValue=SelectedDropItem></BobsDropdown>
+<p>Selected Value: @SelectedDropItem</p>
+
+@code {
+  private string SelectedDropItem { get; set; } = string.Empty;
+  private List<SelectListItem> TireList { get; set; } = new()
+  {
+    new()
+    {
+      description = "Racing - Soft",
+      value = "RS",
+    },
+    new()
+    {
+      description = "Racing - Medium",
+      value = "RM",
+    },
+    new()
+    {
+      description = "Racing - Hard",
+      value = "RH",
+    },
+  };
+}

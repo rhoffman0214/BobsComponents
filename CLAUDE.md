@@ -146,6 +146,37 @@ When creating new components for this library:
 
 ## Git Workflow
 
+### Syncing with Master Branch
+
+**ALWAYS** sync with master before creating or pushing to the remote repository. All conflicts must be resolved locally before any push occurs.
+
+**Required Steps:**
+
+1. **Pull latest master:**
+   ```bash
+   git pull origin master
+   ```
+
+2. **Switch to your branch:**
+   ```bash
+   git checkout branchNameHere
+   ```
+
+3. **Merge master into your branch:**
+   ```bash
+   git merge master
+   ```
+
+4. **Resolve conflicts (if any):**
+   - May require manual input to resolve conflicting files
+   - Open conflicts in your preferred editor
+   - Look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
+   - Choose the correct code and remove conflict markers
+   - Stage resolved files with `git add <file>`
+   - Complete the merge with `git commit`
+
+5. **Only after conflicts are resolved**, push to remote
+
 ### Commit Guidelines
 
 **IMPORTANT:** Always fix git commit warnings before proceeding with commits or pull requests.

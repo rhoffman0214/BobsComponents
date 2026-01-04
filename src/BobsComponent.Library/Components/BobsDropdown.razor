@@ -1,0 +1,37 @@
+<select id="front_tire" name="front_tire" @bind=SelectedValue>
+  <option value="">@UnselectedText</option>
+  @foreach (var item in SelectItems)
+  {
+    <option value=@item.value>@item.description</option>
+  }
+</select>
+
+@code {
+  [Parameter]
+  public List<SelectListItem> SelectItems { get; set; } = new();
+
+  [Parameter]
+  public EventCallback<string> SelectedValueChanged { get; set; }
+
+  private string selectedValue { get; set; } = string.Empty;
+  [Parameter]
+  public string SelectedValue
+  {
+    get { return selectedValue; }
+    set
+    {
+      if (selectedValue != value)
+      {
+        selectedValue = value;
+
+        if (SelectedValueChanged.HasDelegate)
+        {
+          SelectedValueChanged.InvokeAsync(value);
+        }
+      }
+    }
+  }
+
+  [Parameter]
+  public string UnselectedText { get; set; } = "Choose an item...";
+}
