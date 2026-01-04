@@ -402,3 +402,6 @@ FodyWeavers.xsd
 
 # Windows nul files
 nul
+
+# EditorConfig
+src/.editorconfig
