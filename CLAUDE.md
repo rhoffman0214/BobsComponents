@@ -204,6 +204,52 @@ When creating new components for this library:
 
 **Remember:** Never push broken code to the remote repository. Local testing is mandatory before every push.
 
+### CI/CD Pipeline Changes
+
+**CRITICAL:** When modifying GitHub Actions workflows or CI/CD configuration, ALWAYS verify changes locally before pushing:
+
+1. **Validate YAML syntax:**
+   ```bash
+   # Install yamllint if not already installed
+   pip install yamllint
+
+   # Validate workflow syntax
+   yamllint .github/workflows/deploy.yml
+   ```
+
+2. **Test build commands locally:**
+   - Extract the exact commands from the workflow file
+   - Run them in the same sequence locally
+   - Example from current workflow:
+   ```bash
+   dotnet workload install wasm-tools
+   dotnet restore src/BobsComponents.sln
+   dotnet build src/BobsComponents.sln --configuration Release --no-restore -m
+   dotnet test src/BobsComponents.sln --configuration Release --verbosity normal
+   dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration Release --output publish
+   ```
+
+3. **Verify command flags are valid:**
+   - Check `dotnet --help` for valid flags before using them
+   - Test unfamiliar flags locally first (e.g., `--parallel`, `-maxcpucount` vs `-m`)
+   - Common mistakes to avoid:
+     - Using invalid flags like `--parallel` on `dotnet restore`
+     - Using MSBuild syntax incorrectly (`-maxcpucount` should be `-m`)
+     - Mixing `--no-build` with different project contexts
+
+4. **Test conditional logic:**
+   - If using branch-based conditionals (e.g., AOT on/off), test both paths
+   - Verify environment variables and GitHub expressions are correct
+   - Test shell script syntax if using multiline `run:` blocks
+
+5. **Incremental testing approach:**
+   - Make ONE change at a time to workflows
+   - Push and verify it works before adding more changes
+   - If multiple changes are needed, create a feature branch to test them together first
+   - Never batch multiple untested workflow changes into a single commit
+
+**Why this matters:** CI/CD failures waste GitHub Actions minutes, delay deployments, and can block the entire team. A single untested workflow change can cause 5-10 failed builds before being fixed.
+
 ### Commit Guidelines
 
 **IMPORTANT:** Always fix git commit warnings before proceeding with commits or pull requests.

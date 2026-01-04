@@ -175,7 +175,9 @@ jobs:
           **Build**: ${{ github.ref_name == 'master' && '📦 AOT Compiled (Production)' || '⚡ Fast Build (No AOT)' }}
 
           ## 🚀 Live Site
-          **[${{ steps.deployment.outputs.page_url }}](${{ steps.deployment.outputs.page_url }})**
+          **[View Deployed Site](${{ steps.deployment.outputs.page_url }})**
+
+          ${{ steps.deployment.outputs.page_url }}
 
           [View Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         color: 0x00ff00
