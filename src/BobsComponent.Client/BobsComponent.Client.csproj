@@ -7,6 +7,9 @@
 
     <!-- .NET 10 Breaking Change -->
     <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+
+    <!-- Disable fingerprinting for GitHub Pages deployment -->
+    <WasmFingerprintAssets>false</WasmFingerprintAssets>
   </PropertyGroup>
 
   <ItemGroup>
