@@ -50,10 +50,10 @@ jobs:
       run: dotnet workload install wasm-tools
 
     - name: Restore dependencies
-      run: dotnet restore src/BobsComponents.sln --parallel
+      run: dotnet restore src/BobsComponents.sln
 
     - name: Build solution
-      run: dotnet build src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-restore -maxcpucount
+      run: dotnet build src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-restore -m
 
     - name: Run tests
       id: test
