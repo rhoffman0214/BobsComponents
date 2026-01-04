@@ -4,16 +4,21 @@
     <TargetFramework>$(NetVersion)</TargetFramework>
     <Nullable>enable</Nullable>
     <UserSecretsId>ec230442-25b1-449e-8bfc-57a09fe28d6b</UserSecretsId>
+
+    <!-- .NET 10 Breaking Change -->
+    <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
+
+    <!-- GitHub Pages deployment configuration -->
+    <StaticWebAssetBasePath Condition="'$(Configuration)' == 'Release'">BobsComponents</StaticWebAssetBasePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BobsComponent.Library" Version="1.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.4" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="../BobsComponent.Library/BobsComponent.Library.csproj"></ProjectReference>
+    <ProjectReference Include="../BobsComponent.Library/BobsComponent.Library.csproj" />
   </ItemGroup>
 
 </Project>
