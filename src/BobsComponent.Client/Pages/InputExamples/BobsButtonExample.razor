@@ -13,13 +13,16 @@
         </p>
     </div>
 
+    <!-- Table of Contents -->
+    <TableOfContents Items="@tocItems" />
+
     <!-- Section 1: Interactive Playground -->
-    <section class="example-section">
+    <section class="example-section" id="playground">
         <ButtonPlayground />
     </section>
 
     <!-- Section 2: Basic Button Styles -->
-    <section class="example-section">
+    <section class="example-section" id="button-styles">
         <h2 class="section-title">1. Button Styles</h2>
         <p class="section-description">Six semantic color variants for different use cases. Use the Playground above to see the code.</p>
 
@@ -69,7 +72,7 @@
     </section>
 
     <!-- Section 2: Button Sizes -->
-    <section class="example-section">
+    <section class="example-section" id="button-sizes">
         <h2 class="section-title">2. Button Sizes</h2>
         <p class="section-description">Three size variants for different contexts</p>
 
@@ -101,7 +104,7 @@
     </section>
 
     <!-- Section 3: Icons -->
-    <section class="example-section">
+    <section class="example-section" id="icons">
         <h2 class="section-title">3. Button Icons</h2>
         <p class="section-description">Add icons before or after button text using the Icon render fragment</p>
 
@@ -146,7 +149,7 @@
     </section>
 
     <!-- Section 4: ARIA Attributes -->
-    <section class="example-section">
+    <section class="example-section" id="aria-attributes">
         <h2 class="section-title">4. ARIA Accessibility Attributes</h2>
         <p class="section-description">Screen reader support and accessibility features. Use the Playground above to see the code.</p>
 
@@ -182,7 +185,7 @@
     </section>
 
     <!-- Section 5: Data Attributes -->
-    <section class="example-section">
+    <section class="example-section" id="data-attributes">
         <h2 class="section-title">5. Data Attributes</h2>
         <p class="section-description">Custom data attributes for analytics, testing, and tracking. Use the Playground above to see the code.</p>
 
@@ -253,7 +256,7 @@
     </section>
 
     <!-- Section 6: Loading States -->
-    <section class="example-section">
+    <section class="example-section" id="loading-states">
         <h2 class="section-title">6. Loading States</h2>
         <p class="section-description">Automatic state management during async operations. Click the buttons to see loading spinners in action.</p>
 
@@ -288,7 +291,7 @@
     </section>
 
     <!-- Section 7: Error Handling -->
-    <section class="example-section">
+    <section class="example-section" id="error-handling">
         <h2 class="section-title">7. Error Handling</h2>
         <p class="section-description">Automatic error state with retry functionality. These buttons will always fail to demonstrate error handling.</p>
 
@@ -325,7 +328,7 @@
     </section>
 
     <!-- Section 8: Full Width -->
-    <section class="example-section">
+    <section class="example-section" id="full-width">
         <h2 class="section-title">8. Full Width Buttons</h2>
         <p class="section-description">Buttons that span the full width of their container. Use the Playground above to see the code.</p>
 
@@ -351,7 +354,7 @@
     </section>
 
     <!-- Section 9: Complete Example -->
-    <section class="example-section">
+    <section class="example-section" id="complete-example">
         <h2 class="section-title">9. Complete Example</h2>
         <p class="section-description">All features combined in a single button</p>
 
@@ -431,21 +434,21 @@
     </section>
 
     <!-- Section 10: State Lifecycle Diagram -->
-    <section class="example-section">
+    <section class="example-section" id="state-lifecycle">
         <h2 class="section-title">10. State Lifecycle & Transitions</h2>
         <p class="section-description">Understanding how button states change during async operations</p>
         <StateLifecycleDiagram />
     </section>
 
     <!-- Section 11: Accessibility Guide -->
-    <section class="example-section">
+    <section class="example-section" id="accessibility">
         <h2 class="section-title">11. Accessibility Guide</h2>
         <p class="section-description">WCAG compliance, screen reader support, and keyboard navigation</p>
         <AccessibilityGuide />
     </section>
 
     <!-- Section 12: Performance Tips -->
-    <section class="example-section">
+    <section class="example-section" id="performance">
         <h2 class="section-title">12. Performance & Best Practices</h2>
         <p class="section-description">Optimize async operations and improve user experience</p>
         <PerformanceTips />
@@ -453,6 +456,24 @@
 </div>
 
 @code {
+    // Table of Contents Items
+    private List<TableOfContents.TocItem> tocItems = new()
+    {
+        new TableOfContents.TocItem { Id = "playground", Text = "Interactive Playground" },
+        new TableOfContents.TocItem { Id = "button-styles", Text = "Button Styles" },
+        new TableOfContents.TocItem { Id = "button-sizes", Text = "Button Sizes" },
+        new TableOfContents.TocItem { Id = "icons", Text = "Button Icons" },
+        new TableOfContents.TocItem { Id = "aria-attributes", Text = "ARIA Attributes" },
+        new TableOfContents.TocItem { Id = "data-attributes", Text = "Data Attributes" },
+        new TableOfContents.TocItem { Id = "loading-states", Text = "Loading States" },
+        new TableOfContents.TocItem { Id = "error-handling", Text = "Error Handling" },
+        new TableOfContents.TocItem { Id = "full-width", Text = "Full Width" },
+        new TableOfContents.TocItem { Id = "complete-example", Text = "Complete Example" },
+        new TableOfContents.TocItem { Id = "state-lifecycle", Text = "State Lifecycle" },
+        new TableOfContents.TocItem { Id = "accessibility", Text = "Accessibility" },
+        new TableOfContents.TocItem { Id = "performance", Text = "Performance Tips" }
+    };
+
     private enum CodeTab
     {
         Razor,

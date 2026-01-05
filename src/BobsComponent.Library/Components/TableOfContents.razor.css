@@ -1,0 +1,188 @@
+/* =====================================================
+   TableOfContents Component - Scoped Styles
+   ===================================================== */
+
+.table-of-contents {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 24px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.table-of-contents.sticky {
+    position: sticky;
+    top: 20px;
+    z-index: 100;
+}
+
+/* Header */
+.toc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 12px;
+    cursor: pointer;
+}
+
+.toc-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.toggle-btn {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.toggle-btn:hover {
+    color: var(--accent-primary);
+}
+
+.toggle-icon {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    font-size: 1rem;
+}
+
+.toggle-icon.expanded {
+    transform: rotate(180deg);
+}
+
+.toggle-icon.collapsed {
+    transform: rotate(0deg);
+}
+
+/* Navigation */
+.toc-nav {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.toc-nav.collapsed {
+    display: none;
+}
+
+.toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.toc-item {
+    margin: 0;
+}
+
+.toc-item a {
+    display: block;
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.toc-item a:hover {
+    color: var(--accent-primary);
+    background-color: var(--accent-light);
+    border-left-color: var(--accent-primary);
+}
+
+.toc-item a:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* Future: Active state */
+.toc-item a.active {
+    color: var(--accent-primary);
+    font-weight: 600;
+    background-color: var(--accent-light);
+    border-left-color: var(--accent-primary);
+}
+
+/* Future: Level 2 indentation */
+.toc-item.level-2 a {
+    padding-left: 32px;
+    font-size: 0.85rem;
+}
+
+.toc-item.level-3 a {
+    padding-left: 48px;
+    font-size: 0.8rem;
+}
+
+/* Scrollbar Styling */
+.toc-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.toc-nav::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.toc-nav::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.toc-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+/* Mobile: Show toggle button and make collapsible */
+@media (max-width: 768px) {
+    .table-of-contents {
+        width: 100%;
+    }
+
+    .toggle-btn {
+        display: block;
+    }
+
+    .toc-header {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .toc-nav {
+        max-height: 300px;
+    }
+
+    /* Start collapsed on mobile */
+    .toc-nav.collapsed {
+        display: none;
+    }
+}
+
+/* Desktop: Ensure no overflow */
+@media (min-width: 769px) {
+    .table-of-contents {
+        max-width: 250px;
+    }
+
+    .toc-nav {
+        display: block !important; /* Always visible on desktop */
+    }
+}
