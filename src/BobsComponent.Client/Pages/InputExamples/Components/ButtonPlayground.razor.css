@@ -32,11 +32,18 @@
 
 /* Two-column layout */
 .playground-content {
-    display: grid;
-    grid-template-columns: 400px 1fr;
+    display: flex;
     gap: 32px;
     max-width: 100%;
     box-sizing: border-box;
+}
+
+.playground-content > .config-panel {
+    flex: 0 0 400px;
+}
+
+.playground-content > .preview-panel {
+    flex: 1;
 }
 
 /* Configuration Panel */
@@ -98,9 +105,14 @@
 
 /* Style Selector */
 .style-selector {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
+}
+
+.style-selector > * {
+    flex: 1 1 calc(33.333% - 6px);
+    min-width: 100px;
 }
 
 .style-option {
@@ -161,10 +173,17 @@
 
 /* Data Attributes */
 .data-attr-item {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    display: flex;
     gap: 8px;
     margin-bottom: 8px;
+}
+
+.data-attr-item > input {
+    flex: 1;
+}
+
+.data-attr-item > .btn-remove {
+    flex: 0 0 auto;
 }
 
 .form-input.small {
@@ -237,15 +256,19 @@
 /* Responsive */
 @media (max-width: 1024px) {
     .playground-content {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .playground-content > .config-panel {
+        flex: 1 1 auto;
     }
 
     .config-panel {
         max-width: 100%;
     }
 
-    .style-selector {
-        grid-template-columns: repeat(2, 1fr);
+    .style-selector > * {
+        flex: 1 1 calc(50% - 4px);
     }
 }
 
@@ -259,11 +282,20 @@
     }
 
     .style-selector {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .style-selector > * {
+        flex: 1 1 auto;
     }
 
     .data-attr-item {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .data-attr-item > input,
+    .data-attr-item > .btn-remove {
+        flex: 1 1 auto;
     }
 
     .preview-area {

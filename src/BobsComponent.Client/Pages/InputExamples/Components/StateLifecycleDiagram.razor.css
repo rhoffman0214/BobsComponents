@@ -130,11 +130,14 @@
 
 /* Split Arrows */
 .arrow-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 60px;
     width: 100%;
     max-width: 600px;
+}
+
+.arrow-split > * {
+    flex: 1;
 }
 
 .arrow-branch {
@@ -166,20 +169,26 @@
 
 /* State Row (Success and Error side by side) */
 .state-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 40px;
     width: 100%;
     max-width: 620px;
 }
 
+.state-row > * {
+    flex: 1;
+}
+
 /* Return Arrows */
 .return-arrows {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 40px;
     width: 100%;
     max-width: 620px;
+}
+
+.return-arrows > * {
+    flex: 1;
 }
 
 .return-arrow {
@@ -250,7 +259,7 @@
     .arrow-split,
     .state-row,
     .return-arrows {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 24px;
     }
 

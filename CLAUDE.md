@@ -16,6 +16,92 @@ This file provides AI assistant instructions for working with code in this repos
 
 ---
 
+## CRITICAL: Flexbox-First Layout Philosophy
+
+**Flexbox is King** - This application uses flexbox as the primary layout system.
+
+### Layout Rules
+
+1. **ALWAYS use `display: flex`** for layouts
+   - ✅ Use flexbox for all container layouts
+   - ✅ Use `flex-direction: column` for vertical stacking
+   - ✅ Use `flex-direction: row` for horizontal layouts
+   - ❌ AVOID `display: grid` unless absolutely necessary for complex 2D layouts
+   - ❌ AVOID `display: block`, `inline-block`, or `table` layouts
+
+2. **Flexbox Properties to Master:**
+   ```css
+   /* Container properties */
+   display: flex;
+   flex-direction: row | column;
+   justify-content: flex-start | center | space-between | space-around;
+   align-items: stretch | flex-start | center | flex-end;
+   flex-wrap: wrap | nowrap;
+   gap: 16px; /* Modern spacing */
+
+   /* Item properties */
+   flex: 1; /* Grow to fill space */
+   flex-shrink: 0; /* Prevent shrinking */
+   align-self: flex-start | center | flex-end;
+   ```
+
+3. **Common Flexbox Patterns:**
+   ```css
+   /* Two-column layout with flex */
+   .container {
+       display: flex;
+       gap: 32px;
+   }
+   .sidebar { flex: 0 0 300px; } /* Fixed 300px sidebar */
+   .main { flex: 1; } /* Main content fills remaining space */
+
+   /* Vertical stack with spacing */
+   .stack {
+       display: flex;
+       flex-direction: column;
+       gap: 16px;
+   }
+
+   /* Centered content */
+   .centered {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
+
+   /* Space-between header */
+   .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+   }
+   ```
+
+4. **When Grid is Acceptable:**
+   - Only use `display: grid` for true 2D layouts where both rows AND columns need explicit control
+   - Example: Photo galleries, card grids with equal heights
+   - Even then, consider if `flex-wrap` could work instead
+
+5. **Migration from Grid to Flex:**
+   ```css
+   /* ❌ AVOID: Grid for simple two-column */
+   .container {
+       display: grid;
+       grid-template-columns: 400px 1fr;
+       gap: 32px;
+   }
+
+   /* ✅ PREFER: Flexbox for two-column */
+   .container {
+       display: flex;
+       gap: 32px;
+   }
+   .sidebar { flex: 0 0 400px; }
+   .main { flex: 1; }
+   ```
+
+---
+
 ## CRITICAL: CSS Organization for Component Library
 
 **This project will be shipped as a component library.** Follow these CSS organization rules:
