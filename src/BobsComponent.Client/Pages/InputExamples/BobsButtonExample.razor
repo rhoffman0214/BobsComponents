@@ -386,10 +386,47 @@
                 data attributes for analytics and testing, custom loading/success/error text,
                 icon support, and full accessibility features.
             </p>
-            <CodeSnippet
-                Code="@completeExampleCode"
-                Language="CodeLanguage.Razor"
-                Title="Complete Example Markup" />
+
+            <div class="code-tabs">
+                <div class="tab-buttons">
+                    <button @onclick="() => activeTab = CodeTab.Razor"
+                            class="@(activeTab == CodeTab.Razor ? "active" : "")">
+                        Razor Markup
+                    </button>
+                    <button @onclick="() => activeTab = CodeTab.CSharp"
+                            class="@(activeTab == CodeTab.CSharp ? "active" : "")">
+                        C# Code
+                    </button>
+                    <button @onclick="() => activeTab = CodeTab.Html"
+                            class="@(activeTab == CodeTab.Html ? "active" : "")">
+                        Generated HTML
+                    </button>
+                </div>
+
+                <div class="tab-content">
+                    @if (activeTab == CodeTab.Razor)
+                    {
+                        <CodeSnippet
+                            Code="@razorCode"
+                            Language="CodeLanguage.Razor"
+                            Title="Component Usage" />
+                    }
+                    else if (activeTab == CodeTab.CSharp)
+                    {
+                        <CodeSnippet
+                            Code="@csharpCode"
+                            Language="CodeLanguage.CSharp"
+                            Title="Backing Code" />
+                    }
+                    else if (activeTab == CodeTab.Html)
+                    {
+                        <CodeSnippet
+                            Code="@htmlCode"
+                            Language="CodeLanguage.HTML"
+                            Title="Rendered Output" />
+                    }
+                </div>
+            </div>
         </div>
     </section>
 
@@ -416,19 +453,133 @@
 </div>
 
 @code {
-    private string completeExampleCode = @"<AsyncButton
+    private enum CodeTab
+    {
+        Razor,
+        CSharp,
+        Html
+    }
+
+    private CodeTab activeTab = CodeTab.Razor;
+
+    private readonly string razorCode = @"<AsyncButton
     Text=""Complete Example""
     Size=""ButtonSize.Large""
     Style=""ButtonStyle.Primary""
     ButtonType=""submit""
     Id=""complete-example-btn""
     Name=""completeExample""
-    Title=""Full featured button""
-    AriaLabel=""Submit form""
+    Title=""This button demonstrates all available features""
+    TabIndex=""1""
+    AriaLabel=""Submit form with all validations""
     AriaDescribedBy=""complete-help""
+    LoadingText=""Submitting form...""
+    SuccessText=""Form submitted!""
+    ErrorText=""Submission failed""
+    ShowErrorRetry=""true""
+    IconPosition=""IconPosition.Left""
     data-analytics-event=""form_submit""
+    data-analytics-category=""user_registration""
     data-form-id=""registration-form""
-    OnClickAsync=""@HandleSubmit"">
-    <Icon><span>📝</span></Icon>
-</AsyncButton>";
+    data-step=""final""
+    data-validation-required=""true""
+    OnClickAsync=""@HandleSubmitAsync"">
+    <Icon>
+        <span>📝</span>
+    </Icon>
+</AsyncButton>
+
+<p id=""complete-help"" class=""help-text"">
+    This example includes comprehensive features
+</p>";
+
+    private readonly string csharpCode = @"@code {
+    private async Task HandleSubmitAsync()
+    {
+        try
+        {
+            // Validate form data
+            if (!ValidateForm())
+            {
+                throw new InvalidOperationException(""Form validation failed"");
+            }
+
+            // Submit to API
+            var response = await ApiService.SubmitFormAsync(formData);
+
+            // Handle success
+            Logger.LogInformation(""Form submitted successfully"");
+
+            // Navigate or show confirmation
+            await ShowSuccessMessage();
+        }
+        catch (Exception ex)
+        {
+            // Error is automatically shown by AsyncButton
+            Logger.LogError(ex, ""Form submission failed"");
+            throw; // Re-throw to trigger button error state
+        }
+    }
+
+    private bool ValidateForm()
+    {
+        // Validation logic here
+        return formData != null && !string.IsNullOrEmpty(formData.Name);
+    }
+
+    private async Task ShowSuccessMessage()
+    {
+        // Show success UI or navigate
+        await Task.Delay(2000); // AsyncButton shows success for 2s
+        NavigationManager.NavigateTo(""/confirmation"");
+    }
+}";
+
+    private readonly string htmlCode = @"<!-- Idle State -->
+<button
+    type=""submit""
+    id=""complete-example-btn""
+    name=""completeExample""
+    title=""This button demonstrates all available features""
+    tabindex=""1""
+    aria-label=""Submit form with all validations""
+    aria-describedby=""complete-help""
+    data-analytics-event=""form_submit""
+    data-analytics-category=""user_registration""
+    data-form-id=""registration-form""
+    data-step=""final""
+    data-validation-required=""true""
+    class=""async-button async-button-large async-button-primary"">
+    <span class=""button-icon button-icon-left"">📝</span>
+    <span class=""button-text"">Complete Example</span>
+</button>
+
+<!-- Loading State (after 200ms) -->
+<button
+    type=""submit""
+    disabled=""disabled""
+    aria-busy=""true""
+    class=""async-button async-button-large async-button-primary async-button-loading"">
+    <span class=""button-icon button-icon-left"">📝</span>
+    <span class=""spinner""></span>
+    <span class=""button-text"">Submitting form...</span>
+</button>
+
+<!-- Success State -->
+<button
+    disabled=""disabled""
+    class=""async-button async-button-large async-button-primary async-button-success"">
+    <span class=""button-icon button-icon-left"">📝</span>
+    <span class=""success-icon"">✓</span>
+    <span class=""button-text"">Form submitted!</span>
+</button>
+
+<!-- Error State -->
+<button
+    class=""async-button async-button-large async-button-primary async-button-error"">
+    <span class=""button-icon button-icon-left"">📝</span>
+    <span class=""error-icon"">✗</span>
+    <span class=""button-text"">Submission failed</span>
+    <button class=""retry-button"">Retry</button>
+</button>";
 }
