@@ -9,13 +9,16 @@
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
+        <!-- Home -->
         <div class="nav-item px-1">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link nav-main-item" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+
+        <!-- MicroActions -->
         <div class="nav-item px-1">
-            <NavLink class="nav-link" href="/microactions">
+            <NavLink class="nav-link nav-main-item" href="/microactions">
                 <span class="oi oi-bolt" aria-hidden="true"></span> MicroActions
             </NavLink>
         </div>
