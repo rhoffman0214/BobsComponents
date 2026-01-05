@@ -29,7 +29,7 @@
                 <AsyncButton Text="Primary Action"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Style=\"ButtonStyle.Primary\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@stylePrimary" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -37,7 +37,7 @@
                 <AsyncButton Text="Secondary Action"
                              Style="ButtonStyle.Secondary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Style=\"ButtonStyle.Secondary\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@styleSecondary" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -45,7 +45,7 @@
                 <AsyncButton Text="Tertiary Action"
                              Style="ButtonStyle.Tertiary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Style=\"ButtonStyle.Tertiary\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@styleTertiary" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -53,7 +53,7 @@
                 <AsyncButton Text="Success Action"
                              Style="ButtonStyle.Success"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Style=\"ButtonStyle.Success\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@styleSuccess" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -61,7 +61,7 @@
                 <AsyncButton Text="Warning Action"
                              Style="ButtonStyle.Warning"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Style=\"ButtonStyle.Warning\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@styleWarning" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -69,7 +69,7 @@
                 <AsyncButton Text="Error Action"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Style=\"ButtonStyle.Error\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@styleError" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -86,7 +86,7 @@
                              Size="ButtonSize.Small"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Size=\"ButtonSize.Small\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@sizeSmall" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -95,7 +95,7 @@
                              Size="ButtonSize.Medium"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Size=\"ButtonSize.Medium\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@sizeMedium" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -104,7 +104,7 @@
                              Size="ButtonSize.Large"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Size=\"ButtonSize.Large\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@sizeLarge" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -125,7 +125,7 @@
                         <span>💾</span>
                     </Icon>
                 </AsyncButton>
-                <CodeSnippet Code="IconPosition=\"IconPosition.Left\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@iconLeft" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -138,7 +138,7 @@
                         <span>→</span>
                     </Icon>
                 </AsyncButton>
-                <CodeSnippet Code="IconPosition=\"IconPosition.Right\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@iconRight" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -151,7 +151,7 @@
                         <span>⬇️</span>
                     </Icon>
                 </AsyncButton>
-                <CodeSnippet Code="<Icon><span>⬇️</span></Icon>" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@iconCode" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -171,7 +171,7 @@
                              Title="Click to submit the form"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="ButtonType=\"submit\"\nId=\"submit-btn\"\nName=\"submitButton\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@htmlSubmit" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -182,7 +182,7 @@
                              Title="Reset all form fields"
                              Style="ButtonStyle.Secondary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="ButtonType=\"reset\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@htmlReset" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -192,7 +192,7 @@
                              Title="This button has tab index 1"
                              Style="ButtonStyle.Tertiary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="TabIndex=\"1\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@htmlTabIndex" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -210,7 +210,7 @@
                              Title="Delete"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="AriaLabel=\"Delete item from cart\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@ariaLabel" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -220,7 +220,7 @@
                              AriaDescribedBy="form-help-text"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="AriaDescribedBy=\"form-help-text\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@ariaDescribedBy" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
                 <p id="form-help-text" class="help-text">Form will be validated before submission</p>
             </div>
 
@@ -230,7 +230,7 @@
                              AriaLabel="Demonstration of aria-busy during loading"
                              Style="ButtonStyle.Success"
                              OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
-                <CodeSnippet Code="aria-busy=\"true\" set automatically during loading" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@ariaBusy" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -249,7 +249,7 @@
                              data-analytics-category="user_action"
                              data-analytics-label="homepage_cta"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="data-analytics-event=\"button_click\"\ndata-analytics-category=\"user_action\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@dataAnalytics" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -260,7 +260,7 @@
                              data-test-category="form-submission"
                              data-qa="primary-cta"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="data-testid=\"submit-form-button\"\ndata-qa=\"primary-cta\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@dataTestId" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -271,7 +271,7 @@
                              data-experiment-id="exp-2024-q1"
                              data-variant="control"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="data-feature-flag=\"new-checkout-flow\"\ndata-variant=\"control\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@dataFeatureFlag" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -283,7 +283,7 @@
                              data-price="29.99"
                              data-currency="USD"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="data-product-id=\"prod-12345\"\ndata-sku=\"SKU-ABC-001\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@dataProduct" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -294,7 +294,7 @@
                              data-modal-size="large"
                              data-backdrop="static"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="data-modal-target=\"user-settings\"\ndata-modal-size=\"large\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@dataModal" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -307,7 +307,7 @@
                              data-danger-level="high"
                              data-undo-available="false"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="data-action=\"delete\"\ndata-confirm-required=\"true\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@dataMultiple" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -323,7 +323,7 @@
                 <AsyncButton Text="Quick Action"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="Automatic loading spinner" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@loadingAuto" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -332,7 +332,7 @@
                              LoadingText="Processing..."
                              Style="ButtonStyle.Secondary"
                              OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
-                <CodeSnippet Code="LoadingText=\"Processing...\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@loadingText" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -342,7 +342,7 @@
                              SuccessText="Completed!"
                              Style="ButtonStyle.Success"
                              OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
-                <CodeSnippet Code="SuccessText=\"Completed!\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@successText" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -360,7 +360,7 @@
                              ShowErrorRetry="true"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
-                <CodeSnippet Code="ShowErrorRetry=\"true\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@errorRetryTrue" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -369,7 +369,7 @@
                              ShowErrorRetry="false"
                              Style="ButtonStyle.Warning"
                              OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
-                <CodeSnippet Code="ShowErrorRetry=\"false\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@errorRetryFalse" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -379,7 +379,7 @@
                              ShowErrorRetry="true"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
-                <CodeSnippet Code="ErrorText=\"Oops! Try again\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <CodeSnippet Code="@errorText" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -407,7 +407,7 @@
                     </Icon>
                 </AsyncButton>
             </div>
-            <CodeSnippet Code="FullWidth=\"true\"" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+            <CodeSnippet Code="@fullWidth" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
         </div>
     </section>
 
@@ -456,6 +456,47 @@
 </div>
 
 @code {
+    // Code snippets
+    private readonly string stylePrimary = "Style=\"ButtonStyle.Primary\"";
+    private readonly string styleSecondary = "Style=\"ButtonStyle.Secondary\"";
+    private readonly string styleTertiary = "Style=\"ButtonStyle.Tertiary\"";
+    private readonly string styleSuccess = "Style=\"ButtonStyle.Success\"";
+    private readonly string styleWarning = "Style=\"ButtonStyle.Warning\"";
+    private readonly string styleError = "Style=\"ButtonStyle.Error\"";
+
+    private readonly string sizeSmall = "Size=\"ButtonSize.Small\"";
+    private readonly string sizeMedium = "Size=\"ButtonSize.Medium\"";
+    private readonly string sizeLarge = "Size=\"ButtonSize.Large\"";
+
+    private readonly string iconLeft = "IconPosition=\"IconPosition.Left\"";
+    private readonly string iconRight = "IconPosition=\"IconPosition.Right\"";
+    private readonly string iconCode = "<Icon><span>⬇️</span></Icon>";
+
+    private readonly string htmlSubmit = "ButtonType=\"submit\"\nId=\"submit-btn\"\nName=\"submitButton\"";
+    private readonly string htmlReset = "ButtonType=\"reset\"";
+    private readonly string htmlTabIndex = "TabIndex=\"1\"";
+
+    private readonly string ariaLabel = "AriaLabel=\"Delete item from cart\"";
+    private readonly string ariaDescribedBy = "AriaDescribedBy=\"form-help-text\"";
+    private readonly string ariaBusy = "aria-busy=\"true\" set automatically during loading";
+
+    private readonly string dataAnalytics = "data-analytics-event=\"button_click\"\ndata-analytics-category=\"user_action\"";
+    private readonly string dataTestId = "data-testid=\"submit-form-button\"\ndata-qa=\"primary-cta\"";
+    private readonly string dataFeatureFlag = "data-feature-flag=\"new-checkout-flow\"\ndata-variant=\"control\"";
+    private readonly string dataProduct = "data-product-id=\"prod-12345\"\ndata-sku=\"SKU-ABC-001\"";
+    private readonly string dataModal = "data-modal-target=\"user-settings\"\ndata-modal-size=\"large\"";
+    private readonly string dataMultiple = "data-action=\"delete\"\ndata-confirm-required=\"true\"";
+
+    private readonly string loadingAuto = "Automatic loading spinner";
+    private readonly string loadingText = "LoadingText=\"Processing...\"";
+    private readonly string successText = "SuccessText=\"Completed!\"";
+
+    private readonly string errorRetryTrue = "ShowErrorRetry=\"true\"";
+    private readonly string errorRetryFalse = "ShowErrorRetry=\"false\"";
+    private readonly string errorText = "ErrorText=\"Oops! Try again\"";
+
+    private readonly string fullWidth = "FullWidth=\"true\"";
+
     private string completeExampleCode = @"<AsyncButton
     Text=""Complete Example""
     Size=""ButtonSize.Large""
