@@ -74,6 +74,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
 
+    - name: Cache .NET workloads
+      uses: actions/cache@v4
+      with:
+        path: ~/.dotnet
+        key: ${{ runner.os }}-dotnet-workloads-${{ env.DOTNET_VERSION }}
+        restore-keys: |
+          ${{ runner.os }}-dotnet-workloads-
+
     - name: Install wasm-tools workload
       run: dotnet workload install wasm-tools
 
@@ -106,16 +114,20 @@ jobs:
           echo "📦 Publishing with AOT compilation for production deployment..."
           dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj \
             --configuration ${{ env.CONFIGURATION }} \
-            --output publish \
-            -p:GHPages=true
+            --output publish
         else
           echo "⚡ Publishing without AOT compilation for faster feature branch deployment..."
           dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj \
             --configuration ${{ env.CONFIGURATION }} \
             --output publish \
-            -p:RunAOTCompilation=false \
-            -p:GHPages=true
+            -p:RunAOTCompilation=false
         fi
+
+    - name: Fix base href for GitHub Pages
+      run: |
+        # Update base href from "/" to "/BobsComponents/" for GitHub Pages
+        sed -i 's|<base href="/" />|<base href="/BobsComponents/" />|g' publish/wwwroot/index.html
+        echo "✅ Updated base href to /BobsComponents/" >> $GITHUB_STEP_SUMMARY
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
@@ -123,7 +135,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: 'publish/wwwroot/BobsComponents'
+        path: 'publish/wwwroot'
 
     - name: Notify Discord on Build Failure
       if: failure() && env.DISCORD_NOTIFY != 'off'

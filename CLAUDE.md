@@ -413,6 +413,19 @@ For common commands, see [README.md - Common Commands](README.md#common-commands
 
 **Why:** CI/CD failures waste GitHub Actions minutes, delay deployments, and can block the entire team. A single untested workflow change can cause 5-10 failed builds.
 
+### Base Path and Routing Configuration
+
+**CRITICAL:** Never change the application's base path or routing configuration after it has been set unless you refactor it EVERYWHERE in the application and build tests to prove it is working.
+
+**Rules:**
+1. ✅ Base href must match deployment path (`<base href="/BobsComponents/" />` for GitHub Pages at `/BobsComponents/`)
+2. ✅ Base href changes MUST be tested in CI/CD before merging
+3. ✅ ALL static asset references must respect the base path
+4. ❌ NEVER change base path without comprehensive testing
+5. ❌ NEVER mix absolute and relative paths inconsistently
+
+**Why:** Base path changes break ALL resource loading (CSS, JS, _framework files). A single mistake causes complete deployment failure with 404 errors.
+
 For CI/CD examples and build commands, see [docs/EXAMPLES.md - CI/CD Configuration](docs/EXAMPLES.md#cicd-configuration-examples).
 
 ### Commit Guidelines

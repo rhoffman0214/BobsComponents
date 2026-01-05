@@ -13,11 +13,6 @@
     <WasmEnableFingerprintFiles>false</WasmEnableFingerprintFiles>
   </PropertyGroup>
 
-  <!-- GitHub Pages configuration -->
-  <PropertyGroup Condition="'$(GHPages)' == 'true'">
-    <StaticWebAssetBasePath>BobsComponents</StaticWebAssetBasePath>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
