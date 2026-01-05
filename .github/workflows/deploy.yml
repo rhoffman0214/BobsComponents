@@ -38,6 +38,7 @@ env:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - name: Checkout repository
@@ -70,6 +71,7 @@ jobs:
     - name: Run tests
       id: test
       continue-on-error: true
+      timeout-minutes: 5
       run: |
         if dotnet test src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal; then
           echo "tests_passed=true" >> $GITHUB_OUTPUT
@@ -149,6 +151,7 @@ jobs:
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     environment:
       name: github-pages
