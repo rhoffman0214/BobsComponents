@@ -72,7 +72,7 @@ public class AsyncButtonTests : TestContext
         // Arrange
         var wasClicked = false;
         var cut = RenderComponent<AsyncButton>(parameters => parameters
-            .Add(p => p.OnClickAsync, () =>
+            .Add(p => p.OnClickAsync, ct =>
             {
                 wasClicked = true;
                 return Task.CompletedTask;
@@ -92,7 +92,7 @@ public class AsyncButtonTests : TestContext
         // Arrange
         var tcs = new TaskCompletionSource<bool>();
         var cut = RenderComponent<AsyncButton>(parameters => parameters
-            .Add(p => p.OnClickAsync, () => tcs.Task));
+            .Add(p => p.OnClickAsync, ct => tcs.Task));
 
         // Act
         var button = cut.Find("button");
@@ -120,7 +120,7 @@ public class AsyncButtonTests : TestContext
         // Arrange
         var wasClicked = false;
         var cut = RenderComponent<AsyncButton>(parameters => parameters
-            .Add(p => p.OnClickAsync, () =>
+            .Add(p => p.OnClickAsync, ct =>
             {
                 wasClicked = true;
                 return Task.CompletedTask;
@@ -139,7 +139,7 @@ public class AsyncButtonTests : TestContext
         // Arrange
         var tcs = new TaskCompletionSource<bool>();
         var cut = RenderComponent<AsyncButton>(parameters => parameters
-            .Add(p => p.OnClickAsync, () => tcs.Task)
+            .Add(p => p.OnClickAsync, ct => tcs.Task)
             .Add(p => p.AutoResetDelay, 0)); // Disable auto reset
 
         // Act - click button to start loading
@@ -263,7 +263,7 @@ public class AsyncButtonTests : TestContext
         // Arrange
         var tcs = new TaskCompletionSource<bool>();
         var cut = RenderComponent<AsyncButton>(parameters => parameters
-            .Add(p => p.OnClickAsync, () => tcs.Task));
+            .Add(p => p.OnClickAsync, ct => tcs.Task));
 
         // Act
         var button = cut.Find("button");
@@ -298,7 +298,7 @@ public class AsyncButtonTests : TestContext
         var cut = RenderComponent<AsyncButton>(parameters => parameters
             .Add(p => p.OnClick, EventCallback.Factory.Create<Microsoft.AspNetCore.Components.Web.MouseEventArgs>(
                 this, () => clickCount++))
-            .Add(p => p.OnClickAsync, () => Task.CompletedTask));
+            .Add(p => p.OnClickAsync, ct => Task.CompletedTask));
 
         // Act
         var button = cut.Find("button");

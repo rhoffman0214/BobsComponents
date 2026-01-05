@@ -31,42 +31,42 @@
                 <h3>Primary</h3>
                 <AsyncButton Text="Primary Action"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
                 <h3>Secondary</h3>
                 <AsyncButton Text="Secondary Action"
                              Style="ButtonStyle.Secondary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
                 <h3>Tertiary</h3>
                 <AsyncButton Text="Tertiary Action"
                              Style="ButtonStyle.Tertiary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
                 <h3>Success</h3>
                 <AsyncButton Text="Success Action"
                              Style="ButtonStyle.Success"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
                 <h3>Warning</h3>
                 <AsyncButton Text="Warning Action"
                              Style="ButtonStyle.Warning"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
                 <h3>Error</h3>
                 <AsyncButton Text="Error Action"
                              Style="ButtonStyle.Error"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
         </div>
     </section>
@@ -82,7 +82,7 @@
                 <AsyncButton Text="Small Button"
                              Size="ButtonSize.Small"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -90,7 +90,7 @@
                 <AsyncButton Text="Medium Button"
                              Size="ButtonSize.Medium"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -98,7 +98,7 @@
                 <AsyncButton Text="Large Button"
                              Size="ButtonSize.Large"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
         </div>
     </section>
@@ -114,7 +114,7 @@
                 <AsyncButton Text="Save File"
                              Style="ButtonStyle.Success"
                              IconPosition="IconPosition.Left"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())">
                     <Icon>
                         <span>💾</span>
                     </Icon>
@@ -126,7 +126,7 @@
                 <AsyncButton Text="Save File"
                              Style="ButtonStyle.Success"
                              IconPosition="IconPosition.Right"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())">
                     <Icon>
                         <span>💾</span>
                     </Icon>
@@ -138,7 +138,7 @@
                 <AsyncButton Text="Download"
                              Style="ButtonStyle.Primary"
                              IconPosition="IconPosition.Left"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())">
                     <Icon>
                         <span>⬇️</span>
                         <span style="margin-left: 4px;">📄</span>
@@ -160,7 +160,7 @@
                              AriaLabel="Delete item from cart"
                              Title="Delete"
                              Style="ButtonStyle.Error"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -169,7 +169,7 @@
                              AriaLabel="Submit registration form"
                              AriaDescribedBy="form-help-text"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
                 <p id="form-help-text" class="help-text">Form will be validated before submission</p>
             </div>
 
@@ -178,7 +178,7 @@
                 <AsyncButton Text="Loading Demo"
                              AriaLabel="Demonstration of aria-busy during loading"
                              Style="ButtonStyle.Success"
-                             OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.SlowOperationAsync())" />
                 <p class="help-text">aria-busy is set automatically during loading</p>
             </div>
         </div>
@@ -197,7 +197,7 @@
                              data-analytics-event="button_click"
                              data-analytics-category="user_action"
                              data-analytics-label="homepage_cta"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -207,7 +207,7 @@
                              data-testid="submit-form-button"
                              data-test-category="form-submission"
                              data-qa="primary-cta"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -217,7 +217,7 @@
                              data-feature-flag="new-checkout-flow"
                              data-experiment-id="exp-2024-q1"
                              data-variant="control"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -228,7 +228,7 @@
                              data-sku="SKU-ABC-001"
                              data-price="29.99"
                              data-currency="USD"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -238,7 +238,7 @@
                              data-modal-target="user-settings"
                              data-modal-size="large"
                              data-backdrop="static"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
 
             <div class="example-item">
@@ -250,7 +250,7 @@
                              data-confirm-required="true"
                              data-danger-level="high"
                              data-undo-available="false"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
         </div>
     </section>
@@ -265,7 +265,7 @@
                 <h3>Quick (500ms)</h3>
                 <AsyncButton Text="Quick Action"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
                 <p class="help-text">Automatic loading spinner</p>
             </div>
 
@@ -274,7 +274,7 @@
                 <AsyncButton Text="Medium Action"
                              LoadingText="Processing..."
                              Style="ButtonStyle.Secondary"
-                             OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.MediumOperationAsync())" />
                 <p class="help-text">Custom loading text</p>
             </div>
 
@@ -284,7 +284,7 @@
                              LoadingText="Please wait..."
                              SuccessText="Completed!"
                              Style="ButtonStyle.Success"
-                             OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.SlowOperationAsync())" />
                 <p class="help-text">Custom loading and success text</p>
             </div>
         </div>
@@ -302,7 +302,7 @@
                              ErrorText="Failed!"
                              ShowErrorRetry="true"
                              Style="ButtonStyle.Error"
-                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
+                             OnClickAsync="@(async ct => { var result = await ApiService.UnreliableOperationAsync(1.0, ct); if (!result.Success) throw new InvalidOperationException(result.ErrorMessage ?? "Operation failed"); })" />
                 <p class="help-text">Shows retry button on error</p>
             </div>
 
@@ -311,7 +311,7 @@
                 <AsyncButton Text="Fail Silently"
                              ShowErrorRetry="false"
                              Style="ButtonStyle.Warning"
-                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
+                             OnClickAsync="@(async ct => { var result = await ApiService.UnreliableOperationAsync(1.0, ct); if (!result.Success) throw new InvalidOperationException(result.ErrorMessage ?? "Operation failed"); })" />
                 <p class="help-text">No retry button shown</p>
             </div>
 
@@ -321,7 +321,7 @@
                              ErrorText="Oops! Try again"
                              ShowErrorRetry="true"
                              Style="ButtonStyle.Error"
-                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
+                             OnClickAsync="@(async ct => { var result = await ApiService.UnreliableOperationAsync(1.0, ct); if (!result.Success) throw new InvalidOperationException(result.ErrorMessage ?? "Operation failed"); })" />
                 <p class="help-text">Custom error message</p>
             </div>
         </div>
@@ -337,14 +337,14 @@
                 <AsyncButton Text="Full Width Primary"
                              FullWidth="true"
                              Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             </div>
             <div class="example-item">
                 <AsyncButton Text="Full Width with Icon"
                              FullWidth="true"
                              Style="ButtonStyle.Success"
                              IconPosition="IconPosition.Left"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())">
                     <Icon>
                         <span>✓</span>
                     </Icon>
@@ -379,7 +379,7 @@
                          data-form-id="registration-form"
                          data-step="final"
                          data-validation-required="true"
-                         OnClickAsync="@(() => ApiService.MediumOperationAsync())">
+                         OnClickAsync="@(ct => ApiService.MediumOperationAsync())">
                 <Icon>
                     <span>📝</span>
                 </Icon>

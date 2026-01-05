@@ -2,6 +2,7 @@
 @using BobsComponent.Library.Enums
 @using BobsComponent.Library.Services
 @using System.Text
+@using System.Threading
 @inject MockApiService ApiService
 
 <div class="button-playground">
@@ -81,6 +82,13 @@
                 <label class="checkbox-label">
                     <input type="checkbox" @bind="showErrorRetry" />
                     Show Error Retry
+                </label>
+            </div>
+
+            <div class="config-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" @bind="simulateFailure" />
+                    Simulate Failure (test error states)
                 </label>
             </div>
 
@@ -255,6 +263,7 @@
     private bool isDisabled = false;
     private bool fullWidth = false;
     private bool showErrorRetry = true;
+    private bool simulateFailure = false;
     private bool showProgress = false;
 
     // Icon Configuration
@@ -301,8 +310,14 @@
         return attrs;
     }
 
-    private async Task HandlePreviewClick()
+    private async Task HandlePreviewClick(CancellationToken ct = default)
     {
+        if (simulateFailure)
+        {
+            await Task.Delay(1500, ct); // Simulate some work
+            throw new InvalidOperationException("Simulated failure for testing error states");
+        }
+
         await ApiService.MediumOperationAsync();
     }
 

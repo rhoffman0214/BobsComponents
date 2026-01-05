@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using BobsComponent.Library.Components;
 using BobsComponent.Library.Enums;
@@ -129,7 +130,7 @@ public partial class MicroActions : IDisposable
         QueueService.CleanupCompletedActions();
     }
 
-    private async Task ClearAllActions()
+    private async Task ClearAllActions(CancellationToken ct = default)
     {
         QueueService.ClearAll();
 
@@ -143,7 +144,7 @@ public partial class MicroActions : IDisposable
         }
     }
 
-    private async Task StartAllActions()
+    private async Task StartAllActions(CancellationToken ct = default)
     {
         // This will attempt to start all 50 actions simultaneously
         // Demonstrating the queue limit
@@ -154,7 +155,7 @@ public partial class MicroActions : IDisposable
                 // Fire and forget - don't await
                 _ = ConcurrentButtons[i]!.TriggerClickAsync();
                 // Small delay to allow UI updates
-                await Task.Delay(10);
+                await Task.Delay(10, ct);
             }
         }
     }
@@ -166,12 +167,12 @@ public partial class MicroActions : IDisposable
     }
 
     // Loading overlay demo
-    private async Task HandleOverlayAction()
+    private async Task HandleOverlayAction(CancellationToken ct = default)
     {
         showOverlay = true;
         StateHasChanged();
 
-        await Task.Delay(3000);
+        await Task.Delay(3000, ct);
 
         showOverlay = false;
         StateHasChanged();

@@ -373,6 +373,75 @@
     color: white;
 }
 
+/* Error Message Display for AsyncButton */
+.error-message-container {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 6px;
+    animation: slideDown 0.3s ease;
+}
+
+.error-message-container .error-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.error-message-container .error-icon {
+    flex-shrink: 0;
+    font-size: 1.2rem;
+}
+
+.error-message-container .error-text {
+    flex: 1;
+    color: #856404;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.error-message-container .error-suggestion {
+    margin-bottom: 10px;
+    padding-left: 28px;
+    color: #856404;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+.error-message-container .learn-more-label {
+    font-weight: 600;
+    color: #664d03;
+}
+
+.error-message-container .error-reference-link {
+    color: #0066cc;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.error-message-container .error-reference-link:hover {
+    color: #004499;
+    text-decoration: none;
+}
+
+.error-message-container .retry-button {
+    margin-left: 20px;
+    margin-top: 4px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* =====================================================
    Keyframe Animations
    ===================================================== */

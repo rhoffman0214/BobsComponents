@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+
 namespace BobsComponent.Library.Models;
 
 /// <summary>
@@ -61,6 +65,18 @@ public class ComponentError
     public string? SuggestedAction { get; init; }
 
     /// <summary>
+    /// URL to error code reference documentation
+    /// </summary>
+    public string? ReferenceUrl { get; init; }
+
+    /// <summary>
+    /// Base URL for error code reference page (configurable for local/QA/prod environments)
+    /// Default: /docs/error-codes (local relative URL)
+    /// Set this at app startup for production: ComponentError.BaseReferenceUrl = "https://yourdomain.com/docs/error-codes"
+    /// </summary>
+    public static string BaseReferenceUrl { get; set; } = "/docs/error-codes";
+
+    /// <summary>
     /// Creates a ComponentError from an exception
     /// </summary>
     /// <param name="ex">The exception that occurred</param>
@@ -88,7 +104,8 @@ public class ComponentError
             OperationId = operationId,
             Context = context ?? new(),
             IsRecoverable = isRecoverable,
-            SuggestedAction = GenerateSuggestedAction(errorCode, isRecoverable)
+            SuggestedAction = GenerateSuggestedAction(errorCode, isRecoverable),
+            ReferenceUrl = $"{BaseReferenceUrl}#{errorCode}"
         };
     }
 
@@ -102,8 +119,8 @@ public class ComponentError
             OperationCanceledException => "OPERATION_CANCELLED",
             TimeoutException => "OPERATION_TIMEOUT",
             HttpRequestException => "NETWORK_ERROR",
-            ArgumentException => "INVALID_ARGUMENT",
             ArgumentNullException => "INVALID_ARGUMENT",
+            ArgumentException => "INVALID_ARGUMENT",
             InvalidOperationException => "INVALID_STATE",
             UnauthorizedAccessException => "UNAUTHORIZED",
             NotImplementedException => "NOT_IMPLEMENTED",
@@ -120,8 +137,8 @@ public class ComponentError
         return ex switch
         {
             // Non-recoverable errors
-            ArgumentException => false,
             ArgumentNullException => false,
+            ArgumentException => false,
             InvalidOperationException => false,
             NotImplementedException => false,
             NotSupportedException => false,
@@ -160,15 +177,17 @@ public class ComponentError
     /// </summary>
     private static string GenerateSuggestedAction(string errorCode, bool isRecoverable)
     {
+        var referenceUrl = $"{BaseReferenceUrl}#{errorCode}";
+
         if (!isRecoverable)
-            return "Please refresh the page and try again, or contact support if the problem persists.";
+            return $"Please refresh the page and try again, or contact support if the problem persists. Learn more: {referenceUrl}";
 
         return errorCode switch
         {
-            "NETWORK_ERROR" => "Check your internet connection and retry.",
-            "OPERATION_TIMEOUT" => "The operation is taking longer than expected. Retry or wait a moment.",
-            "UNAUTHORIZED" => "Please log in and try again.",
-            _ => "Click retry to attempt the operation again."
+            "NETWORK_ERROR" => $"Check your internet connection and retry. Learn more: {referenceUrl}",
+            "OPERATION_TIMEOUT" => $"The operation is taking longer than expected. Retry or wait a moment. Learn more: {referenceUrl}",
+            "UNAUTHORIZED" => $"Please log in and try again. Learn more: {referenceUrl}",
+            _ => $"Click retry to attempt the operation again. Learn more: {referenceUrl}"
         };
     }
 }

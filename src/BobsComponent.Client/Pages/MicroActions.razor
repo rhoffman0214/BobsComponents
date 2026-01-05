@@ -41,27 +41,27 @@
 
         <div class="color-legend">
             <div class="legend-item">
-                <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(ct => Task.CompletedTask)" />
                 <span class="legend-label">Primary - Main actions</span>
             </div>
             <div class="legend-item">
-                <AsyncButton Text="Secondary" Style="ButtonStyle.Secondary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <AsyncButton Text="Secondary" Style="ButtonStyle.Secondary" OnClickAsync="@(ct => Task.CompletedTask)" />
                 <span class="legend-label">Secondary - Alternative actions</span>
             </div>
             <div class="legend-item">
-                <AsyncButton Text="Tertiary" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <AsyncButton Text="Tertiary" Style="ButtonStyle.Tertiary" OnClickAsync="@(ct => Task.CompletedTask)" />
                 <span class="legend-label">Tertiary - Informational actions</span>
             </div>
             <div class="legend-item">
-                <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(() => Task.CompletedTask)" />
+                <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(ct => Task.CompletedTask)" />
                 <span class="legend-label">Success - Positive actions</span>
             </div>
             <div class="legend-item">
-                <AsyncButton Text="Warning" Style="ButtonStyle.Warning" OnClickAsync="@(() => Task.CompletedTask)" />
+                <AsyncButton Text="Warning" Style="ButtonStyle.Warning" OnClickAsync="@(ct => Task.CompletedTask)" />
                 <span class="legend-label">Warning - Caution actions</span>
             </div>
             <div class="legend-item">
-                <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(() => Task.CompletedTask)" />
+                <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(ct => Task.CompletedTask)" />
                 <span class="legend-label">Error - Destructive actions</span>
             </div>
         </div>
@@ -73,15 +73,15 @@
         <p class="section-description">Different button styles with simulated delays (Quick: 500ms, Medium: 2s, Slow: 5s)</p>
 
         <div class="button-grid button-grid-3 mb-3">
-            <AsyncButton Text="Quick Action" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-            <AsyncButton Text="Medium Action" Style="ButtonStyle.Secondary" OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
-            <AsyncButton Text="Slow Action" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+            <AsyncButton Text="Quick Action" Style="ButtonStyle.Primary" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Medium Action" Style="ButtonStyle.Secondary" OnClickAsync="@(ct => ApiService.MediumOperationAsync())" />
+            <AsyncButton Text="Slow Action" Style="ButtonStyle.Tertiary" OnClickAsync="@(ct => ApiService.SlowOperationAsync())" />
         </div>
 
         <div class="button-grid button-grid-3">
-            <AsyncButton Text="Success Style" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-            <AsyncButton Text="Warning Style" Style="ButtonStyle.Warning" OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
-            <AsyncButton Text="Error Style" Style="ButtonStyle.Error" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+            <AsyncButton Text="Success Style" Style="ButtonStyle.Success" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Warning Style" Style="ButtonStyle.Warning" OnClickAsync="@(ct => ApiService.MediumOperationAsync())" />
+            <AsyncButton Text="Error Style" Style="ButtonStyle.Error" OnClickAsync="@(ct => ApiService.SlowOperationAsync())" />
         </div>
     </div>
 
@@ -91,9 +91,9 @@
         <p class="section-description">Real API calls to JSONPlaceholder API</p>
 
         <div class="button-grid button-grid-3">
-            <AsyncButton Text="Fetch Post" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.FetchPostAsync())" />
-            <AsyncButton Text="Fetch User" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => ApiService.FetchUserAsync())" />
-            <AsyncButton Text="Fetch Todos" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.FetchTodosAsync())" />
+            <AsyncButton Text="Fetch Post" Style="ButtonStyle.Primary" OnClickAsync="@(ct => ApiService.FetchPostAsync())" />
+            <AsyncButton Text="Fetch User" Style="ButtonStyle.Tertiary" OnClickAsync="@(ct => ApiService.FetchUserAsync())" />
+            <AsyncButton Text="Fetch Todos" Style="ButtonStyle.Success" OnClickAsync="@(ct => ApiService.FetchTodosAsync())" />
         </div>
     </div>
 
@@ -113,7 +113,7 @@
                                      Style="@item.Style"
                                      ShowProgress="true"
                                      Progress="@item.Progress"
-                                     OnClickAsync="@(() => HandleProgressAction(item))"
+                                     OnClickAsync="@(ct => HandleProgressAction(item))"
                                      FullWidth="true" />
                     </div>
                 </div>
@@ -133,7 +133,7 @@
                 var index = i;
                 <AsyncButton Text="@($"Success Action {index + 1}")"
                              Style="@SuccessButtonStyles[index]"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())"
+                             OnClickAsync="@(ct => ApiService.QuickOperationAsync())"
                              ShowErrorRetry="false" />
             }
         </div>
@@ -145,7 +145,7 @@
                 var index = i;
                 <AsyncButton Text="@($"Fail Action {index + 1}")"
                              Style="@ErrorButtonStyles[index]"
-                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))"
+                             OnClickAsync="@(async ct => { var result = await ApiService.UnreliableOperationAsync(1.0, ct); if (!result.Success) throw new InvalidOperationException(result.ErrorMessage ?? "Operation failed"); })"
                              ShowErrorRetry="true" />
             }
         </div>
@@ -168,7 +168,7 @@
                 <AsyncButton @ref="@ConcurrentButtons[index]"
                              Text="@((index + 1).ToString())"
                              Style="@ConcurrentButtonStyles[index]"
-                             OnClickAsync="@(() => HandleQueuedAction($"Action {index + 1}"))"
+                             OnClickAsync="@(ct => HandleQueuedAction($"Action {index + 1}"))"
                              ShowErrorRetry="false"
                              AutoResetDelay="1000" />
             }
@@ -282,9 +282,9 @@
         </div>
 
         <div class="button-grid button-grid-3">
-            <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-            <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-            <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
         </div>
     </div>
 </div>

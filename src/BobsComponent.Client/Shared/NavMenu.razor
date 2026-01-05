@@ -23,6 +23,25 @@
             </NavLink>
         </div>
 
+        <!-- Docs Section -->
+        <div class="nav-item">
+            <div class="nav-link nav-main-item nav-expandable" @onclick="ToggleDocs">
+                <span class="oi oi-book" aria-hidden="true"></span> Docs
+                <span class="toggle-icon @(docsExpanded ? "expanded" : "collapsed")">▼</span>
+            </div>
+
+            @if (docsExpanded)
+            {
+                <div class="nav-submenu">
+                    <div class="nav-item">
+                        <NavLink class="nav-link nav-sub-item" href="/docs/error-codes">
+                            <span class="oi oi-warning" aria-hidden="true"></span> Error Codes
+                        </NavLink>
+                    </div>
+                </div>
+            }
+        </div>
+
         <!-- Input Examples Section -->
         <div class="nav-item">
             <div class="nav-link nav-main-item nav-expandable" @onclick="ToggleInputExamples">
@@ -76,6 +95,7 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool docsExpanded = false;
     private bool inputExamplesExpanded = true; // Start expanded
     private bool asyncButtonExpanded = false;
 
@@ -84,6 +104,11 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleDocs()
+    {
+        docsExpanded = !docsExpanded;
     }
 
     private void ToggleInputExamples()

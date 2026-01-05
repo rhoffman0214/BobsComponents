@@ -1,3 +1,5 @@
+using System;
+
 namespace BobsComponent.Library.Models.Events;
 
 /// <summary>

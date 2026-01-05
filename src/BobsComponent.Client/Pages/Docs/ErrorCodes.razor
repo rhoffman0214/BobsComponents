@@ -1,0 +1,264 @@
+@page "/docs/error-codes"
+@using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+
+<div class="error-codes-reference">
+    <div class="page-header">
+        <h1>Error Code Reference</h1>
+        <p class="lead">Complete reference for all component error codes, their meanings, and recommended actions.</p>
+    </div>
+
+    <!-- Overview -->
+    <section class="reference-section">
+        <h2>Overview</h2>
+        <p>
+            When components encounter errors, they generate structured error codes to help you quickly identify and resolve issues.
+            Each error code includes a user-friendly message, developer context, and suggested actions.
+        </p>
+        <p>
+            Error codes are logged to the browser console with full context including OperationId for correlation.
+            This reference explains what each code means and how to handle it.
+        </p>
+    </section>
+
+    <!-- Search -->
+    <section class="reference-section">
+        <div class="search-container">
+            <input type="text"
+                   class="search-input"
+                   placeholder="Search error codes (e.g., INVALID_STATE, network, timeout...)"
+                   @bind="searchQuery"
+                   @bind:event="oninput" />
+            @if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                <button type="button" class="search-clear" @onclick="ClearSearch">✕</button>
+            }
+        </div>
+    </section>
+
+    <!-- Error Codes Table -->
+    <section class="reference-section">
+        <h2>Error Codes @if (filteredErrorCodes.Count < errorCodes.Count) { <span class="search-results-count">(@filteredErrorCodes.Count of @errorCodes.Count)</span> }</h2>
+
+        @foreach (var errorCode in filteredErrorCodes)
+        {
+            <div class="error-code-card" id="@errorCode.Code">
+                <div class="error-code-header">
+                    <h3>@errorCode.Code</h3>
+                    <span class="error-badge @(errorCode.IsRecoverable ? "recoverable" : "non-recoverable")">@(errorCode.IsRecoverable ? "Recoverable" : "Non-Recoverable")</span>
+                </div>
+                <div class="error-code-body">
+                    <div class="error-detail">
+                        <strong>Exception Type:</strong> <code>@errorCode.ExceptionType</code>
+                    </div>
+                    <div class="error-detail">
+                        <strong>User Message:</strong> "@errorCode.UserMessage"
+                    </div>
+                    <div class="error-detail">
+                        <strong>When It Happens:</strong> @errorCode.WhenItHappens
+                    </div>
+                    <div class="error-detail">
+                        <strong>Suggested Action:</strong> @errorCode.SuggestedAction
+                    </div>
+                    <div class="error-detail">
+                        <strong>Developer Notes:</strong> @((MarkupString)errorCode.DeveloperNotes)
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (filteredErrorCodes.Count == 0)
+        {
+            <div class="no-results">
+                <p>No error codes found matching "<strong>@searchQuery</strong>"</p>
+                <button type="button" class="btn-clear-search" @onclick="ClearSearch">Clear Search</button>
+            </div>
+        }
+    </section>
+
+    <!-- Logging and Debugging -->
+    <section class="reference-section">
+        <h2>Logging and Debugging</h2>
+        <p>
+            All errors are logged to the browser console with structured information:
+        </p>
+        <ul>
+            <li><strong>OperationId:</strong> Unique identifier for correlating related log entries</li>
+            <li><strong>ErrorCode:</strong> One of the codes documented above</li>
+            <li><strong>DeveloperMessage:</strong> Technical details including exception type and message</li>
+            <li><strong>Context:</strong> Additional data like button text, attempt number, etc.</li>
+        </ul>
+        <p>
+            Open browser DevTools (F12) and filter the console by <code>BobsComponent</code> to see component-specific logs.
+        </p>
+    </section>
+
+    <!-- Configuration -->
+    <section class="reference-section">
+        <h2>Retry Configuration</h2>
+        <p>
+            Components support automatic retry with exponential backoff for recoverable errors. Configure retry behavior:
+        </p>
+        <CodeSnippet Language="CodeLanguage.CSharp" Code="@retryConfigExample" Title="Retry Configuration Example" />
+    </section>
+</div>
+
+@code {
+    private string retryConfigExample = @"<AsyncButton
+    Text=""Save""
+    OnClickAsync=""SaveAsync""
+    RetryConfig=""@(new RetryConfiguration
+    {
+        Enabled = true,
+        MaxAttempts = 3,
+        InitialDelay = TimeSpan.FromSeconds(1),
+        BackoffMultiplier = 2.0,
+        MaxDelay = TimeSpan.FromSeconds(30),
+        ShouldRetry = ex => ex is HttpRequestException or TimeoutException
+    })"" />";
+
+    private string searchQuery = string.Empty;
+    private List<ErrorCodeInfo> errorCodes = new();
+    private List<ErrorCodeInfo> filteredErrorCodes = new();
+
+    protected override void OnInitialized()
+    {
+        errorCodes = new List<ErrorCodeInfo>
+        {
+            new ErrorCodeInfo
+            {
+                Code = "INVALID_STATE",
+                ExceptionType = "InvalidOperationException",
+                UserMessage = "Operation cannot be performed in current state",
+                WhenItHappens = "The component is in a state that doesn't allow this operation. For example, trying to submit a form that's already processing, or clicking a button that's disabled.",
+                SuggestedAction = "Please refresh the page and try again, or contact support if the problem persists.",
+                DeveloperNotes = "This usually indicates a logic error or race condition. Check component state management and ensure operations are properly gated. Look for concurrent execution issues.",
+                IsRecoverable = false
+            },
+            new ErrorCodeInfo
+            {
+                Code = "NETWORK_ERROR",
+                ExceptionType = "HttpRequestException",
+                UserMessage = "Network error. Please check your connection.",
+                WhenItHappens = "API calls fail due to network issues, server unavailability, CORS errors, or connection timeouts.",
+                SuggestedAction = "Check your internet connection and retry.",
+                DeveloperNotes = "This is automatically retryable. Check network tab for HTTP status codes. Common causes: server down, incorrect API endpoint, CORS misconfiguration, or actual network connectivity issues.",
+                IsRecoverable = true
+            },
+            new ErrorCodeInfo
+            {
+                Code = "OPERATION_TIMEOUT",
+                ExceptionType = "TimeoutException",
+                UserMessage = "Operation timed out. Please try again.",
+                WhenItHappens = "Operation took longer than the configured timeout period.",
+                SuggestedAction = "The operation is taking longer than expected. Retry or wait a moment.",
+                DeveloperNotes = "This is automatically retryable. Consider increasing timeout values for slow operations or optimizing the backend. Check if the operation is actually completing on the server side.",
+                IsRecoverable = true
+            },
+            new ErrorCodeInfo
+            {
+                Code = "INVALID_ARGUMENT",
+                ExceptionType = "ArgumentException, ArgumentNullException",
+                UserMessage = "Invalid input provided",
+                WhenItHappens = "Invalid, null, or out-of-range arguments passed to a method. This often indicates validation issues.",
+                SuggestedAction = "Please refresh the page and try again, or contact support if the problem persists.",
+                DeveloperNotes = "Add client-side validation to prevent this. Check for null values, validate ranges, and ensure required fields are populated before submission.",
+                IsRecoverable = false
+            },
+            new ErrorCodeInfo
+            {
+                Code = "OPERATION_CANCELLED",
+                ExceptionType = "OperationCanceledException",
+                UserMessage = "Operation was cancelled",
+                WhenItHappens = "User explicitly cancelled the operation, or the CancellationToken was triggered (e.g., component disposed, navigation away, timeout).",
+                SuggestedAction = "N/A - This is expected behavior when operations are cancelled.",
+                DeveloperNotes = "This is normal and expected. Do not retry cancelled operations. Ensure CancellationTokens are properly passed and respected in async operations.",
+                IsRecoverable = false
+            },
+            new ErrorCodeInfo
+            {
+                Code = "UNAUTHORIZED",
+                ExceptionType = "UnauthorizedAccessException",
+                UserMessage = "You are not authorized to perform this operation",
+                WhenItHappens = "User lacks permissions to perform the operation, or authentication has expired.",
+                SuggestedAction = "Please log in and try again.",
+                DeveloperNotes = "Check authentication state, refresh tokens, and verify user permissions. Consider redirecting to login page or showing an authentication modal.",
+                IsRecoverable = false
+            },
+            new ErrorCodeInfo
+            {
+                Code = "NOT_IMPLEMENTED",
+                ExceptionType = "NotImplementedException",
+                UserMessage = "This feature is not yet implemented",
+                WhenItHappens = "Feature stub exists in code but hasn't been implemented yet.",
+                SuggestedAction = "Please refresh the page and try again, or contact support if the problem persists.",
+                DeveloperNotes = "Remove UI elements that trigger unimplemented features, or implement the feature. This should rarely appear in production.",
+                IsRecoverable = false
+            },
+            new ErrorCodeInfo
+            {
+                Code = "NOT_SUPPORTED",
+                ExceptionType = "NotSupportedException",
+                UserMessage = "This operation is not supported",
+                WhenItHappens = "Operation is not supported in current context (e.g., browser limitation, feature not available on this platform).",
+                SuggestedAction = "Please refresh the page and try again, or contact support if the problem persists.",
+                DeveloperNotes = "Check browser compatibility, feature detection, and platform capabilities. Provide alternative implementations or gracefully disable unsupported features.",
+                IsRecoverable = false
+            },
+            new ErrorCodeInfo
+            {
+                Code = "UNKNOWN_ERROR",
+                ExceptionType = "Any other exception",
+                UserMessage = "An unexpected error occurred. Please try again.",
+                WhenItHappens = "Catch-all for any exception not explicitly mapped to another error code.",
+                SuggestedAction = "Click retry to attempt the operation again.",
+                DeveloperNotes = "<strong>Investigate immediately!</strong> Check logs for the actual exception type. Consider adding a specific error code mapping if this exception type is common. Unknown errors are treated as recoverable to give users a chance to retry, but should be investigated and properly categorized.",
+                IsRecoverable = true
+            }
+        };
+
+        filteredErrorCodes = errorCodes;
+    }
+
+    private void ClearSearch()
+    {
+        searchQuery = string.Empty;
+        filteredErrorCodes = errorCodes;
+    }
+
+    protected override void OnParametersSet()
+    {
+        FilterErrorCodes();
+    }
+
+    private void FilterErrorCodes()
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredErrorCodes = errorCodes;
+            return;
+        }
+
+        var query = searchQuery.ToLower();
+        filteredErrorCodes = errorCodes
+            .Where(ec =>
+                ec.Code.ToLower().Contains(query) ||
+                ec.ExceptionType.ToLower().Contains(query) ||
+                ec.UserMessage.ToLower().Contains(query) ||
+                ec.WhenItHappens.ToLower().Contains(query) ||
+                ec.SuggestedAction.ToLower().Contains(query) ||
+                ec.DeveloperNotes.ToLower().Contains(query))
+            .ToList();
+    }
+
+    private class ErrorCodeInfo
+    {
+        public string Code { get; set; } = string.Empty;
+        public string ExceptionType { get; set; } = string.Empty;
+        public string UserMessage { get; set; } = string.Empty;
+        public string WhenItHappens { get; set; } = string.Empty;
+        public string SuggestedAction { get; set; } = string.Empty;
+        public string DeveloperNotes { get; set; } = string.Empty;
+        public bool IsRecoverable { get; set; }
+    }
+}

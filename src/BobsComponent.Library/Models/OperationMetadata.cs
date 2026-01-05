@@ -1,3 +1,4 @@
+using System;
 using BobsComponent.Library.Enums;
 
 namespace BobsComponent.Library.Models;

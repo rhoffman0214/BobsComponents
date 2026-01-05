@@ -1,6 +1,12 @@
 @using System.Threading
 @using BobsComponent.Library.Enums
+@using BobsComponent.Library.Models
+@using BobsComponent.Library.Models.Events
+@using BobsComponent.Library.Utilities
+@using Microsoft.AspNetCore.Components
+@using Microsoft.Extensions.Logging
 @namespace BobsComponent.Library.Components
+@inject ILogger<AsyncButton>? Logger
 
 @if (IsButtonDisabled)
 {
@@ -39,11 +45,26 @@ else
     </button>
 }
 
-@if (State == LoadingState.Error && ShowErrorRetry)
+@if (State == LoadingState.Error && _currentError != null)
 {
-    <button type="button" class="retry-button" @onclick="HandleRetry">
-        ↻ Retry
-    </button>
+    <div class="error-message-container">
+        <div class="error-message">
+            <span class="error-icon">⚠️</span>
+            <span class="error-text">@_currentError.Message</span>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(_currentError.SuggestedAction))
+        {
+            <div class="error-suggestion">
+                @((MarkupString)FormatSuggestedAction(_currentError.SuggestedAction))
+            </div>
+        }
+        @if (ShowErrorRetry)
+        {
+            <button type="button" class="retry-button" @onclick="HandleRetry">
+                ↻ Retry
+            </button>
+        }
+    </div>
 }
 
 @if (ShowProgress && Progress > 0 && State == LoadingState.Loading)
@@ -213,10 +234,47 @@ else
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     /// <summary>
-    /// Async operation to execute when clicked
+    /// Async operation to execute when clicked (receives CancellationToken)
+    /// BREAKING CHANGE: Signature changed from Func&lt;Task&gt; to Func&lt;CancellationToken, Task&gt;
     /// </summary>
     [Parameter]
-    public Func<Task>? OnClickAsync { get; set; }
+    public Func<CancellationToken, Task>? OnClickAsync { get; set; }
+
+    /// <summary>
+    /// Event triggered before async operation starts (can cancel by setting CanCancel = false)
+    /// </summary>
+    [Parameter]
+    public EventCallback<AsyncButtonEventArgs> OnBeforeClick { get; set; }
+
+    /// <summary>
+    /// Event triggered when async operation completes successfully
+    /// </summary>
+    [Parameter]
+    public EventCallback<AsyncSuccessEventArgs> OnSuccess { get; set; }
+
+    /// <summary>
+    /// Event triggered when async operation fails with an error
+    /// </summary>
+    [Parameter]
+    public EventCallback<ComponentErrorEventArgs> OnError { get; set; }
+
+    /// <summary>
+    /// Event triggered when async operation is about to be retried after failure
+    /// </summary>
+    [Parameter]
+    public EventCallback<AsyncRetryEventArgs> OnRetry { get; set; }
+
+    /// <summary>
+    /// Event triggered when async operation is cancelled
+    /// </summary>
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    /// <summary>
+    /// Configuration for automatic retry behavior with exponential backoff
+    /// </summary>
+    [Parameter]
+    public RetryConfiguration? RetryConfig { get; set; }
 
     /// <summary>
     /// Event triggered when state changes
@@ -238,51 +296,274 @@ else
 
     private CancellationTokenSource? _cancellationTokenSource;
 
+    // Error tracking
+    private ComponentError? _currentError;
+    private readonly List<ComponentError> _errorHistory = new();
+    private readonly ErrorMetadata _errorMetadata = new();
+
+    // Operation tracking
+    private OperationMetadata? _currentOperation;
+    private readonly List<OperationMetadata> _operationHistory = new();
+
+    // Retry tracking
+    private int _retryCount = 0;
+
     private async Task HandleClick(MouseEventArgs args)
     {
-        // Fire synchronous OnClick event first
+        // 1. Fire synchronous OnClick event first
         if (OnClick.HasDelegate)
         {
             await OnClick.InvokeAsync(args);
         }
 
-        if (OnClickAsync == null || State == LoadingState.Loading)
+        // 2. Check if async operation defined
+        if (OnClickAsync == null)
             return;
 
-        await SetStateAsync(LoadingState.Loading);
-
-        _cancellationTokenSource = new CancellationTokenSource();
-
-        try
+        // 3. Prevent double-execution
+        if (State == LoadingState.Loading)
         {
-            await OnClickAsync();
-            await SetStateAsync(LoadingState.Success);
+            Logger?.LogWarning("Button clicked while operation in progress (OperationId: {OperationId})", _currentOperation?.OperationId ?? "unknown");
+            return;
+        }
 
-            if (AutoResetDelay > 0)
+        // 4. Create operation metadata
+        var operationId = Guid.NewGuid().ToString("N")[..8];
+        var operation = new OperationMetadata { OperationId = operationId };
+        _currentOperation = operation;
+
+        Logger?.LogDebug("Starting async operation (OperationId: {OperationId})", operationId);
+
+        // 5. Fire OnBeforeClick (allows cancellation)
+        if (OnBeforeClick.HasDelegate)
+        {
+            var beforeArgs = new AsyncButtonEventArgs
             {
-                await Task.Delay(AutoResetDelay);
-                await SetStateAsync(LoadingState.Idle);
+                OperationId = operationId,
+                Timestamp = DateTime.UtcNow,
+                CanCancel = true,
+                CancellationToken = default
+            };
+
+            await OnBeforeClick.InvokeAsync(beforeArgs);
+
+            if (!beforeArgs.CanCancel)
+            {
+                Logger?.LogInformation("Operation cancelled by OnBeforeClick handler (OperationId: {OperationId})", operationId);
+                return;
             }
         }
-        catch (OperationCanceledException)
+
+        // 6. Set loading state
+        await SetStateAsync(LoadingState.Loading);
+        _cancellationTokenSource = new CancellationTokenSource();
+        var ct = _cancellationTokenSource.Token;
+
+        // 7. Execute with retry logic
+        var config = RetryConfig ?? new RetryConfiguration { Enabled = false, MaxAttempts = 1 };
+        var maxAttempts = config.Enabled ? config.MaxAttempts : 1;
+
+        for (int attempt = 1; attempt <= maxAttempts; attempt++)
         {
-            await SetStateAsync(LoadingState.Error);
+            operation.AttemptCount = attempt;
+
+            try
+            {
+                Logger?.LogDebug("Executing operation attempt {Attempt}/{MaxAttempts} (OperationId: {OperationId})",
+                    attempt, maxAttempts, operationId);
+
+                await OnClickAsync(ct);
+
+                // SUCCESS PATH
+                operation.Success = true;
+                operation.EndTime = DateTime.UtcNow;
+                operation.FinalState = LoadingState.Success;
+                _errorMetadata.RecordSuccess();
+                _retryCount = 0;
+
+                await SetStateAsync(LoadingState.Success);
+
+                // Fire OnSuccess
+                if (OnSuccess.HasDelegate)
+                {
+                    var successArgs = new AsyncSuccessEventArgs
+                    {
+                        OperationId = operationId,
+                        Timestamp = DateTime.UtcNow,
+                        Duration = operation.Duration,
+                        AttemptNumber = attempt,
+                        CancellationToken = ct
+                    };
+
+                    try
+                    {
+                        await OnSuccess.InvokeAsync(successArgs);
+                    }
+                    catch (Exception handlerEx)
+                    {
+                        Logger?.LogError(handlerEx, "OnSuccess handler threw exception (OperationId: {OperationId})", operationId);
+                    }
+                }
+
+                Logger?.LogInformation("Operation succeeded in {Duration}ms (OperationId: {OperationId}, Attempts: {Attempts})",
+                    operation.Duration.TotalMilliseconds, operationId, attempt);
+
+                // Auto-reset
+                if (AutoResetDelay > 0)
+                {
+                    await Task.Delay(AutoResetDelay, ct);
+                    await SetStateAsync(LoadingState.Idle);
+                }
+
+                break; // Success - exit retry loop
+            }
+            catch (OperationCanceledException)
+            {
+                // CANCELLATION PATH
+                operation.EndTime = DateTime.UtcNow;
+                operation.FinalState = LoadingState.Error;
+                await SetStateAsync(LoadingState.Error);
+
+                if (OnCancel.HasDelegate)
+                {
+                    try
+                    {
+                        await OnCancel.InvokeAsync();
+                    }
+                    catch (Exception handlerEx)
+                    {
+                        Logger?.LogError(handlerEx, "OnCancel handler threw exception (OperationId: {OperationId})", operationId);
+                    }
+                }
+
+                Logger?.LogWarning("Operation cancelled (OperationId: {OperationId})", operationId);
+                break; // Don't retry cancellations
+            }
+            catch (Exception ex)
+            {
+                // ERROR PATH - GRACEFUL DEGRADATION
+                var error = ComponentError.FromException(ex, "AsyncButton", operationId, context: new()
+                {
+                    ["ButtonText"] = Text,
+                    ["ButtonId"] = Id ?? "unknown",
+                    ["AttemptNumber"] = attempt,
+                    ["MaxAttempts"] = maxAttempts
+                });
+
+                _currentError = error;
+                _errorHistory.Add(error);
+                _errorMetadata.RecordError(error);
+
+                Logger?.LogError(ex, "Operation failed: {ErrorCode} - {DeveloperMessage} (OperationId: {OperationId}, Attempt: {Attempt}/{MaxAttempts})",
+                    error.ErrorCode, LoggingHelpers.SanitizeMessage(error.DeveloperMessage ?? ""), operationId, attempt, maxAttempts);
+
+                // Check if should retry
+                var shouldRetryBasedOnConfig = config.ShouldRetry?.Invoke(ex) ?? error.IsRecoverable;
+                var shouldRetry = attempt < maxAttempts && shouldRetryBasedOnConfig;
+
+                if (shouldRetry)
+                {
+                    // Fire OnRetry and wait with exponential backoff
+                    _retryCount++;
+                    await HandleRetryWithBackoffAsync(error, attempt, ct, operationId);
+                    continue; // Try again
+                }
+                else
+                {
+                    // Final failure - set error state
+                    operation.Error = error;
+                    operation.EndTime = DateTime.UtcNow;
+                    operation.FinalState = LoadingState.Error;
+                    await SetStateAsync(LoadingState.Error);
+
+                    // Fire OnError (wrapped in try-catch to prevent handler errors from crashing component)
+                    try
+                    {
+                        if (OnError.HasDelegate)
+                        {
+                            var errorArgs = new ComponentErrorEventArgs
+                            {
+                                Error = error,
+                                AttemptNumber = attempt,
+                                OperationId = operationId,
+                                Timestamp = DateTime.UtcNow,
+                                CancellationToken = ct,
+                                WillRetry = false
+                            };
+
+                            await OnError.InvokeAsync(errorArgs);
+                        }
+                    }
+                    catch (Exception handlerEx)
+                    {
+                        // OnError handler threw - log but don't crash component
+                        Logger?.LogError(handlerEx, "OnError handler threw exception (OperationId: {OperationId})", operationId);
+                    }
+
+                    break; // Exit retry loop
+                }
+            }
+            finally
+            {
+                if (attempt == maxAttempts || operation.Success || ct.IsCancellationRequested)
+                {
+                    _cancellationTokenSource?.Dispose();
+                    _cancellationTokenSource = null;
+                }
+            }
         }
-        catch
-        {
-            await SetStateAsync(LoadingState.Error);
-        }
-        finally
-        {
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
-        }
+
+        // 8. Record operation history
+        _operationHistory.Add(operation);
+        _currentOperation = null;
+
+        Logger?.LogDebug("Operation completed: {Summary}", operation.GetSummary());
     }
 
     private async Task HandleRetry()
     {
         await SetStateAsync(LoadingState.Idle);
         await HandleClick(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+    }
+
+    private async Task HandleRetryWithBackoffAsync(ComponentError error, int attempt, CancellationToken ct, string operationId)
+    {
+        var config = RetryConfig ?? new RetryConfiguration();
+        var delay = CalculateBackoffDelay(config.InitialDelay, attempt, config.BackoffMultiplier, config.MaxDelay);
+
+        // Fire OnRetry event
+        if (OnRetry.HasDelegate)
+        {
+            var retryArgs = new AsyncRetryEventArgs
+            {
+                AttemptNumber = attempt,
+                LastError = error,
+                BackoffDelay = delay,
+                OperationId = operationId,
+                Timestamp = DateTime.UtcNow,
+                CancellationToken = ct
+            };
+
+            try
+            {
+                await OnRetry.InvokeAsync(retryArgs);
+            }
+            catch (Exception handlerEx)
+            {
+                Logger?.LogError(handlerEx, "OnRetry handler threw exception (OperationId: {OperationId})", operationId);
+            }
+        }
+
+        Logger?.LogWarning("Retrying after {Delay}ms (OperationId: {OperationId}, Attempt: {Attempt})",
+            delay.TotalMilliseconds, operationId, attempt);
+
+        await Task.Delay(delay, ct);
+    }
+
+    private static TimeSpan CalculateBackoffDelay(TimeSpan initial, int attempt, double multiplier, TimeSpan max)
+    {
+        var delay = initial.TotalMilliseconds * Math.Pow(multiplier, attempt - 1);
+        return TimeSpan.FromMilliseconds(Math.Min(delay, max.TotalMilliseconds));
     }
 
     private async Task SetStateAsync(LoadingState newState)
@@ -407,6 +688,65 @@ else
             }
         }
     };
+
+    /// <summary>
+    /// Formats the suggested action text to include clickable links
+    /// SECURITY: Validates and sanitizes URLs to prevent XSS attacks
+    /// </summary>
+    private string FormatSuggestedAction(string suggestedAction)
+    {
+        if (string.IsNullOrWhiteSpace(suggestedAction))
+            return string.Empty;
+
+        // Pattern to match "Learn more: <url>" at the end of the string
+        var pattern = @"Learn more:\s*([\S]+)";
+        var match = System.Text.RegularExpressions.Regex.Match(suggestedAction, pattern);
+
+        if (!match.Success)
+        {
+            // No URL found, return HTML-encoded text
+            return System.Net.WebUtility.HtmlEncode(suggestedAction);
+        }
+
+        var url = match.Groups[1].Value;
+
+        // SECURITY: Validate URL to prevent XSS (javascript:, data:, etc.)
+        if (!IsValidUrl(url))
+        {
+            // Invalid URL - return text without link
+            return System.Net.WebUtility.HtmlEncode(suggestedAction.Replace(url, "[invalid URL]"));
+        }
+
+        // Extract the text before "Learn more:"
+        var textBefore = suggestedAction.Substring(0, match.Index);
+        var encodedTextBefore = System.Net.WebUtility.HtmlEncode(textBefore);
+        var encodedUrl = System.Net.WebUtility.HtmlEncode(url);
+
+        return $"{encodedTextBefore}<span class='learn-more-label'>Learn more:</span> <a href='{encodedUrl}' class='error-reference-link'>{encodedUrl}</a>";
+    }
+
+    /// <summary>
+    /// Validates that a URL is safe to use in an href attribute
+    /// SECURITY: Prevents javascript:, data:, vbscript:, and other XSS vectors
+    /// </summary>
+    private static bool IsValidUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url))
+            return false;
+
+        url = url.Trim().ToLowerInvariant();
+
+        // Allow relative paths starting with /
+        if (url.StartsWith("/"))
+            return true;
+
+        // Allow http and https only
+        if (url.StartsWith("http://") || url.StartsWith("https://"))
+            return true;
+
+        // Block all other protocols (javascript:, data:, vbscript:, etc.)
+        return false;
+    }
 
     public void Dispose()
     {
