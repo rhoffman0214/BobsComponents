@@ -1,0 +1,154 @@
+/* =====================================================
+   Button Examples Page - Scoped Styles
+   ===================================================== */
+
+.button-examples-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.page-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Section Styles */
+.example-section {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.section-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+/* Example Grid Layout */
+.example-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.example-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.example-item {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+}
+
+.example-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.example-item h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.example-full {
+    background-color: var(--bg-primary);
+    border: 2px solid var(--accent-primary);
+    border-radius: 8px;
+    padding: 32px;
+    margin-top: 20px;
+}
+
+/* Code Preview */
+.code-preview {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.code-preview code {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.code-preview pre {
+    margin: 0;
+    overflow-x: auto;
+}
+
+.code-preview pre code {
+    display: block;
+    white-space: pre;
+}
+
+/* Help Text */
+.help-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    padding: 12px;
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+    border-left: 3px solid var(--color-info);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .example-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .example-section {
+        padding: 20px;
+    }
+}

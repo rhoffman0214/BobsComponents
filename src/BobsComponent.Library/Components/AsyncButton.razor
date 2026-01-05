@@ -4,18 +4,37 @@
 
 @if (IsButtonDisabled)
 {
-    <button type="button"
-            class="async-button btn-@Style.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
+    <button type="@ButtonType"
+            id="@Id"
+            name="@Name"
+            class="async-button btn-@Style.ToString().ToLower() btn-@Size.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
+            title="@Title"
+            tabindex="@TabIndex"
+            form="@Form"
+            aria-label="@AriaLabel"
+            aria-describedby="@AriaDescribedBy"
+            aria-busy="@(State == LoadingState.Loading ? "true" : "false")"
+            aria-disabled="true"
             disabled
-            @onclick="HandleClick">
+            @onclick="HandleClick"
+            @attributes="AdditionalAttributes">
         @ButtonContent
     </button>
 }
 else
 {
-    <button type="button"
-            class="async-button btn-@Style.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
-            @onclick="HandleClick">
+    <button type="@ButtonType"
+            id="@Id"
+            name="@Name"
+            class="async-button btn-@Style.ToString().ToLower() btn-@Size.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
+            title="@Title"
+            tabindex="@TabIndex"
+            form="@Form"
+            aria-label="@AriaLabel"
+            aria-describedby="@AriaDescribedBy"
+            aria-busy="@(State == LoadingState.Loading ? "true" : "false")"
+            @onclick="HandleClick"
+            @attributes="AdditionalAttributes">
         @ButtonContent
     </button>
 }
@@ -109,10 +128,89 @@ else
     public string? CssClass { get; set; }
 
     /// <summary>
+    /// Button size variant
+    /// </summary>
+    [Parameter]
+    public ButtonSize Size { get; set; } = ButtonSize.Medium;
+
+    /// <summary>
+    /// HTML button type attribute (button, submit, reset)
+    /// </summary>
+    [Parameter]
+    public string ButtonType { get; set; } = "button";
+
+    /// <summary>
+    /// HTML id attribute
+    /// </summary>
+    [Parameter]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// HTML name attribute (useful for forms)
+    /// </summary>
+    [Parameter]
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// HTML title attribute (tooltip text)
+    /// </summary>
+    [Parameter]
+    public string? Title { get; set; }
+
+    /// <summary>
+    /// HTML tabindex attribute (keyboard navigation order)
+    /// </summary>
+    [Parameter]
+    public int? TabIndex { get; set; }
+
+    /// <summary>
+    /// HTML form attribute (associates button with a form)
+    /// </summary>
+    [Parameter]
+    public string? Form { get; set; }
+
+    /// <summary>
+    /// ARIA label for screen readers
+    /// </summary>
+    [Parameter]
+    public string? AriaLabel { get; set; }
+
+    /// <summary>
+    /// ARIA describedby attribute (references element IDs that describe this button)
+    /// </summary>
+    [Parameter]
+    public string? AriaDescribedBy { get; set; }
+
+    /// <summary>
+    /// Icon to display in the button (prefix or suffix based on IconPosition)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Icon { get; set; }
+
+    /// <summary>
+    /// Position of the icon relative to text
+    /// </summary>
+    [Parameter]
+    public IconPosition IconPosition { get; set; } = IconPosition.Left;
+
+    /// <summary>
     /// Child content (alternative to Text parameter)
     /// </summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Captures all additional HTML attributes not explicitly defined
+    /// Allows passing any HTML attribute like data-*, aria-*, etc.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Synchronous click event (fires before OnClickAsync)
+    /// </summary>
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     /// <summary>
     /// Async operation to execute when clicked
@@ -140,8 +238,14 @@ else
 
     private CancellationTokenSource? _cancellationTokenSource;
 
-    private async Task HandleClick()
+    private async Task HandleClick(MouseEventArgs args)
     {
+        // Fire synchronous OnClick event first
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(args);
+        }
+
         if (OnClickAsync == null || State == LoadingState.Loading)
             return;
 
@@ -178,7 +282,7 @@ else
     private async Task HandleRetry()
     {
         await SetStateAsync(LoadingState.Idle);
-        await HandleClick();
+        await HandleClick(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
     }
 
     private async Task SetStateAsync(LoadingState newState)
@@ -220,7 +324,7 @@ else
     /// </summary>
     public async Task TriggerClickAsync()
     {
-        await HandleClick();
+        await HandleClick(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
     }
 
     /// <summary>
@@ -277,10 +381,29 @@ else
             }
             else
             {
-                builder.OpenElement(19, "span");
-                builder.AddAttribute(20, "class", "button-text");
-                builder.AddContent(21, Text);
+                // Render icon on left if specified
+                if (Icon != null && IconPosition == IconPosition.Left)
+                {
+                    builder.OpenElement(19, "span");
+                    builder.AddAttribute(20, "class", "button-icon icon-left");
+                    builder.AddContent(21, Icon);
+                    builder.CloseElement();
+                }
+
+                // Render text
+                builder.OpenElement(22, "span");
+                builder.AddAttribute(23, "class", "button-text");
+                builder.AddContent(24, Text);
                 builder.CloseElement();
+
+                // Render icon on right if specified
+                if (Icon != null && IconPosition == IconPosition.Right)
+                {
+                    builder.OpenElement(25, "span");
+                    builder.AddAttribute(26, "class", "button-icon icon-right");
+                    builder.AddContent(27, Icon);
+                    builder.CloseElement();
+                }
             }
         }
     };

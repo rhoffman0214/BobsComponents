@@ -1,6 +1,7 @@
 using Bunit;
 using BobsComponent.Library.Components;
 using BobsComponent.Library.Enums;
+using Microsoft.AspNetCore.Components;
 using Xunit;
 
 namespace BobsComponent.Library.Tests.Components;
@@ -176,5 +177,134 @@ public class AsyncButtonTests : TestContext
         // Assert
         var button = cut.Find("button");
         Assert.Contains(expectedClass, button.ClassName);
+    }
+
+    [Theory]
+    [InlineData(ButtonSize.Small, "btn-small")]
+    [InlineData(ButtonSize.Medium, "btn-medium")]
+    [InlineData(ButtonSize.Large, "btn-large")]
+    public void AsyncButton_AppliesCorrectSizeClass(ButtonSize size, string expectedClass)
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.Size, size));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Contains(expectedClass, button.ClassName);
+    }
+
+    [Fact]
+    public void AsyncButton_RendersWithId()
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.Id, "my-button-id"));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("my-button-id", button.Id);
+    }
+
+    [Fact]
+    public void AsyncButton_RendersWithName()
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.Name, "submit-button"));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("submit-button", button.GetAttribute("name"));
+    }
+
+    [Theory]
+    [InlineData("button")]
+    [InlineData("submit")]
+    [InlineData("reset")]
+    public void AsyncButton_RendersWithCorrectType(string buttonType)
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.ButtonType, buttonType));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal(buttonType, button.GetAttribute("type"));
+    }
+
+    [Fact]
+    public void AsyncButton_RendersWithTitle()
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.Title, "Click to submit"));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("Click to submit", button.GetAttribute("title"));
+    }
+
+    [Fact]
+    public void AsyncButton_RendersWithAriaLabel()
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.AriaLabel, "Submit form"));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("Submit form", button.GetAttribute("aria-label"));
+    }
+
+    [Fact]
+    public void AsyncButton_SetsAriaBusyWhenLoading()
+    {
+        // Arrange
+        var tcs = new TaskCompletionSource<bool>();
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.OnClickAsync, () => tcs.Task));
+
+        // Act
+        var button = cut.Find("button");
+        button.Click();
+
+        // Assert
+        Assert.Equal("true", button.GetAttribute("aria-busy"));
+
+        // Cleanup
+        tcs.SetResult(true);
+    }
+
+    [Fact]
+    public void AsyncButton_PassesAdditionalAttributes()
+    {
+        // Arrange & Act
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .AddUnmatched("data-test-id", "my-test-button")
+            .AddUnmatched("data-analytics", "click-tracking"));
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("my-test-button", button.GetAttribute("data-test-id"));
+        Assert.Equal("click-tracking", button.GetAttribute("data-analytics"));
+    }
+
+    [Fact]
+    public async Task AsyncButton_OnClickEventFires()
+    {
+        // Arrange
+        var clickCount = 0;
+        var cut = RenderComponent<AsyncButton>(parameters => parameters
+            .Add(p => p.OnClick, EventCallback.Factory.Create<Microsoft.AspNetCore.Components.Web.MouseEventArgs>(
+                this, () => clickCount++))
+            .Add(p => p.OnClickAsync, () => Task.CompletedTask));
+
+        // Act
+        var button = cut.Find("button");
+        await button.ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+
+        // Assert
+        Assert.Equal(1, clickCount);
     }
 }

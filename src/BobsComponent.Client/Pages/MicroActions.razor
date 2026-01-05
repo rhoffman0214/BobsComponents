@@ -268,4 +268,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Section 8: Buttons -->
+    <div class="showcase-section">
+        <h2 class="section-title">8. Buttons</h2>
+        <p class="section-description">Quick button examples - see full documentation for comprehensive customization options</p>
+
+        <div class="info-box">
+            <p>
+                For comprehensive button examples including sizes, icons, ARIA attributes, data attributes, and advanced customization,
+                visit the <a href="/inputexamples/button">Button Examples page</a>.
+            </p>
+        </div>
+
+        <div class="button-grid button-grid-3">
+            <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+        </div>
+    </div>
 </div>

@@ -1,13 +1,529 @@
 @page "/inputexamples/button"
 @using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+@using BobsComponent.Library.Services
+@inject MockApiService ApiService
 
-<BobsButton Type="@InputType">
-  Bobs Button
-</BobsButton>
+<div class="button-examples-page">
+    <div class="page-header">
+        <h1>AsyncButton Component</h1>
+        <p class="page-description">
+            A comprehensive async-aware button component with loading states, progress tracking, and full customization support.
+        </p>
+    </div>
 
+    <!-- Section 1: Basic Button Styles -->
+    <section class="example-section">
+        <h2 class="section-title">1. Button Styles</h2>
+        <p class="section-description">Six semantic color variants for different use cases</p>
 
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>Primary</h3>
+                <AsyncButton Text="Primary Action"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Style="ButtonStyle.Primary"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Secondary</h3>
+                <AsyncButton Text="Secondary Action"
+                             Style="ButtonStyle.Secondary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Style="ButtonStyle.Secondary"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Tertiary</h3>
+                <AsyncButton Text="Tertiary Action"
+                             Style="ButtonStyle.Tertiary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Style="ButtonStyle.Tertiary"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Success</h3>
+                <AsyncButton Text="Success Action"
+                             Style="ButtonStyle.Success"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Style="ButtonStyle.Success"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Warning</h3>
+                <AsyncButton Text="Warning Action"
+                             Style="ButtonStyle.Warning"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Style="ButtonStyle.Warning"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Error</h3>
+                <AsyncButton Text="Error Action"
+                             Style="ButtonStyle.Error"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Style="ButtonStyle.Error"</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Button Sizes -->
+    <section class="example-section">
+        <h2 class="section-title">2. Button Sizes</h2>
+        <p class="section-description">Three size variants for different contexts</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>Small</h3>
+                <AsyncButton Text="Small Button"
+                             Size="ButtonSize.Small"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Size="ButtonSize.Small"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Medium (Default)</h3>
+                <AsyncButton Text="Medium Button"
+                             Size="ButtonSize.Medium"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Size="ButtonSize.Medium"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Large</h3>
+                <AsyncButton Text="Large Button"
+                             Size="ButtonSize.Large"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Size="ButtonSize.Large"</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Icons -->
+    <section class="example-section">
+        <h2 class="section-title">3. Button Icons</h2>
+        <p class="section-description">Add icons before or after button text</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>Icon Left</h3>
+                <AsyncButton Text="Save File"
+                             Style="ButtonStyle.Success"
+                             IconPosition="IconPosition.Left"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                    <Icon>
+                        <span>💾</span>
+                    </Icon>
+                </AsyncButton>
+                <div class="code-preview">
+                    <code>IconPosition="IconPosition.Left"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Icon Right</h3>
+                <AsyncButton Text="Next Step"
+                             Style="ButtonStyle.Primary"
+                             IconPosition="IconPosition.Right"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                    <Icon>
+                        <span>→</span>
+                    </Icon>
+                </AsyncButton>
+                <div class="code-preview">
+                    <code>IconPosition="IconPosition.Right"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Multiple Icons</h3>
+                <AsyncButton Text="Download"
+                             Style="ButtonStyle.Tertiary"
+                             IconPosition="IconPosition.Left"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                    <Icon>
+                        <span>⬇️</span>
+                    </Icon>
+                </AsyncButton>
+                <div class="code-preview">
+                    <code>&lt;Icon&gt;&lt;span&gt;⬇️&lt;/span&gt;&lt;/Icon&gt;</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: HTML Attributes -->
+    <section class="example-section">
+        <h2 class="section-title">4. HTML Attributes</h2>
+        <p class="section-description">Standard HTML button attributes for forms and accessibility</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>Submit Button</h3>
+                <AsyncButton Text="Submit Form"
+                             ButtonType="submit"
+                             Id="submit-btn"
+                             Name="submitButton"
+                             Title="Click to submit the form"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>ButtonType="submit"<br/>Id="submit-btn"<br/>Name="submitButton"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Reset Button</h3>
+                <AsyncButton Text="Reset Form"
+                             ButtonType="reset"
+                             Id="reset-btn"
+                             Title="Reset all form fields"
+                             Style="ButtonStyle.Secondary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>ButtonType="reset"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>With TabIndex</h3>
+                <AsyncButton Text="Focused Button"
+                             TabIndex="1"
+                             Title="This button has tab index 1"
+                             Style="ButtonStyle.Tertiary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>TabIndex="1"</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: ARIA Attributes -->
+    <section class="example-section">
+        <h2 class="section-title">5. ARIA Accessibility Attributes</h2>
+        <p class="section-description">Screen reader support and accessibility features</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>ARIA Label</h3>
+                <AsyncButton Text="🗑️"
+                             AriaLabel="Delete item from cart"
+                             Title="Delete"
+                             Style="ButtonStyle.Error"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>AriaLabel="Delete item from cart"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>ARIA Described By</h3>
+                <AsyncButton Text="Submit"
+                             AriaLabel="Submit registration form"
+                             AriaDescribedBy="form-help-text"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>AriaDescribedBy="form-help-text"</code>
+                </div>
+                <p id="form-help-text" class="help-text">Form will be validated before submission</p>
+            </div>
+
+            <div class="example-item">
+                <h3>ARIA Busy (Auto)</h3>
+                <AsyncButton Text="Loading Demo"
+                             AriaLabel="Demonstration of aria-busy during loading"
+                             Style="ButtonStyle.Success"
+                             OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+                <div class="code-preview">
+                    <code>aria-busy="true" set automatically during loading</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Data Attributes -->
+    <section class="example-section">
+        <h2 class="section-title">6. Data Attributes</h2>
+        <p class="section-description">Custom data attributes for analytics, testing, and tracking</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>Analytics Tracking</h3>
+                <AsyncButton Text="Track Click"
+                             Style="ButtonStyle.Primary"
+                             data-analytics-event="button_click"
+                             data-analytics-category="user_action"
+                             data-analytics-label="homepage_cta"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>data-analytics-event="button_click"<br/>data-analytics-category="user_action"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Test IDs</h3>
+                <AsyncButton Text="E2E Test"
+                             Style="ButtonStyle.Success"
+                             data-testid="submit-form-button"
+                             data-test-category="form-submission"
+                             data-qa="primary-cta"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>data-testid="submit-form-button"<br/>data-qa="primary-cta"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Feature Flags</h3>
+                <AsyncButton Text="New Feature"
+                             Style="ButtonStyle.Warning"
+                             data-feature-flag="new-checkout-flow"
+                             data-experiment-id="exp-2024-q1"
+                             data-variant="control"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>data-feature-flag="new-checkout-flow"<br/>data-variant="control"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Custom Metadata</h3>
+                <AsyncButton Text="Product Action"
+                             Style="ButtonStyle.Tertiary"
+                             data-product-id="prod-12345"
+                             data-sku="SKU-ABC-001"
+                             data-price="29.99"
+                             data-currency="USD"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>data-product-id="prod-12345"<br/>data-sku="SKU-ABC-001"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>UI State Tracking</h3>
+                <AsyncButton Text="Modal Trigger"
+                             Style="ButtonStyle.Secondary"
+                             data-modal-target="user-settings"
+                             data-modal-size="large"
+                             data-backdrop="static"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>data-modal-target="user-settings"<br/>data-modal-size="large"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Multiple Data Attrs</h3>
+                <AsyncButton Text="Multi-Track"
+                             Style="ButtonStyle.Error"
+                             data-action="delete"
+                             data-entity="user"
+                             data-confirm-required="true"
+                             data-danger-level="high"
+                             data-undo-available="false"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>data-action="delete"<br/>data-confirm-required="true"</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Loading States -->
+    <section class="example-section">
+        <h2 class="section-title">7. Loading States</h2>
+        <p class="section-description">Automatic state management during async operations</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>Quick (500ms)</h3>
+                <AsyncButton Text="Quick Action"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+                <div class="code-preview">
+                    <code>Automatic loading spinner</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Medium (2s)</h3>
+                <AsyncButton Text="Medium Action"
+                             LoadingText="Processing..."
+                             Style="ButtonStyle.Secondary"
+                             OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
+                <div class="code-preview">
+                    <code>LoadingText="Processing..."</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Slow (5s)</h3>
+                <AsyncButton Text="Slow Action"
+                             LoadingText="Please wait..."
+                             SuccessText="Completed!"
+                             Style="ButtonStyle.Success"
+                             OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+                <div class="code-preview">
+                    <code>SuccessText="Completed!"</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Error Handling -->
+    <section class="example-section">
+        <h2 class="section-title">8. Error Handling</h2>
+        <p class="section-description">Automatic error state with retry functionality</p>
+
+        <div class="example-grid">
+            <div class="example-item">
+                <h3>With Retry</h3>
+                <AsyncButton Text="Will Fail"
+                             ErrorText="Failed!"
+                             ShowErrorRetry="true"
+                             Style="ButtonStyle.Error"
+                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
+                <div class="code-preview">
+                    <code>ShowErrorRetry="true"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Without Retry</h3>
+                <AsyncButton Text="Fail Silently"
+                             ShowErrorRetry="false"
+                             Style="ButtonStyle.Warning"
+                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
+                <div class="code-preview">
+                    <code>ShowErrorRetry="false"</code>
+                </div>
+            </div>
+
+            <div class="example-item">
+                <h3>Custom Error Text</h3>
+                <AsyncButton Text="Custom Error"
+                             ErrorText="Oops! Try again"
+                             ShowErrorRetry="true"
+                             Style="ButtonStyle.Error"
+                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
+                <div class="code-preview">
+                    <code>ErrorText="Oops! Try again"</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 9: Full Width -->
+    <section class="example-section">
+        <h2 class="section-title">9. Full Width Buttons</h2>
+        <p class="section-description">Buttons that span the full width of their container</p>
+
+        <div class="example-column">
+            <div class="example-item">
+                <AsyncButton Text="Full Width Primary"
+                             FullWidth="true"
+                             Style="ButtonStyle.Primary"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            </div>
+            <div class="example-item">
+                <AsyncButton Text="Full Width with Icon"
+                             FullWidth="true"
+                             Style="ButtonStyle.Success"
+                             IconPosition="IconPosition.Left"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())">
+                    <Icon>
+                        <span>✓</span>
+                    </Icon>
+                </AsyncButton>
+            </div>
+            <div class="code-preview">
+                <code>FullWidth="true"</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 10: Complete Example -->
+    <section class="example-section">
+        <h2 class="section-title">10. Complete Example</h2>
+        <p class="section-description">All features combined in a single button</p>
+
+        <div class="example-full">
+            <AsyncButton Text="Complete Example"
+                         Size="ButtonSize.Large"
+                         Style="ButtonStyle.Primary"
+                         ButtonType="submit"
+                         Id="complete-example-btn"
+                         Name="completeExample"
+                         Title="This button demonstrates all available features"
+                         TabIndex="1"
+                         AriaLabel="Submit form with all validations"
+                         AriaDescribedBy="complete-help"
+                         LoadingText="Submitting form..."
+                         SuccessText="Form submitted!"
+                         ErrorText="Submission failed"
+                         ShowErrorRetry="true"
+                         IconPosition="IconPosition.Left"
+                         data-analytics-event="form_submit"
+                         data-analytics-category="user_registration"
+                         data-form-id="registration-form"
+                         data-step="final"
+                         data-validation-required="true"
+                         OnClickAsync="@(() => ApiService.MediumOperationAsync())">
+                <Icon>
+                    <span>📝</span>
+                </Icon>
+            </AsyncButton>
+            <p id="complete-help" class="help-text">
+                This example includes: Large size, Primary style, Submit type, ARIA labels,
+                data attributes for analytics and testing, custom loading/success/error text,
+                icon support, and full accessibility features.
+            </p>
+            <div class="code-preview">
+                <pre><code>&lt;AsyncButton
+    Text="Complete Example"
+    Size="ButtonSize.Large"
+    Style="ButtonStyle.Primary"
+    ButtonType="submit"
+    Id="complete-example-btn"
+    Name="completeExample"
+    Title="Full featured button"
+    AriaLabel="Submit form"
+    AriaDescribedBy="complete-help"
+    data-analytics-event="form_submit"
+    data-form-id="registration-form"
+    OnClickAsync="@@HandleSubmit"&gt;
+    &lt;Icon&gt;&lt;span&gt;📝&lt;/span&gt;&lt;/Icon&gt;
+&lt;/AsyncButton&gt;</code></pre>
+            </div>
+        </div>
+    </section>
+</div>
 
 @code {
-  private string InputType = BobsComponent.Library.Enums.ButtonType.button.ToString();
 
 }

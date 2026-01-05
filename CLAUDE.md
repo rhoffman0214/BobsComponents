@@ -2,6 +2,95 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## CRITICAL: CSS Organization for Component Library
+
+**This project will be shipped as a component library.** Follow these CSS organization rules:
+
+### Scoped CSS is Mandatory
+- **ALWAYS use scoped CSS files** (`.razor.css`) for page and component-specific styles
+- Scoped CSS automatically applies to that component only and doesn't pollute global namespace
+- File naming: `ComponentName.razor.css` or `PageName.razor.css`
+- Example: `MicroActions.razor.css`, `AsyncButton.razor.css`
+
+### Global vs Scoped CSS
+**Global CSS** (`wwwroot/css/*.css`):
+- ✅ Theme variables (colors, spacing, z-index)
+- ✅ CSS reset files
+- ✅ Third-party library CSS (Bootstrap, etc.)
+- ❌ NEVER put page-specific or component-specific styles here
+
+**Scoped CSS** (`.razor.css` files):
+- ✅ All page-specific styles
+- ✅ All component-specific styles
+- ✅ Showcase/demo page styles
+- ✅ Layout-specific styles
+
+### Why This Matters
+- **Library consumers** get clean, isolated components without style conflicts
+- **No naming collisions** - scoped CSS is automatically prefixed
+- **Easier maintenance** - styles live next to their components
+- **Better tree-shaking** - unused components don't include unused CSS
+
+### index.html
+- **NEVER manually add scoped CSS** to index.html
+- Blazor automatically injects scoped CSS via `<component>.styles.css`
+- Only add global CSS files (themes, resets) to index.html
+
+### Example Structure
+```
+✅ CORRECT:
+src/BobsComponent.Client/Pages/
+  ├── MicroActions.razor
+  └── MicroActions.razor.css              ← Scoped CSS
+
+src/BobsComponent.Client/wwwroot/css/
+  ├── themes.css                          ← Global theme variables
+  └── app.css                             ← Global app styles
+
+❌ WRONG:
+src/BobsComponent.Client/wwwroot/css/
+  └── micro-actions-showcase.css          ← Should be scoped!
+```
+
+## Development Environment
+
+**IMPORTANT:** This is a Windows development environment. When running shell commands:
+- **Default to PowerShell or Windows CMD** for all commands
+- Use PowerShell syntax for process management, file operations, and system commands
+- Avoid using bash-specific syntax (e.g., `for` loops, `$()` substitution) which may not work correctly
+- For complex operations, prefer PowerShell cmdlets over bash commands
+
+## Page Route Management
+
+**CRITICAL:** Always verify no duplicate `@page` routes exist in the codebase.
+
+### Before Creating or Modifying Pages
+1. **Check for existing routes** - Search for `@page "/your-route"` in all `.razor` files
+2. **Use unique routes** - Each page must have a unique route path
+3. **Delete old files** - When renaming/moving pages, delete the old file completely
+
+### Why This Matters
+- **Duplicate routes cause routing conflicts** - Blazor won't know which component to render
+- **Build warnings/errors** - May not always be caught at compile time
+- **Runtime failures** - Navigation may route to the wrong component
+
+### Verification Command
+```powershell
+# Search for all @page directives
+Get-ChildItem -Path "src" -Filter "*.razor" -Recurse | Select-String -Pattern '@page "' | Select-Object Path, Line
+```
+
+### Example Issue
+```
+❌ WRONG - Duplicate routes:
+BobsButtonExample.razor:  @page "/inputexamples/button"
+ButtonExample.razor:      @page "/inputexamples/button"  ← Conflict!
+
+✅ CORRECT - Only one route:
+BobsButtonExample.razor:  @page "/inputexamples/button"
+(ButtonExample.razor deleted)
+```
+
 ## Project Overview
 
 BobsBlazingComponents is a Blazor WebAssembly component library project. The goals are to:

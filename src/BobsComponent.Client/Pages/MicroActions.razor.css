@@ -1,5 +1,5 @@
 /* =====================================================
-   MicroActions Showcase Page Styles
+   MicroActions Showcase Page - Scoped Styles
    ===================================================== */
 
 .micro-actions-showcase {
@@ -271,6 +271,30 @@
     font-size: 0.9rem;
     color: var(--text-secondary);
     font-weight: 500;
+}
+
+/* Info Box */
+.info-box {
+    background-color: var(--bg-tertiary);
+    border-left: 4px solid var(--color-info);
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.info-box p {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.info-box a {
+    color: var(--accent-primary);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.info-box a:hover {
+    color: var(--color-primary-hover);
 }
 
 /* Utility Classes */

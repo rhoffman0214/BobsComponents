@@ -272,9 +272,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px 20px;
-    font-size: 1rem;
     font-weight: 500;
     border: none;
     border-radius: 6px;
@@ -285,6 +282,41 @@
 
 .async-button.full-width {
     width: 100%;
+}
+
+/* Button Sizes - More specific selectors to ensure proper override */
+.async-button.btn-small {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+    gap: 6px;
+}
+
+.async-button.btn-medium {
+    padding: 10px 20px;
+    font-size: 1rem;
+    gap: 8px;
+}
+
+.async-button.btn-large {
+    padding: 14px 28px;
+    font-size: 1.125rem;
+    gap: 10px;
+}
+
+/* Icon Styles */
+.button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.button-icon.icon-left {
+    margin-right: 4px;
+}
+
+.button-icon.icon-right {
+    margin-left: 4px;
 }
 
 .async-button:disabled {
