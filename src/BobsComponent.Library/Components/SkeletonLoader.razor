@@ -1,0 +1,92 @@
+@namespace BobsComponent.Library.Components
+
+@if (Count > 1)
+{
+    @for (int i = 0; i < Count; i++)
+    {
+        <div class="skeleton-loader skeleton-@Shape.ToString().ToLower()"
+             style="@GetStyle()">
+        </div>
+    }
+}
+else
+{
+    <div class="skeleton-loader skeleton-@Shape.ToString().ToLower()"
+         style="@GetStyle()">
+    </div>
+}
+
+@code {
+    /// <summary>
+    /// Shape of the skeleton loader
+    /// </summary>
+    [Parameter]
+    public SkeletonShape Shape { get; set; } = SkeletonShape.Rectangle;
+
+    /// <summary>
+    /// Width (CSS value like "100%", "200px", etc.)
+    /// </summary>
+    [Parameter]
+    public string Width { get; set; } = "100%";
+
+    /// <summary>
+    /// Height (CSS value like "20px", "3em", etc.)
+    /// </summary>
+    [Parameter]
+    public string Height { get; set; } = "20px";
+
+    /// <summary>
+    /// Number of skeleton loaders to render
+    /// </summary>
+    [Parameter]
+    public int Count { get; set; } = 1;
+
+    /// <summary>
+    /// Border radius for rectangle shapes (CSS value)
+    /// </summary>
+    [Parameter]
+    public string? BorderRadius { get; set; }
+
+    private string GetStyle()
+    {
+        var styles = new List<string>
+        {
+            $"width: {SanitizeCssValue(Width)}",
+            $"height: {SanitizeCssValue(Height)}"
+        };
+
+        if (!string.IsNullOrEmpty(BorderRadius) && Shape == SkeletonShape.Rectangle)
+        {
+            styles.Add($"border-radius: {SanitizeCssValue(BorderRadius)}");
+        }
+
+        return string.Join("; ", styles);
+    }
+
+    /// <summary>
+    /// Sanitizes CSS values to prevent CSS injection attacks.
+    /// Only allows alphanumeric, spaces, %, px, em, rem, vh, vw, and basic units.
+    /// </summary>
+    private string SanitizeCssValue(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return "0";
+
+        // Remove any potentially dangerous characters
+        // Allow: letters, numbers, %, -, ., spaces, and common CSS units
+        var sanitized = System.Text.RegularExpressions.Regex.Replace(
+            value,
+            @"[^a-zA-Z0-9%\-\.\s]",
+            ""
+        );
+
+        return string.IsNullOrEmpty(sanitized) ? "0" : sanitized;
+    }
+
+    public enum SkeletonShape
+    {
+        Rectangle,
+        Circle,
+        Text
+    }
+}

@@ -1,0 +1,231 @@
+/* =====================================================
+   Button Examples Page - Scoped Styles
+   ===================================================== */
+
+.button-examples-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.5rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.page-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Section Styles */
+.example-section {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.section-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+}
+
+/* Example Grid Layout */
+.example-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.example-grid > * {
+    flex: 1 1 calc(50% - 12px);
+    min-width: 280px;
+}
+
+.example-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.example-item {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.example-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.example-item h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.example-full {
+    background-color: var(--bg-primary);
+    border: 2px solid var(--accent-primary);
+    border-radius: 8px;
+    padding: 32px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Code Preview */
+.code-preview {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: var(--bg-tertiary);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.code-preview code {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.code-preview pre {
+    margin: 0;
+    overflow-x: auto;
+}
+
+.code-preview pre code {
+    display: block;
+    white-space: pre;
+}
+
+/* Help Text */
+.help-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    padding: 12px;
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+    border-left: 3px solid var(--color-info);
+}
+
+/* Code Tabs */
+.code-tabs {
+    margin-top: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--bg-primary);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 0;
+    background-color: var(--bg-tertiary);
+    border-bottom: 2px solid var(--border-color);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.tab-buttons > button {
+    flex: 1;
+    min-width: 0;
+}
+
+.tab-buttons button {
+    padding: 14px 20px;
+    border: none;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+    position: relative;
+}
+
+.tab-buttons button:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.tab-buttons button.active {
+    background-color: var(--bg-primary);
+    color: var(--accent-primary);
+    border-bottom-color: var(--accent-primary);
+}
+
+.tab-content {
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .example-grid {
+        flex-direction: column;
+    }
+
+    .example-grid > * {
+        flex: 1 1 auto;
+    }
+
+    .example-section {
+        padding: 20px;
+    }
+}

@@ -1,0 +1,54 @@
+@namespace BobsComponent.Library.Components
+
+<div class="progress-bar-container @(Striped ? "striped" : "") @(Animated ? "animated" : "")">
+    <div class="progress-bar progress-bar-@ColorVariant.ToString().ToLower()"
+         style="width: @ClampedPercentage%">
+        @if (ShowPercentage)
+        {
+            <span class="progress-text">@ClampedPercentage%</span>
+        }
+    </div>
+</div>
+
+@code {
+    /// <summary>
+    /// Progress percentage (0-100)
+    /// </summary>
+    [Parameter]
+    public int Percentage { get; set; } = 0;
+
+    /// <summary>
+    /// Color variant for the progress bar
+    /// </summary>
+    [Parameter]
+    public ProgressColorVariant ColorVariant { get; set; } = ProgressColorVariant.Primary;
+
+    /// <summary>
+    /// Show percentage text on the bar
+    /// </summary>
+    [Parameter]
+    public bool ShowPercentage { get; set; } = true;
+
+    /// <summary>
+    /// Show striped pattern
+    /// </summary>
+    [Parameter]
+    public bool Striped { get; set; } = false;
+
+    /// <summary>
+    /// Animate the stripes
+    /// </summary>
+    [Parameter]
+    public bool Animated { get; set; } = false;
+
+    private int ClampedPercentage => Math.Clamp(Percentage, 0, 100);
+
+    public enum ProgressColorVariant
+    {
+        Primary,
+        Success,
+        Info,
+        Warning,
+        Danger
+    }
+}

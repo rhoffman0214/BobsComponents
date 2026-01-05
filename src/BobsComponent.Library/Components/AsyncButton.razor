@@ -1,0 +1,415 @@
+@using System.Threading
+@using BobsComponent.Library.Enums
+@namespace BobsComponent.Library.Components
+
+@if (IsButtonDisabled)
+{
+    <button type="@ButtonType"
+            id="@Id"
+            name="@Name"
+            class="async-button btn-@Style.ToString().ToLower() btn-@Size.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
+            title="@Title"
+            tabindex="@TabIndex"
+            form="@Form"
+            aria-label="@AriaLabel"
+            aria-describedby="@AriaDescribedBy"
+            aria-busy="@(State == LoadingState.Loading ? "true" : "false")"
+            aria-disabled="true"
+            disabled
+            @onclick="HandleClick"
+            @attributes="AdditionalAttributes">
+        @ButtonContent
+    </button>
+}
+else
+{
+    <button type="@ButtonType"
+            id="@Id"
+            name="@Name"
+            class="async-button btn-@Style.ToString().ToLower() btn-@Size.ToString().ToLower() state-@State.ToString().ToLower() @(FullWidth ? "full-width" : "") @CssClass"
+            title="@Title"
+            tabindex="@TabIndex"
+            form="@Form"
+            aria-label="@AriaLabel"
+            aria-describedby="@AriaDescribedBy"
+            aria-busy="@(State == LoadingState.Loading ? "true" : "false")"
+            @onclick="HandleClick"
+            @attributes="AdditionalAttributes">
+        @ButtonContent
+    </button>
+}
+
+@if (State == LoadingState.Error && ShowErrorRetry)
+{
+    <button type="button" class="retry-button" @onclick="HandleRetry">
+        ↻ Retry
+    </button>
+}
+
+@if (ShowProgress && Progress > 0 && State == LoadingState.Loading)
+{
+    <ProgressBar Percentage="@Progress"
+                 ColorVariant="ProgressBar.ProgressColorVariant.Primary"
+                 ShowPercentage="false"
+                 Animated="true" />
+}
+
+@code {
+    /// <summary>
+    /// Button text
+    /// </summary>
+    [Parameter]
+    public string Text { get; set; } = "Click me";
+
+    /// <summary>
+    /// Text to show when loading
+    /// </summary>
+    [Parameter]
+    public string? LoadingText { get; set; }
+
+    /// <summary>
+    /// Text to show on success
+    /// </summary>
+    [Parameter]
+    public string? SuccessText { get; set; }
+
+    /// <summary>
+    /// Text to show on error
+    /// </summary>
+    [Parameter]
+    public string? ErrorText { get; set; }
+
+    /// <summary>
+    /// Button style variant
+    /// </summary>
+    [Parameter]
+    public ButtonStyle Style { get; set; } = ButtonStyle.Primary;
+
+    /// <summary>
+    /// Current loading state
+    /// </summary>
+    [Parameter]
+    public LoadingState State { get; set; } = LoadingState.Idle;
+
+    /// <summary>
+    /// Progress percentage (0-100) if tracking progress
+    /// </summary>
+    [Parameter]
+    public int Progress { get; set; } = 0;
+
+    /// <summary>
+    /// Show progress bar below button
+    /// </summary>
+    [Parameter]
+    public bool ShowProgress { get; set; } = false;
+
+    /// <summary>
+    /// Show retry button on error
+    /// </summary>
+    [Parameter]
+    public bool ShowErrorRetry { get; set; } = true;
+
+    /// <summary>
+    /// Button is disabled
+    /// </summary>
+    [Parameter]
+    public bool IsDisabled { get; set; } = false;
+
+    /// <summary>
+    /// Button takes full width of container
+    /// </summary>
+    [Parameter]
+    public bool FullWidth { get; set; } = false;
+
+    /// <summary>
+    /// Additional CSS classes
+    /// </summary>
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    /// <summary>
+    /// Button size variant
+    /// </summary>
+    [Parameter]
+    public ButtonSize Size { get; set; } = ButtonSize.Medium;
+
+    /// <summary>
+    /// HTML button type attribute (button, submit, reset)
+    /// </summary>
+    [Parameter]
+    public string ButtonType { get; set; } = "button";
+
+    /// <summary>
+    /// HTML id attribute
+    /// </summary>
+    [Parameter]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// HTML name attribute (useful for forms)
+    /// </summary>
+    [Parameter]
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// HTML title attribute (tooltip text)
+    /// </summary>
+    [Parameter]
+    public string? Title { get; set; }
+
+    /// <summary>
+    /// HTML tabindex attribute (keyboard navigation order)
+    /// </summary>
+    [Parameter]
+    public int? TabIndex { get; set; }
+
+    /// <summary>
+    /// HTML form attribute (associates button with a form)
+    /// </summary>
+    [Parameter]
+    public string? Form { get; set; }
+
+    /// <summary>
+    /// ARIA label for screen readers
+    /// </summary>
+    [Parameter]
+    public string? AriaLabel { get; set; }
+
+    /// <summary>
+    /// ARIA describedby attribute (references element IDs that describe this button)
+    /// </summary>
+    [Parameter]
+    public string? AriaDescribedBy { get; set; }
+
+    /// <summary>
+    /// Icon to display in the button (prefix or suffix based on IconPosition)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? Icon { get; set; }
+
+    /// <summary>
+    /// Position of the icon relative to text
+    /// </summary>
+    [Parameter]
+    public IconPosition IconPosition { get; set; } = IconPosition.Left;
+
+    /// <summary>
+    /// Child content (alternative to Text parameter)
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Captures all additional HTML attributes not explicitly defined
+    /// Allows passing any HTML attribute like data-*, aria-*, etc.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Synchronous click event (fires before OnClickAsync)
+    /// </summary>
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    /// <summary>
+    /// Async operation to execute when clicked
+    /// </summary>
+    [Parameter]
+    public Func<Task>? OnClickAsync { get; set; }
+
+    /// <summary>
+    /// Event triggered when state changes
+    /// </summary>
+    [Parameter]
+    public EventCallback<LoadingState> OnStateChanged { get; set; }
+
+    /// <summary>
+    /// Event triggered when progress updates
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> OnProgressChanged { get; set; }
+
+    /// <summary>
+    /// Auto-reset to idle after success (milliseconds, 0 to disable)
+    /// </summary>
+    [Parameter]
+    public int AutoResetDelay { get; set; } = 2000;
+
+    private CancellationTokenSource? _cancellationTokenSource;
+
+    private async Task HandleClick(MouseEventArgs args)
+    {
+        // Fire synchronous OnClick event first
+        if (OnClick.HasDelegate)
+        {
+            await OnClick.InvokeAsync(args);
+        }
+
+        if (OnClickAsync == null || State == LoadingState.Loading)
+            return;
+
+        await SetStateAsync(LoadingState.Loading);
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            await OnClickAsync();
+            await SetStateAsync(LoadingState.Success);
+
+            if (AutoResetDelay > 0)
+            {
+                await Task.Delay(AutoResetDelay);
+                await SetStateAsync(LoadingState.Idle);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            await SetStateAsync(LoadingState.Error);
+        }
+        catch
+        {
+            await SetStateAsync(LoadingState.Error);
+        }
+        finally
+        {
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    private async Task HandleRetry()
+    {
+        await SetStateAsync(LoadingState.Idle);
+        await HandleClick(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+    }
+
+    private async Task SetStateAsync(LoadingState newState)
+    {
+        State = newState;
+        await OnStateChanged.InvokeAsync(State);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Updates the progress percentage
+    /// </summary>
+    public async Task UpdateProgressAsync(int progress)
+    {
+        Progress = Math.Clamp(progress, 0, 100);
+        await OnProgressChanged.InvokeAsync(Progress);
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Cancels the current operation
+    /// </summary>
+    public void Cancel()
+    {
+        _cancellationTokenSource?.Cancel();
+    }
+
+    /// <summary>
+    /// Resets the button to idle state
+    /// </summary>
+    public async Task ResetAsync()
+    {
+        await SetStateAsync(LoadingState.Idle);
+        Progress = 0;
+    }
+
+    /// <summary>
+    /// Programmatically triggers the button click
+    /// </summary>
+    public async Task TriggerClickAsync()
+    {
+        await HandleClick(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+    }
+
+    /// <summary>
+    /// Computed property for button disabled state
+    /// </summary>
+    private bool IsButtonDisabled => IsDisabled || State == LoadingState.Loading;
+
+    /// <summary>
+    /// Renders the button content based on current state
+    /// </summary>
+    private RenderFragment ButtonContent => builder =>
+    {
+        if (State == LoadingState.Loading)
+        {
+            builder.OpenComponent<LoadingSpinner>(0);
+            builder.AddAttribute(1, "Style", LoadingSpinner.SpinnerStyle.Circle);
+            builder.AddAttribute(2, "Size", LoadingSpinner.SpinnerSize.Small);
+            builder.CloseComponent();
+
+            builder.OpenElement(3, "span");
+            builder.AddAttribute(4, "class", "button-text");
+            builder.AddContent(5, LoadingText ?? Text);
+            builder.CloseElement();
+        }
+        else if (State == LoadingState.Success)
+        {
+            builder.OpenElement(6, "span");
+            builder.AddAttribute(7, "class", "success-icon");
+            builder.AddContent(8, "✓");
+            builder.CloseElement();
+
+            builder.OpenElement(9, "span");
+            builder.AddAttribute(10, "class", "button-text");
+            builder.AddContent(11, SuccessText ?? "Success");
+            builder.CloseElement();
+        }
+        else if (State == LoadingState.Error)
+        {
+            builder.OpenElement(12, "span");
+            builder.AddAttribute(13, "class", "error-icon");
+            builder.AddContent(14, "✕");
+            builder.CloseElement();
+
+            builder.OpenElement(15, "span");
+            builder.AddAttribute(16, "class", "button-text");
+            builder.AddContent(17, ErrorText ?? "Error");
+            builder.CloseElement();
+        }
+        else
+        {
+            if (ChildContent != null)
+            {
+                builder.AddContent(18, ChildContent);
+            }
+            else
+            {
+                // Render icon on left if specified
+                if (Icon != null && IconPosition == IconPosition.Left)
+                {
+                    builder.OpenElement(19, "span");
+                    builder.AddAttribute(20, "class", "button-icon icon-left");
+                    builder.AddContent(21, Icon);
+                    builder.CloseElement();
+                }
+
+                // Render text
+                builder.OpenElement(22, "span");
+                builder.AddAttribute(23, "class", "button-text");
+                builder.AddContent(24, Text);
+                builder.CloseElement();
+
+                // Render icon on right if specified
+                if (Icon != null && IconPosition == IconPosition.Right)
+                {
+                    builder.OpenElement(25, "span");
+                    builder.AddAttribute(26, "class", "button-icon icon-right");
+                    builder.AddContent(27, Icon);
+                    builder.CloseElement();
+                }
+            }
+        }
+    };
+
+    public void Dispose()
+    {
+        _cancellationTokenSource?.Dispose();
+    }
+}

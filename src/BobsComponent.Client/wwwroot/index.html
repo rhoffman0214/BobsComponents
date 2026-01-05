@@ -6,11 +6,18 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <title>BobsComponents</title>
-        <base href="/BobsComponents/" />
+        <base href="/" />
         <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+        <!-- Global CSS -->
         <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
         <link href="css/jc-reset.css" rel="stylesheet" />
+        <link href="css/themes.css" rel="stylesheet" />
         <link href="css/app.css" rel="stylesheet" />
+
+        <!-- Library Component CSS -->
+        <link href="_content/BobsComponent.Library/css/micro-actions.css" rel="stylesheet" />
+
+        <!-- Scoped CSS automatically injected by Blazor -->
         <link href="BobsComponent.Client.styles.css" rel="stylesheet" />
     </head>
 
@@ -31,11 +38,16 @@
             })();
         </script>
 
+        <!-- Console Error Monitor for Deployment Testing -->
+        <script src="js/console-monitor.js"></script>
+
         <div id="blazor-error-ui">
             An unhandled error has occurred.
             <a href class="reload">Reload</a>
             <a class="dismiss">🗙</a>
         </div>
+        <script src="_content/BobsComponent.Library/theme.js"></script>
+        <script src="_content/BobsComponent.Library/js/table-of-contents.js"></script>
         <script src="_framework/blazor.webassembly.js"></script>
     </body>
 </html>

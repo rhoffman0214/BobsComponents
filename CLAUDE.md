@@ -1,148 +1,343 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides AI assistant instructions for working with code in this repository.
 
-## Project Overview
+**For human developers:** See [README.md](README.md) for getting started, commands, and architecture.
+**For code examples:** See [docs/EXAMPLES.md](docs/EXAMPLES.md) for detailed code examples and patterns.
 
-BobsBlazingComponents is a Blazor WebAssembly component library project. The goals are to:
-- Create reusable, themeable components that are open to user customization while providing base themes and functionality
-- Provide "amazing" examples of real-world usage, especially combining popular packages
-- Demonstrate practical integration patterns that developers can learn from and adapt
+---
 
-## Solution Structure
+## Project Organization
 
-The solution uses a two-project architecture:
+**Components and Documentation:**
+- All reusable components and their documentation shall be added to the **Library** project (`BobsComponent.Library`)
+- All examples, showcases, and demonstrations shall exist in the **Client** project (`BobsComponent.Client`)
+- This separation ensures the Library remains clean and focused while the Client provides comprehensive usage examples
 
-- **BobsComponent.Library**: Razor component library (SDK: Microsoft.NET.Sdk.Razor) that houses reusable Blazor components
-- **BobsComponent.Client**: Blazor WebAssembly client application for testing/showcasing the component library
+---
 
-Both projects reference BobsComponent.Library - the Client uses both a PackageReference and a ProjectReference to the Library.
+## CRITICAL: Flexbox-First Layout Philosophy
 
-## Application Sections
+**Flexbox is King** - This application uses flexbox as the primary layout system.
 
-The client application is organized into three distinct sections:
+### Layout Rules
 
-1. **Documentation Area**: Comprehensive documentation for components, APIs, and usage patterns
-2. **Sandbox**: Interactive playground for experimenting with components in real-time
-3. **Learning Section**: Structured progression-based learning path for users to master the component library
+1. **ALWAYS use `display: flex`** for layouts
+   - ✅ Use flexbox for all container layouts
+   - ✅ Use `flex-direction: column` for vertical stacking
+   - ✅ Use `flex-direction: row` for horizontal layouts
+   - ❌ AVOID `display: grid` unless absolutely necessary for complex 2D layouts
+   - ❌ AVOID `display: block`, `inline-block`, or `table` layouts
 
-### User Sessions
+2. **Flexbox Properties to Master:**
+   ```css
+   /* Container properties */
+   display: flex;
+   flex-direction: row | column;
+   justify-content: flex-start | center | space-between | space-around;
+   align-items: stretch | flex-start | center | flex-end;
+   flex-wrap: wrap | nowrap;
+   gap: 16px; /* Modern spacing */
 
-The application includes user session management:
-- Email-based validation (no password authentication)
-- No PII (Personally Identifiable Information) stored
-- No security-sensitive data - session tracking is purely for progression data
-- Focus on safe, data-only user experience tracking
+   /* Item properties */
+   flex: 1; /* Grow to fill space */
+   flex-shrink: 0; /* Prevent shrinking */
+   align-self: flex-start | center | flex-end;
+   ```
 
-## Build Configuration
+3. **Common Flexbox Patterns:**
+   ```css
+   /* Two-column layout with flex */
+   .container {
+       display: flex;
+       gap: 32px;
+   }
+   .sidebar { flex: 0 0 300px; } /* Fixed 300px sidebar */
+   .main { flex: 1; } /* Main content fills remaining space */
 
-The solution uses a centralized build configuration via `src/Directory.Build.props`:
-- Target framework: net10.0 (configurable via `$(NetVersion)`)
-- AOT compilation is enabled (`RunAOTCompilation: true`)
+   /* Vertical stack with spacing */
+   .stack {
+       display: flex;
+       flex-direction: column;
+       gap: 16px;
+   }
 
-## .NET Version
+   /* Centered content */
+   .centered {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
 
-This project targets **.NET 10.0** (LTS release, supported until November 2028) with **C# 14** language features.
+   /* Space-between header */
+   .header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+   }
+   ```
 
-### Required Workloads
+4. **When Grid is Acceptable:**
+   - Only use `display: grid` for true 2D layouts where both rows AND columns need explicit control
+   - Example: Photo galleries, card grids with equal heights
+   - Even then, consider if `flex-wrap` could work instead
 
-For Blazor WebAssembly development, install the wasm-tools workload:
-```bash
-dotnet workload install wasm-tools
+5. **Migration from Grid to Flex:**
+   ```css
+   /* ❌ AVOID: Grid for simple two-column */
+   .container {
+       display: grid;
+       grid-template-columns: 400px 1fr;
+       gap: 32px;
+   }
+
+   /* ✅ PREFER: Flexbox for two-column */
+   .container {
+       display: flex;
+       gap: 32px;
+   }
+   .sidebar { flex: 0 0 400px; }
+   .main { flex: 1; }
+   ```
+
+---
+
+## CRITICAL: CSS Organization for Component Library
+
+**This project will be shipped as a component library.** Follow these CSS organization rules:
+
+### Scoped CSS is Mandatory
+
+- **ALWAYS use scoped CSS files** (`.razor.css`) for page and component-specific styles
+- Scoped CSS automatically applies to that component only and doesn't pollute global namespace
+- File naming: `ComponentName.razor.css` or `PageName.razor.css`
+
+### Global vs Scoped CSS
+
+**Global CSS** (`wwwroot/css/*.css`):
+- ✅ Theme variables (colors, spacing, z-index)
+- ✅ CSS reset files
+- ✅ Third-party library CSS (Bootstrap, etc.)
+- ❌ NEVER put page-specific or component-specific styles here
+
+**Scoped CSS** (`.razor.css` files):
+- ✅ All page-specific styles
+- ✅ All component-specific styles
+- ✅ Showcase/demo page styles
+- ✅ Layout-specific styles
+
+### File Structure Example
+
+```
+✅ CORRECT:
+src/BobsComponent.Client/Pages/
+  ├── MicroActions.razor
+  └── MicroActions.razor.css              ← Scoped CSS
+
+src/BobsComponent.Client/wwwroot/css/
+  ├── themes.css                          ← Global theme variables
+  └── app.css                             ← Global app styles
+
+❌ WRONG:
+src/BobsComponent.Client/wwwroot/css/
+  └── micro-actions-showcase.css          ← Should be scoped!
 ```
 
-### C# 14 Features in Use
+### index.html
 
-This codebase demonstrates modern C# 14 patterns:
-- **Collection expressions**: `[]` syntax for cleaner collection initialization
-- **Field-backed properties**: Using `field` keyword in custom accessors (planned for future components)
+- **NEVER manually add scoped CSS** to index.html
+- Blazor automatically injects scoped CSS via `<component>.styles.css`
+- Only add global CSS files (themes, resets) to index.html
 
-When contributing, prefer these modern patterns over legacy syntax.
-
-## Common Commands
-
-### Running the Application
-```bash
-cd src/BobsComponent.Client
-dotnet watch run
-```
-
-The application will be available at:
-- HTTPS: https://localhost:7017
-- HTTP: http://localhost:5096
-
-### Building
-```bash
-cd src
-dotnet build BobsComponents.sln
-```
-
-### Build Configurations
-```bash
-# Debug build (default)
-dotnet build
-
-# Release build with AOT
-dotnet build -c Release
-```
+---
 
 ## Development Environment
 
-The project includes a VS Code dev container configuration (.devcontainer):
-- Base image: .NET 10.0 with Node.js LTS
-- Opens workspace as a remote container in Docker
-- Includes C# extension (ms-dotnettools.csharp)
+**IMPORTANT:** This is a Windows development environment.
 
-To use the dev container, open the workspace in VS Code and select "Reopen in Container".
+- **Default to PowerShell or Windows CMD** for all commands
+- Use PowerShell syntax for process management, file operations, and system commands
+- Avoid using bash-specific syntax (e.g., `for` loops, `$()` substitution)
+- For complex operations, prefer PowerShell cmdlets over bash commands
 
-## Architecture Notes
+---
 
-### Component Library Structure
+## Page Route Management
 
-The Library project (BobsComponent.Library) currently has minimal components:
-- Uses `_Imports.razor` for shared namespace imports (@using Microsoft.AspNetCore.Components.Web)
-- Contains a `wwwroot` folder with:
-  - `background.png`: Background image asset
-  - `exampleJsInterop.js`: JavaScript interop example
+**CRITICAL:** Always verify no duplicate `@page` routes exist in the codebase.
 
-### Client Application Structure
+### Rules
 
-The Client project follows standard Blazor WebAssembly patterns:
-- `Program.cs`: Entry point with service registration and HttpClient configuration
-- `App.razor`: Router configuration with MainLayout as default layout
-- Pages:
-  - `Index.razor`: Home page that renders the MicroActions component
-  - `MicroActions.razor`: Example component demonstrating component lifecycle (OnInitialized)
-- Static assets in `wwwroot`:
-  - CSS: Bootstrap, Open Iconic icons, custom app styles, jc-reset.css
-  - Favicon and PWA icons
+1. **Check for existing routes** - Search for `@page "/your-route"` in all `.razor` files before creating new pages
+2. **Use unique routes** - Each page must have a unique route path
+3. **Delete old files** - When renaming/moving pages, delete the old file completely
 
-### Theming Approach
+### Verification
 
-The project emphasizes user-toggleable theming. Current CSS structure includes:
-- `app.css`: Main application styles
-- `jc-reset.css`: CSS reset
-- Bootstrap integration
-- Open Iconic icon library
+```powershell
+Get-ChildItem -Path "src" -Filter "*.razor" -Recurse | Select-String -Pattern '@page "' | Select-Object Path, Line
+```
 
-When adding new components, consider how they will support theming and customization.
+**Why:** Duplicate routes cause routing conflicts, build warnings, and runtime failures.
 
-## Import Structure
+---
 
-The Client project's `_Imports.razor` establishes global namespace access:
-- Standard Blazor namespaces (Components.Forms, Components.Routing, etc.)
-- BobsComponent.Client and BobsComponent.Client.Shared
-- **BobsComponent.Library** (making library components available throughout the client)
+## Color System Architecture
 
-New components in the Library will be automatically available in Client pages without additional imports.
+**Semantic Color Variables** - The single source of truth for all colors:
 
-## Component Development Philosophy
+```css
+--color-primary / --color-primary-hover / --color-primary-text
+--color-secondary / --color-secondary-hover / --color-secondary-text
+--color-success / --color-success-hover / --color-success-text
+--color-danger / --color-danger-hover / --color-danger-text
+--color-warning / --color-warning-hover / --color-warning-text
+--color-info / --color-info-hover / --color-info-text
+```
 
-When creating new components for this library:
-- **Real-world examples**: Components should showcase practical, production-ready usage patterns
-- **Package integration**: Demonstrate how to combine popular NuGet packages effectively (e.g., FluentValidation, AutoMapper, popular charting libraries, state management solutions)
-- **Educational value**: Code should serve as a learning resource, showing best practices and integration patterns
-- **Practical over trivial**: Focus on components that solve real problems developers face, not just basic examples
+**Z-Index Layer System:**
+
+```css
+--z-sticky: 100      /* Sticky headers */
+--z-backdrop: 999    /* Modal/dropdown backdrops */
+--z-dropdown: 1000   /* Dropdowns */
+--z-popover: 1500    /* Popovers */
+--z-modal: 2000      /* Modals */
+--z-tooltip: 3000    /* Tooltips */
+```
+
+### RULES
+
+1. ✅ ALWAYS use `--color-*` variables, NEVER hardcode colors
+2. ✅ ALWAYS use `--z-*` variables, NEVER hardcode z-index
+3. ❌ NEVER create component-specific color variables (e.g., `--btn-*`, `--async-*`)
+4. ❌ Buttons don't need z-index (only dropdowns/modals/tooltips)
+
+**Example:**
+
+```css
+/* ✅ CORRECT */
+.my-button {
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+}
+
+/* ❌ WRONG - Hardcoded */
+.my-button {
+    background: #0d6efd;
+    color: white;
+    z-index: 1000;
+}
+```
+
+For more CSS examples, see [docs/EXAMPLES.md - CSS Organization](docs/EXAMPLES.md#css-organization-examples).
+
+---
+
+## Development Policy: Never Duplicate Work
+
+**BEFORE creating new CSS variables, utilities, or patterns:**
+
+1. **Search first:**
+   - Check `themes.css` for existing color variables
+   - Check existing CSS files for similar utilities
+   - Grep codebase for similar patterns
+
+2. **Stop and ask:**
+   - If unsure whether something exists, ASK
+   - If creating something that seems standard, ASK
+   - Better to ask than create duplicates
+
+3. **Why it matters:**
+   - Duplicate systems = maintenance nightmare
+   - White-label theming breaks if colors scattered
+   - Wastes developer time finding "right" variable
+
+---
+
+## Hot Reload Limitations
+
+**CRITICAL:** Some code changes cannot be hot-reloaded and require a manual restart (Ctrl+C then `dotnet watch run`).
+
+### Changes Requiring Restart
+
+| Change Type | Why |
+|-------------|-----|
+| Component References (`@ref`) | Hot reload can't update reference infrastructure |
+| Component Parameters (`[Parameter]`) | Parameter binding is compiled, not runtime |
+| Public API changes | Component metadata changes require recompilation |
+| Render Fragment changes | Render tree compilation issues |
+
+### Safe for Hot Reload
+
+- CSS changes (always safe)
+- Markup changes in `.razor` files (usually safe)
+- Private method implementations (safe)
+- Logic inside existing methods (safe)
+
+### Prevention Strategy
+
+- Run `dotnet test` BEFORE starting `dotnet watch`
+- Make incremental changes and test frequently
+- For large refactors, stop hot reload and do a full rebuild
+
+For detailed scenarios and examples, see [docs/EXAMPLES.md - Hot Reload Scenarios](docs/EXAMPLES.md#hot-reload-scenarios).
+
+---
+
+## Security Best Practices
+
+This project follows security-first development principles. All code must adhere to these security guidelines.
+
+For detailed examples and code patterns, see [docs/EXAMPLES.md - Security Examples](docs/EXAMPLES.md#security-examples).
+
+### XSS (Cross-Site Scripting) Protection
+
+**JavaScript Interop:**
+- ❌ NEVER use `eval()` for DOM manipulation or JavaScript execution
+- ✅ ALWAYS create dedicated JavaScript functions for specific tasks
+- ✅ Sanitize all input before passing to JavaScript
+
+**Blazor Rendering:**
+- ✅ Use `@variable` syntax - Blazor automatically HTML-encodes strings
+- ❌ NEVER use `@((MarkupString)userInput)` with unsanitized user input
+- ✅ RenderFragment is safe - framework handles sanitization
+
+**CSS Injection Protection:**
+- ✅ Sanitize CSS values when building inline styles from parameters
+- ✅ Use regex to allow only safe characters (alphanumeric, %, -, ., units)
+- See `SkeletonLoader.razor` for sanitization example
+
+### Information Disclosure Prevention
+
+**Error Handling:**
+- ❌ NEVER expose `exception.Message` or stack traces to clients in production
+- ✅ Log errors server-side with full details
+- ✅ Return generic error messages to clients
+- ✅ For demo/test services (like `MockApiService`), clearly document that they expose errors for educational purposes
+
+### Input Validation
+
+**Component Parameters:**
+- ✅ Validate all user-controllable parameters
+- ✅ Use enums for predefined options (e.g., `ButtonStyle`, `ThemeInfo`)
+- ✅ Sanitize string inputs used in styles, attributes, or JavaScript
+- ❌ NEVER trust user input, even from other components
+
+**Theme Selection:**
+- ✅ Only allow selection from predefined theme list
+- ✅ JavaScript sanitizes theme values (alphanumeric, hyphens, underscores only)
+- ❌ NEVER accept arbitrary theme names from user
+
+### Secrets Management
+
+**Configuration:**
+- ❌ NEVER commit API keys, passwords, or credentials to the repository
+- ✅ Use environment variables or Azure Key Vault for secrets
+- ✅ Add `.env` files to `.gitignore`
+- ✅ Use user secrets for local development: `dotnet user-secrets`
+
+---
 
 ## Refactoring Policy
 
@@ -156,142 +351,85 @@ When creating new components for this library:
    - The element is brand new (created in the current session)
 
 2. **Always ask before refactoring** that involves:
-   - Renaming files (e.g., `Component.razor` → `BetterComponent.razor`)
-   - Renaming functions/methods (e.g., `GetData()` → `FetchData()`)
-   - Renaming classes/interfaces (e.g., `DataService` → `ApiService`)
+   - Renaming files, functions/methods, classes/interfaces
    - Renaming properties or parameters
    - Moving code between files
 
-3. **Why this matters:**
-   - Breaking changes affect other developers
-   - Existing code may depend on current names
-   - Git history becomes harder to track
-   - Refactoring should be intentional, not incidental
-
-4. **What you CAN do without asking:**
+3. **What you CAN do without asking:**
    - Create new files, functions, or classes
    - Fix bugs in existing code (keeping the same names)
    - Add new functionality to existing files
    - Update implementation details without changing signatures
 
-**Example:**
-- ❌ DON'T: Rename `MicroActions.razor` to `UserActions.razor` while fixing a bug
-- ✅ DO: Ask "I noticed MicroActions.razor might be better named UserActions.razor. Would you like me to rename it?"
-- ✅ DO: Create a new component called `UserActions.razor` if that's what the task requires
+**Why:** Breaking changes affect other developers, existing code may depend on current names, and git history becomes harder to track.
+
+---
 
 ## Git Workflow
+
+For detailed git examples and commands, see [docs/EXAMPLES.md - Git Workflow Examples](docs/EXAMPLES.md#git-workflow-examples).
 
 ### Syncing with Master Branch
 
 **ALWAYS** sync with master before creating or pushing to the remote repository. All conflicts must be resolved locally before any push occurs.
 
-**Required Steps:**
-
-1. **Pull latest master:**
-   ```bash
-   git pull origin master
-   ```
-
-2. **Switch to your branch:**
-   ```bash
-   git checkout branchNameHere
-   ```
-
-3. **Merge master into your branch:**
-   ```bash
-   git merge master
-   ```
-
-4. **Resolve conflicts (if any):**
-   - May require manual input to resolve conflicting files
-   - Open conflicts in your preferred editor
-   - Look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`)
-   - Choose the correct code and remove conflict markers
-   - Stage resolved files with `git add <file>`
-   - Complete the merge with `git commit`
-
-5. **Only after conflicts are resolved**, push to remote
+**Checklist:**
+1. ✅ `git pull origin master`
+2. ✅ `git checkout your-branch`
+3. ✅ `git merge master`
+4. ✅ Resolve conflicts (if any) - may require manual input
+5. ✅ Only after conflicts are resolved, push to remote
 
 ### Pre-Push Testing
 
 **CRITICAL:** Before pushing to remote as the FINAL action, ALWAYS verify your changes:
 
-1. **Run the application locally for testing:**
-   ```bash
-   cd src/BobsComponent.Client
-   dotnet watch run
-   ```
-   - Verify application starts without errors
-   - Test affected functionality manually
-   - Check for console errors or warnings
-
-2. **Run tests for the application:**
-   ```bash
-   dotnet test
-   ```
-   - Ensure all tests pass
-   - Fix any failing tests before pushing
-
-3. **Manual verification:**
-   - For now, ask the user to verify changes manually
-   - Automation of this verification will be implemented in the future
-   - Document what was tested in commit messages or PR description
+**Checklist:**
+1. ✅ Run `dotnet test` - ensure all tests pass
+2. ✅ Run `dotnet watch run` - verify application starts without errors
+3. ✅ Test affected functionality manually
+4. ✅ Check for console errors or warnings
+5. ✅ Ask user to verify changes (for now, automation coming later)
 
 **Remember:** Never push broken code to the remote repository. Local testing is mandatory before every push.
 
+For common commands, see [README.md - Common Commands](README.md#common-commands).
+
 ### CI/CD Pipeline Changes
 
-**CRITICAL:** When modifying GitHub Actions workflows or CI/CD configuration, ALWAYS verify changes locally before pushing:
+**CRITICAL:** When modifying GitHub Actions workflows or CI/CD configuration, ALWAYS verify changes locally before pushing.
 
-1. **Validate YAML syntax:**
-   ```bash
-   # Install yamllint if not already installed
-   pip install yamllint
+**Checklist:**
+1. ✅ Validate YAML syntax with `yamllint .github/workflows/deploy.yml`
+2. ✅ Test build commands locally in the same sequence
+3. ✅ Verify command flags are valid (`dotnet --help`)
+4. ✅ Test conditional logic (branch-based, environment variables)
+5. ✅ Make ONE change at a time - never batch untested workflow changes
 
-   # Validate workflow syntax
-   yamllint .github/workflows/deploy.yml
-   ```
+**Common mistakes to avoid:**
+- ❌ Invalid flags like `--parallel` on `dotnet restore`
+- ❌ Using MSBuild syntax incorrectly (`-maxcpucount` should be `-m`)
+- ❌ Mixing `--no-build` with different project contexts
 
-2. **Test build commands locally:**
-   - Extract the exact commands from the workflow file
-   - Run them in the same sequence locally
-   - Example from current workflow:
-   ```bash
-   dotnet workload install wasm-tools
-   dotnet restore src/BobsComponents.sln
-   dotnet build src/BobsComponents.sln --configuration Release --no-restore -m
-   dotnet test src/BobsComponents.sln --configuration Release --verbosity normal
-   dotnet publish src/BobsComponent.Client/BobsComponent.Client.csproj --configuration Release --output publish
-   ```
+**Why:** CI/CD failures waste GitHub Actions minutes, delay deployments, and can block the entire team. A single untested workflow change can cause 5-10 failed builds.
 
-3. **Verify command flags are valid:**
-   - Check `dotnet --help` for valid flags before using them
-   - Test unfamiliar flags locally first (e.g., `--parallel`, `-maxcpucount` vs `-m`)
-   - Common mistakes to avoid:
-     - Using invalid flags like `--parallel` on `dotnet restore`
-     - Using MSBuild syntax incorrectly (`-maxcpucount` should be `-m`)
-     - Mixing `--no-build` with different project contexts
-
-4. **Test conditional logic:**
-   - If using branch-based conditionals (e.g., AOT on/off), test both paths
-   - Verify environment variables and GitHub expressions are correct
-   - Test shell script syntax if using multiline `run:` blocks
-
-5. **Incremental testing approach:**
-   - Make ONE change at a time to workflows
-   - Push and verify it works before adding more changes
-   - If multiple changes are needed, create a feature branch to test them together first
-   - Never batch multiple untested workflow changes into a single commit
-
-**Why this matters:** CI/CD failures waste GitHub Actions minutes, delay deployments, and can block the entire team. A single untested workflow change can cause 5-10 failed builds before being fixed.
+For CI/CD examples and build commands, see [docs/EXAMPLES.md - CI/CD Configuration](docs/EXAMPLES.md#cicd-configuration-examples).
 
 ### Commit Guidelines
 
-**IMPORTANT:** Always fix git commit warnings before proceeding with commits or pull requests.
+**Checklist:**
+- ✅ Review `git status` output carefully before committing
+- ✅ Address any warnings about uncommitted changes
+- ✅ Stage only files related to the current work/feature
+- ✅ Ensure commit messages are clear and descriptive
+- ✅ Keep commits focused on a single logical change
 
-When working with git:
-- Review `git status` output carefully before committing
-- Address any warnings about uncommitted changes
-- Stage only files related to the current work/feature
-- Ensure commit messages are clear and descriptive
-- Keep commits focused on a single logical change
+---
+
+## Quick Reference Links
+
+**For Commands:** [README.md - Common Commands](README.md#common-commands)
+**For Examples:** [docs/EXAMPLES.md](docs/EXAMPLES.md)
+**For Project Info:** [README.md - Project Overview](README.md#project-overview)
+**For Security Examples:** [docs/EXAMPLES.md - Security Examples](docs/EXAMPLES.md#security-examples)
+**For Git Examples:** [docs/EXAMPLES.md - Git Workflow Examples](docs/EXAMPLES.md#git-workflow-examples)

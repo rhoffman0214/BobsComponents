@@ -1,0 +1,201 @@
+/* =====================================================
+   CodeSnippet Component - Scoped Styles
+   ===================================================== */
+
+/* Component container */
+.code-snippet {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--bg-secondary);
+    margin: 16px 0;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header */
+.code-snippet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.code-snippet-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.code-snippet-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-copy {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.btn-copy:hover:not(:disabled) {
+    background-color: var(--accent-light, var(--bg-tertiary));
+    border-color: var(--accent-primary);
+}
+
+.btn-copy:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Code body */
+.code-snippet-body {
+    display: flex;
+    overflow-x: auto;
+    background-color: var(--bg-primary);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.code-snippet-body.collapsed {
+    max-height: 300px;
+    overflow-y: hidden;
+}
+
+.code-snippet-body.expanded {
+    max-height: none;
+}
+
+/* Line numbers */
+.line-numbers {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 8px;
+    background-color: var(--bg-tertiary);
+    border-right: 1px solid var(--border-color);
+    user-select: none;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-tertiary);
+    text-align: right;
+    min-width: 40px;
+}
+
+.line-numbers span {
+    display: block;
+    min-height: 1.6em;
+}
+
+/* Code content */
+.code-content {
+    flex: 1;
+    padding: 12px 16px;
+    margin: 0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre;
+    overflow-x: auto;
+    min-width: 0;
+}
+
+.code-content code {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+/* Syntax highlighting classes */
+.code-snippet :global(.keyword) {
+    color: var(--syntax-keyword);
+    font-weight: 600;
+}
+
+.code-snippet :global(.string) {
+    color: var(--syntax-string);
+}
+
+.code-snippet :global(.number) {
+    color: var(--syntax-number);
+}
+
+.code-snippet :global(.comment) {
+    color: var(--syntax-comment);
+    font-style: italic;
+}
+
+.code-snippet :global(.tag) {
+    color: var(--syntax-tag);
+    font-weight: 600;
+}
+
+.code-snippet :global(.attribute) {
+    color: var(--syntax-attribute);
+}
+
+.code-snippet :global(.value) {
+    color: var(--syntax-value);
+}
+
+.code-snippet :global(.punctuation) {
+    color: var(--text-secondary);
+}
+
+/* Expand button */
+.btn-expand {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.btn-expand:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .code-snippet-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .code-snippet-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .code-content {
+        font-size: 0.8rem;
+        padding: 12px;
+    }
+
+    .line-numbers {
+        font-size: 0.8rem;
+        padding: 12px 6px;
+        min-width: 35px;
+    }
+}

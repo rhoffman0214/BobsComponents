@@ -1,17 +1,290 @@
-﻿<p>This is the Micro Actions Component!</p>
-<p>@foreach (var msg in _componentMessages) 
-    {
-        @($"{msg}");
-        <br />
-    }
-</p>
+@page "/microactions"
+@using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+@using BobsComponent.Library.Services
+@inject ActionQueueService QueueService
+@inject MockApiService ApiService
+@implements IDisposable
 
-@code {
-    private HashSet<string> _componentMessages = [];
+<div class="micro-actions-showcase">
+    <!-- Header -->
+    <div class="showcase-header">
+        <h1>MicroActions Showcase</h1>
+        <p>Comprehensive async action/loading state system with reusable components</p>
+    </div>
 
-    protected override void OnInitialized()
-    {
-        _componentMessages.Add("Micro Actions Component Initialized");
-        StateHasChanged();
-    }
-}
+    <!-- Queue Status -->
+    <div class="queue-status">
+        <div class="queue-status-header">Queue Status</div>
+        <div class="queue-stats">
+            <div class="stat-item">
+                <span class="stat-label">Running Actions</span>
+                <span class="stat-value @(QueueService.RunningCount >= 45 ? "warning" : "") @(QueueService.RunningCount >= 50 ? "danger" : "")">
+                    @QueueService.RunningCount / 50
+                </span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total Actions</span>
+                <span class="stat-value">@QueueService.Actions.Count</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Completed</span>
+                <span class="stat-value">@CompletedCount</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Legend -->
+    <div class="showcase-section">
+        <h2 class="section-title">Color Legend</h2>
+        <p class="section-description">All button colors update based on the selected theme</p>
+
+        <div class="color-legend">
+            <div class="legend-item">
+                <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Primary - Main actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Secondary" Style="ButtonStyle.Secondary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Secondary - Alternative actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Tertiary" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Tertiary - Informational actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Success - Positive actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Warning" Style="ButtonStyle.Warning" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Warning - Caution actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Error - Destructive actions</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Basic Async Buttons -->
+    <div class="showcase-section">
+        <h2 class="section-title">1. Basic Async Buttons</h2>
+        <p class="section-description">Different button styles with simulated delays (Quick: 500ms, Medium: 2s, Slow: 5s)</p>
+
+        <div class="button-grid button-grid-3 mb-3">
+            <AsyncButton Text="Quick Action" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Medium Action" Style="ButtonStyle.Secondary" OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
+            <AsyncButton Text="Slow Action" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+        </div>
+
+        <div class="button-grid button-grid-3">
+            <AsyncButton Text="Success Style" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Warning Style" Style="ButtonStyle.Warning" OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
+            <AsyncButton Text="Error Style" Style="ButtonStyle.Error" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+        </div>
+    </div>
+
+    <!-- Section 2: API Integration Examples -->
+    <div class="showcase-section">
+        <h2 class="section-title">2. API Integration Examples</h2>
+        <p class="section-description">Real API calls to JSONPlaceholder API</p>
+
+        <div class="button-grid button-grid-3">
+            <AsyncButton Text="Fetch Post" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.FetchPostAsync())" />
+            <AsyncButton Text="Fetch User" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => ApiService.FetchUserAsync())" />
+            <AsyncButton Text="Fetch Todos" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.FetchTodosAsync())" />
+        </div>
+    </div>
+
+    <!-- Section 3: Progress Tracking -->
+    <div class="showcase-section">
+        <h2 class="section-title">3. Progress Tracking</h2>
+        <p class="section-description">Long operations with progress bars showing completion status</p>
+
+        <div class="card-grid">
+            @foreach (var item in ProgressItems)
+            {
+                <div class="demo-card">
+                    <div class="card-header">@item.Name</div>
+                    <div class="card-content">
+                        <AsyncButton @ref="@item.ButtonRef"
+                                     Text="@item.Name"
+                                     Style="@item.Style"
+                                     ShowProgress="true"
+                                     Progress="@item.Progress"
+                                     OnClickAsync="@(() => HandleProgressAction(item))"
+                                     FullWidth="true" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Section 4: Error Handling -->
+    <div class="showcase-section">
+        <h2 class="section-title">4. Error Handling</h2>
+        <p class="section-description">Demonstrating error states and retry functionality</p>
+
+        <h3 class="subsection-title">Always Succeed</h3>
+        <div class="button-grid button-grid-3 mb-3">
+            @for (int i = 0; i < 3; i++)
+            {
+                var index = i;
+                <AsyncButton Text="@($"Success Action {index + 1}")"
+                             Style="@SuccessButtonStyles[index]"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())"
+                             ShowErrorRetry="false" />
+            }
+        </div>
+
+        <h3 class="subsection-title">Always Fail (with Retry)</h3>
+        <div class="button-grid button-grid-3">
+            @for (int i = 0; i < 3; i++)
+            {
+                var index = i;
+                <AsyncButton Text="@($"Fail Action {index + 1}")"
+                             Style="@ErrorButtonStyles[index]"
+                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))"
+                             ShowErrorRetry="true" />
+            }
+        </div>
+    </div>
+
+    <!-- Section 5: Concurrent Actions Demo -->
+    <div class="showcase-section">
+        <h2 class="section-title">5. Concurrent Actions Demo (50 Button Grid)</h2>
+        <p class="section-description">Test the 50 concurrent action limit - buttons disable when limit is reached</p>
+
+        <div class="mb-3 d-flex gap-2">
+            <AsyncButton Text="Clear All" Style="ButtonStyle.Secondary" OnClickAsync="ClearAllActions" />
+            <AsyncButton Text="Start All (Test Limit)" Style="ButtonStyle.Primary" OnClickAsync="StartAllActions" />
+        </div>
+
+        <div class="button-grid button-grid-10">
+            @for (int i = 0; i < 50; i++)
+            {
+                var index = i;
+                <AsyncButton @ref="@ConcurrentButtons[index]"
+                             Text="@((index + 1).ToString())"
+                             Style="@ConcurrentButtonStyles[index]"
+                             OnClickAsync="@(() => HandleQueuedAction($"Action {index + 1}"))"
+                             ShowErrorRetry="false"
+                             AutoResetDelay="1000" />
+            }
+        </div>
+    </div>
+
+    <!-- Section 6: Skeleton Loading -->
+    <div class="showcase-section">
+        <h2 class="section-title">6. Skeleton Loading</h2>
+        <p class="section-description">Loading placeholders for data tables</p>
+
+        <button class="btn-retry mb-3" @onclick="ToggleDataLoading">
+            @(isLoadingData ? "Show Data" : "Show Loading")
+        </button>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (isLoadingData)
+                {
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <tr>
+                            <td><SkeletonLoader Width="40px" Height="16px" /></td>
+                            <td><SkeletonLoader Width="120px" Height="16px" /></td>
+                            <td><SkeletonLoader Width="180px" Height="16px" /></td>
+                            <td><SkeletonLoader Width="80px" Height="24px" BorderRadius="12px" /></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    @foreach (var user in SampleUsers)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Name</td>
+                            <td>@user.Email</td>
+                            <td><span style="background: #198754; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem;">Active</span></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Section 7: Complex Scenarios -->
+    <div class="showcase-section">
+        <h2 class="section-title">7. Complex Scenarios</h2>
+        <p class="section-description">Multi-step operations and loading overlays</p>
+
+        <div class="card-grid">
+            <div class="demo-card">
+                <div class="card-header">Loading Overlay Demo</div>
+                <div class="card-content" style="position: relative; min-height: 150px;">
+                    <p>This demonstrates a loading overlay during async operations.</p>
+                    <AsyncButton Text="Trigger Overlay"
+                                 Style="ButtonStyle.Primary"
+                                 OnClickAsync="HandleOverlayAction"
+                                 FullWidth="true" />
+                    <LoadingOverlay IsVisible="@showOverlay"
+                                    Text="Processing..."
+                                    BlurBackground="true" />
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <div class="card-header">Spinner Variants</div>
+                <div class="card-content">
+                    <div class="d-flex gap-3 align-items-center mb-3">
+                        <LoadingSpinner Style="LoadingSpinner.SpinnerStyle.Circle" Size="LoadingSpinner.SpinnerSize.Medium" />
+                        <LoadingSpinner Style="LoadingSpinner.SpinnerStyle.Dots" Size="LoadingSpinner.SpinnerSize.Medium" />
+                        <LoadingSpinner Style="LoadingSpinner.SpinnerStyle.Pulse" Size="LoadingSpinner.SpinnerSize.Medium" />
+                        <LoadingSpinner Style="LoadingSpinner.SpinnerStyle.Bars" Size="LoadingSpinner.SpinnerSize.Medium" />
+                    </div>
+                    <p class="text-muted" style="font-size: 0.85rem;">Circle, Dots, Pulse, and Bars spinner styles</p>
+                </div>
+            </div>
+
+            <div class="demo-card">
+                <div class="card-header">Error Display Component</div>
+                <div class="card-content">
+                    <ErrorDisplay @ref="errorDisplayRef"
+                                  Title="Sample Error"
+                                  Message="This is what an error looks like with retry functionality."
+                                  ShowRetry="true"
+                                  Dismissible="true"
+                                  OnRetry="@(() => errorDisplayRef?.Reset())" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 8: Buttons -->
+    <div class="showcase-section">
+        <h2 class="section-title">8. Buttons</h2>
+        <p class="section-description">Quick button examples - see full documentation for comprehensive customization options</p>
+
+        <div class="info-box">
+            <p>
+                For comprehensive button examples including sizes, icons, ARIA attributes, data attributes, and advanced customization,
+                visit the <a href="/inputexamples/button">Button Examples page</a>.
+            </p>
+        </div>
+
+        <div class="button-grid button-grid-3">
+            <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
+        </div>
+    </div>
+</div>

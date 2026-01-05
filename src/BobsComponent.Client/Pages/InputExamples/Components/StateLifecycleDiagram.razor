@@ -1,0 +1,118 @@
+@using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+
+<div class="state-lifecycle-diagram">
+    <h2>Button State Lifecycle</h2>
+    <p class="diagram-description">
+        Understanding how AsyncButton manages state transitions automatically during async operations.
+    </p>
+
+    <div class="diagram-container">
+        <div class="state-flow">
+            <!-- Idle State -->
+            <div class="state-box idle">
+                <div class="state-name">Idle</div>
+                <div class="state-description">Button ready for interaction</div>
+                <div class="state-details">
+                    <span class="detail-label">Visual:</span> Normal appearance<br/>
+                    <span class="detail-label">Clickable:</span> Yes<br/>
+                    <span class="detail-label">ARIA:</span> aria-busy="false"
+                </div>
+            </div>
+
+            <!-- Arrow to Loading -->
+            <div class="arrow">
+                <div class="arrow-line"></div>
+                <div class="arrow-label">OnClickAsync invoked</div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="state-box loading">
+                <div class="state-name">Loading</div>
+                <div class="state-description">Async operation in progress</div>
+                <div class="state-details">
+                    <span class="detail-label">Visual:</span> Spinner + LoadingText<br/>
+                    <span class="detail-label">Clickable:</span> No (auto-disabled)<br/>
+                    <span class="detail-label">ARIA:</span> aria-busy="true"<br/>
+                    <span class="detail-label">Delay:</span> 200ms before showing spinner
+                </div>
+            </div>
+
+            <!-- Split: Success or Error -->
+            <div class="arrow-split">
+                <div class="arrow-branch success-branch">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">Operation succeeds</div>
+                </div>
+                <div class="arrow-branch error-branch">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">Operation throws exception</div>
+                </div>
+            </div>
+
+            <!-- Success and Error States -->
+            <div class="state-row">
+                <div class="state-box success">
+                    <div class="state-name">Success</div>
+                    <div class="state-description">Operation completed</div>
+                    <div class="state-details">
+                        <span class="detail-label">Visual:</span> ✓ + SuccessText<br/>
+                        <span class="detail-label">Duration:</span> 2s (default)<br/>
+                        <span class="detail-label">Auto-reset:</span> Yes
+                    </div>
+                </div>
+
+                <div class="state-box error">
+                    <div class="state-name">Error</div>
+                    <div class="state-description">Operation failed</div>
+                    <div class="state-details">
+                        <span class="detail-label">Visual:</span> ✕ + ErrorText<br/>
+                        <span class="detail-label">Retry:</span> Optional (ShowErrorRetry)<br/>
+                        <span class="detail-label">Auto-reset:</span> Manual or 2s
+                    </div>
+                </div>
+            </div>
+
+            <!-- Return arrows -->
+            <div class="return-arrows">
+                <div class="return-arrow success-return">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">Auto-reset (2s)</div>
+                </div>
+                <div class="return-arrow error-return">
+                    <div class="arrow-line"></div>
+                    <div class="arrow-label">Auto-reset or Retry click</div>
+                </div>
+            </div>
+
+            <!-- Return to Idle -->
+            <div class="state-box idle final">
+                <div class="state-name">Idle</div>
+                <div class="state-description">Ready for next interaction</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="diagram-notes">
+        <h3>Key Features</h3>
+        <ul>
+            <li><strong>Automatic State Management:</strong> No manual state tracking required</li>
+            <li><strong>200ms Delay:</strong> Quick operations (&lt;200ms) don't show loading spinner (better UX)</li>
+            <li><strong>Auto-disable:</strong> Button automatically disables during loading to prevent double-clicks</li>
+            <li><strong>Customizable Timing:</strong> All durations can be overridden via parameters</li>
+            <li><strong>Cancellation Support:</strong> Cancel() method available for long-running operations</li>
+            <li><strong>Progress Tracking:</strong> Optional ShowProgress parameter for operations with progress updates</li>
+        </ul>
+
+        <h3>Event Callbacks</h3>
+        <CodeSnippet
+            Code="@eventCallbacksCode"
+            Language="CodeLanguage.Razor"
+            ShowLineNumbers="false" />
+    </div>
+</div>
+
+@code {
+    private string eventCallbacksCode = @"OnStateChanged=""@((state) => Console.WriteLine($""State: {state}""))""
+OnProgressChanged=""@((progress) => Console.WriteLine($""Progress: {progress}%""))""";
+}

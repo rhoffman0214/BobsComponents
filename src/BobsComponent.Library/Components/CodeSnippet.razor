@@ -1,0 +1,252 @@
+@using BobsComponent.Library.Enums
+@using BobsComponent.Library.Services
+@using System.Text.RegularExpressions
+@using System.Web
+@inject ClipboardService ClipboardService
+
+<div class="code-snippet @CssClass">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <div class="code-snippet-header">
+            <h4 class="code-snippet-title">@Title</h4>
+            <div class="code-snippet-actions">
+                @if (ShowCopyButton)
+                {
+                    <button @onclick="CopyCodeAsync" class="btn-copy" disabled="@isCopying">
+                        @if (copySuccess)
+                        {
+                            <span>✓ Copied</span>
+                        }
+                        else if (isCopying)
+                        {
+                            <span>...</span>
+                        }
+                        else
+                        {
+                            <span>📋 Copy</span>
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="code-snippet-body @(isExpanded ? "expanded" : "collapsed")">
+        @if (ShowLineNumbers)
+        {
+            <div class="line-numbers">
+                @for (int i = 1; i <= lineCount; i++)
+                {
+                    <span>@i</span>
+                }
+            </div>
+        }
+        <pre class="code-content language-@Language.ToString().ToLower()"><code>@HighlightedCode</code></pre>
+    </div>
+
+    @if (ExpandableFrom.HasValue && lineCount > ExpandableFrom.Value && !isExpanded)
+    {
+        <button @onclick="() => isExpanded = true" class="btn-expand">
+            ▼ Show All (@lineCount lines)
+        </button>
+    }
+    else if (ExpandableFrom.HasValue && lineCount > ExpandableFrom.Value && isExpanded)
+    {
+        <button @onclick="() => isExpanded = false" class="btn-expand">
+            ▲ Collapse
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Code { get; set; } = string.Empty;
+
+    [Parameter]
+    public CodeLanguage Language { get; set; } = CodeLanguage.Razor;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public bool ShowCopyButton { get; set; } = true;
+
+    [Parameter]
+    public bool ShowLineNumbers { get; set; } = true;
+
+    [Parameter]
+    public int? ExpandableFrom { get; set; }
+
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    private bool copySuccess = false;
+    private bool isCopying = false;
+    private bool isExpanded = false;
+    private int lineCount = 0;
+
+    private MarkupString HighlightedCode => new(HighlightSyntax(Code, Language));
+
+    protected override void OnParametersSet()
+    {
+        lineCount = Code.Split('\n').Length;
+    }
+
+    private async Task CopyCodeAsync()
+    {
+        if (isCopying) return;
+
+        try
+        {
+            isCopying = true;
+            StateHasChanged();
+
+            var success = await ClipboardService.CopyToClipboardAsync(Code);
+            copySuccess = success;
+
+            if (success)
+            {
+                StateHasChanged();
+                await Task.Delay(2000);
+                copySuccess = false;
+            }
+        }
+        finally
+        {
+            isCopying = false;
+            StateHasChanged();
+        }
+    }
+
+    private string HighlightSyntax(string code, CodeLanguage language)
+    {
+        if (string.IsNullOrEmpty(code))
+            return string.Empty;
+
+        return language switch
+        {
+            CodeLanguage.Razor => HighlightRazor(code),
+            CodeLanguage.CSharp => HighlightCSharp(code),
+            CodeLanguage.HTML => HighlightHtml(code),
+            CodeLanguage.CSS => HighlightCss(code),
+            CodeLanguage.JSON => HighlightJson(code),
+            _ => HttpUtility.HtmlEncode(code)
+        };
+    }
+
+    private string HighlightRazor(string code)
+    {
+        // HTML encode first
+        var encoded = HttpUtility.HtmlEncode(code);
+
+        // Highlight Razor directives (@page, @using, @inject, @code, etc.)
+        encoded = Regex.Replace(encoded, @"(@(?:page|using|inject|code|if|foreach|for|while|implements))\b",
+            "<span class=\"keyword\">$1</span>");
+
+        // Highlight attributes (key="value" pattern)
+        encoded = Regex.Replace(encoded, @"(\w+)=&quot;([^&]*)&quot;",
+            "<span class=\"attribute\">$1</span>=<span class=\"punctuation\">&quot;</span><span class=\"string\">$2</span><span class=\"punctuation\">&quot;</span>");
+
+        // Highlight C# keywords in @code blocks
+        encoded = Regex.Replace(encoded, @"\b(public|private|protected|internal|static|async|await|Task|void|string|int|bool|var|class|interface|enum|namespace|using)\b",
+            "<span class=\"keyword\">$1</span>");
+
+        // Highlight tags (< and >)
+        encoded = Regex.Replace(encoded, @"&lt;(/?)(\w+)",
+            "<span class=\"punctuation\">&lt;$1</span><span class=\"tag\">$2</span>");
+        encoded = Regex.Replace(encoded, @"/?&gt;",
+            "<span class=\"punctuation\">$&</span>");
+
+        return encoded;
+    }
+
+    private string HighlightCSharp(string code)
+    {
+        var encoded = HttpUtility.HtmlEncode(code);
+
+        // Highlight keywords
+        encoded = Regex.Replace(encoded, @"\b(public|private|protected|internal|static|async|await|Task|void|string|int|bool|var|class|interface|enum|namespace|using|return|if|else|for|foreach|while|switch|case|break|continue|new|this|base|override|virtual|abstract)\b",
+            "<span class=\"keyword\">$1</span>");
+
+        // Highlight strings
+        encoded = Regex.Replace(encoded, @"&quot;([^&]*)&quot;",
+            "<span class=\"punctuation\">&quot;</span><span class=\"string\">$1</span><span class=\"punctuation\">&quot;</span>");
+
+        // Highlight numbers
+        encoded = Regex.Replace(encoded, @"\b(\d+)\b",
+            "<span class=\"number\">$1</span>");
+
+        // Highlight comments
+        encoded = Regex.Replace(encoded, @"(//.*?)$",
+            "<span class=\"comment\">$1</span>", RegexOptions.Multiline);
+
+        return encoded;
+    }
+
+    private string HighlightHtml(string code)
+    {
+        var encoded = HttpUtility.HtmlEncode(code);
+
+        // Highlight tags
+        encoded = Regex.Replace(encoded, @"&lt;(/?)(\w+)",
+            "<span class=\"punctuation\">&lt;$1</span><span class=\"tag\">$2</span>");
+        encoded = Regex.Replace(encoded, @"/?&gt;",
+            "<span class=\"punctuation\">$&</span>");
+
+        // Highlight attributes
+        encoded = Regex.Replace(encoded, @"(\w+)=&quot;([^&]*)&quot;",
+            "<span class=\"attribute\">$1</span>=<span class=\"punctuation\">&quot;</span><span class=\"value\">$2</span><span class=\"punctuation\">&quot;</span>");
+
+        // Highlight comments
+        encoded = Regex.Replace(encoded, @"&lt;!--(.*?)--&gt;",
+            "<span class=\"comment\">&lt;!--$1--&gt;</span>", RegexOptions.Singleline);
+
+        return encoded;
+    }
+
+    private string HighlightCss(string code)
+    {
+        var encoded = HttpUtility.HtmlEncode(code);
+
+        // Highlight selectors (simple approach)
+        encoded = Regex.Replace(encoded, @"^(\s*[\w\-\.#:]+)\s*\{",
+            "<span class=\"tag\">$1</span> {", RegexOptions.Multiline);
+
+        // Highlight properties
+        encoded = Regex.Replace(encoded, @"(\w[\w-]*)\s*:",
+            "<span class=\"attribute\">$1</span>:");
+
+        // Highlight values
+        encoded = Regex.Replace(encoded, @":\s*([^;]+);",
+            ": <span class=\"value\">$1</span>;");
+
+        // Highlight comments
+        encoded = Regex.Replace(encoded, @"/\*(.*?)\*/",
+            "<span class=\"comment\">/*$1*/</span>", RegexOptions.Singleline);
+
+        return encoded;
+    }
+
+    private string HighlightJson(string code)
+    {
+        var encoded = HttpUtility.HtmlEncode(code);
+
+        // Highlight property names
+        encoded = Regex.Replace(encoded, @"&quot;(\w+)&quot;\s*:",
+            "<span class=\"punctuation\">&quot;</span><span class=\"attribute\">$1</span><span class=\"punctuation\">&quot;</span>:");
+
+        // Highlight string values
+        encoded = Regex.Replace(encoded, @":\s*&quot;([^&]*)&quot;",
+            ": <span class=\"punctuation\">&quot;</span><span class=\"string\">$1</span><span class=\"punctuation\">&quot;</span>");
+
+        // Highlight numbers
+        encoded = Regex.Replace(encoded, @":\s*(\d+)",
+            ": <span class=\"number\">$1</span>");
+
+        // Highlight booleans
+        encoded = Regex.Replace(encoded, @"\b(true|false|null)\b",
+            "<span class=\"keyword\">$1</span>");
+
+        return encoded;
+    }
+}

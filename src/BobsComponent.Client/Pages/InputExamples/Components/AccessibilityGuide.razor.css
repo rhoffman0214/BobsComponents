@@ -1,0 +1,365 @@
+/* =====================================================
+   AccessibilityGuide Component - Scoped Styles
+   ===================================================== */
+
+.accessibility-guide {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 32px;
+    margin: 24px 0;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Header */
+.guide-header {
+    margin-bottom: 32px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.guide-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+}
+
+.guide-header p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Content */
+.guide-content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* Sections */
+.guide-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background-color: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.guide-section h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.guide-section h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 8px 0;
+}
+
+.section-intro {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin: 0;
+    font-style: italic;
+}
+
+/* Checklist */
+.checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checklist-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+    background-color: var(--bg-secondary);
+    border-radius: 6px;
+    border-left: 3px solid var(--color-success);
+}
+
+.check-icon {
+    flex: 0 0 auto;
+    font-size: 1.2rem;
+    color: var(--color-success);
+    font-weight: bold;
+}
+
+.check-content {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.check-content strong {
+    color: var(--accent-primary);
+}
+
+/* Example Boxes */
+.example-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.example-box p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.help-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Keyboard Shortcuts */
+.keyboard-shortcuts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+}
+
+.shortcut-item {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 8px;
+}
+
+.shortcut-item kbd {
+    flex: 0 0 auto;
+    padding: 4px 8px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut-item span {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Focus Examples */
+.focus-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.focus-demo {
+    padding: 16px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.focus-demo p {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Comparison Grid */
+.comparison-grid {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.comparison-grid > .comparison-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.comparison-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.comparison-item ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.comparison-item li {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+/* Contrast Info */
+.contrast-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background-color: var(--bg-tertiary);
+    border-radius: 6px;
+}
+
+.contrast-level {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background-color: var(--bg-primary);
+    border-radius: 4px;
+    border-left: 3px solid var(--accent-primary);
+}
+
+.contrast-level strong {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.contrast-level span {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Best Practices Grid */
+.best-practices-grid {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.best-practices-grid > .practice-card {
+    flex: 1;
+    min-width: 0;
+}
+
+.practice-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.practice-card:first-child {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 2px solid var(--color-success);
+}
+
+.practice-card:last-child {
+    background-color: rgba(244, 67, 54, 0.1);
+    border: 2px solid var(--color-danger);
+}
+
+.practice-card h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.practice-card:first-child h4 {
+    color: var(--color-success);
+}
+
+.practice-card:last-child h4 {
+    color: var(--color-danger);
+}
+
+.practice-card ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.practice-card li {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .comparison-grid,
+    .best-practices-grid {
+        flex-direction: column;
+    }
+
+    .comparison-grid > .comparison-item,
+    .best-practices-grid > .practice-card {
+        flex: 1 1 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .accessibility-guide {
+        padding: 20px;
+    }
+
+    .guide-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .guide-section {
+        padding: 16px;
+    }
+
+    .guide-section h3 {
+        font-size: 1.2rem;
+    }
+
+    .shortcut-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

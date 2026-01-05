@@ -1,0 +1,750 @@
+/* ===================================
+   BobsComponents Theme System
+   ================================== */
+
+/* Default Light Theme */
+:root,
+[data-theme="light"] {
+    /* Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+
+    /* Text Colors */
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-tertiary: #9ca3af;
+
+    /* Accent Colors */
+    --accent-primary: #3b82f6;
+    --accent-hover: #2563eb;
+    --accent-light: #dbeafe;
+
+    /* Semantic Color Palette (White Label Customizable) */
+    --color-primary: #0d6efd;
+    --color-primary-hover: #0b5ed7;
+    --color-primary-text: #ffffff;
+
+    --color-secondary: #6c757d;
+    --color-secondary-hover: #5c636a;
+    --color-secondary-text: #ffffff;
+
+    --color-success: #198754;
+    --color-success-hover: #157347;
+    --color-success-text: #ffffff;
+
+    --color-danger: #dc3545;
+    --color-danger-hover: #bb2d3b;
+    --color-danger-text: #ffffff;
+
+    --color-warning: #ffc107;
+    --color-warning-hover: #ffb300;
+    --color-warning-text: #000000;
+
+    --color-info: #0dcaf0;
+    --color-info-hover: #31d2f2;
+    --color-info-text: #000000;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.5);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: rgba(0, 0, 0, 0.08);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #0000ff;      /* Blue - keywords, directives */
+    --syntax-string: #a31515;       /* Dark red - string literals */
+    --syntax-number: #098658;       /* Green - numeric values */
+    --syntax-comment: #008000;      /* Green - comments */
+    --syntax-tag: #800000;          /* Maroon - HTML/XML tags */
+    --syntax-attribute: #ff0000;    /* Red - attribute names */
+    --syntax-value: #0000ff;        /* Blue - attribute values */
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    /* Background Colors */
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-tertiary: #374151;
+
+    /* Text Colors */
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+
+    /* Accent Colors */
+    --accent-primary: #60a5fa;
+    --accent-hover: #3b82f6;
+    --accent-light: #1e3a8a;
+
+    /* Semantic Color Palette */
+    --color-primary: #3b82f6;
+    --color-primary-hover: #2563eb;
+    --color-primary-text: #ffffff;
+
+    --color-secondary: #9ca3af;
+    --color-secondary-hover: #6b7280;
+    --color-secondary-text: #ffffff;
+
+    --color-success: #34d399;
+    --color-success-hover: #10b981;
+    --color-success-text: #000000;
+
+    --color-danger: #f87171;
+    --color-danger-hover: #ef4444;
+    --color-danger-text: #000000;
+
+    --color-warning: #fbbf24;
+    --color-warning-hover: #f59e0b;
+    --color-warning-text: #000000;
+
+    --color-info: #60a5fa;
+    --color-info-hover: #3b82f6;
+    --color-info-text: #000000;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(31, 41, 55, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #4b5563;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #569cd6;      /* Light blue - keywords, directives */
+    --syntax-string: #ce9178;       /* Light orange - string literals */
+    --syntax-number: #b5cea8;       /* Light green - numeric values */
+    --syntax-comment: #6a9955;      /* Green - comments */
+    --syntax-tag: #4ec9b0;          /* Cyan - HTML/XML tags */
+    --syntax-attribute: #9cdcfe;    /* Light cyan - attribute names */
+    --syntax-value: #ce9178;        /* Light orange - attribute values */
+}
+
+/* Fire Nation Theme */
+[data-theme="fire-nation"] {
+    /* Background Colors */
+    --bg-primary: #1a0f0a;
+    --bg-secondary: #2d1810;
+    --bg-tertiary: #4a2818;
+
+    /* Text Colors */
+    --text-primary: #fef3c7;
+    --text-secondary: #fcd34d;
+    --text-tertiary: #f59e0b;
+
+    /* Accent Colors */
+    --accent-primary: #dc2626;
+    --accent-hover: #b91c1c;
+    --accent-light: #fee2e2;
+
+    /* Semantic Color Palette (White Label Customizable) */
+    --color-primary: #dc2626;
+    --color-primary-hover: #b91c1c;
+    --color-primary-text: #fef3c7;
+
+    --color-secondary: #f59e0b;
+    --color-secondary-hover: #d97706;
+    --color-secondary-text: #1a0f0a;
+
+    --color-success: #fbbf24;
+    --color-success-hover: #f59e0b;
+    --color-success-text: #1a0f0a;
+
+    --color-danger: #7f1d1d;
+    --color-danger-hover: #991b1b;
+    --color-danger-text: #fef3c7;
+
+    --color-warning: #fcd34d;
+    --color-warning-hover: #fbbf24;
+    --color-warning-text: #1a0f0a;
+
+    --color-info: #f97316;
+    --color-info-hover: #ea580c;
+    --color-info-text: #fef3c7;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(220, 38, 38, 0.15);
+    --glass-border: rgba(252, 211, 77, 0.2);
+    --glass-shadow: rgba(220, 38, 38, 0.3);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #7c2d12;
+    --shadow-sm: 0 1px 2px 0 rgba(220, 38, 38, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(220, 38, 38, 0.4);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #dc2626;      /* Bright red - keywords, directives */
+    --syntax-string: #fbbf24;       /* Amber - string literals */
+    --syntax-number: #f97316;       /* Orange - numeric values */
+    --syntax-comment: #92400e;      /* Dark amber - comments */
+    --syntax-tag: #ea580c;          /* Bright orange - HTML/XML tags */
+    --syntax-attribute: #fcd34d;    /* Yellow - attribute names */
+    --syntax-value: #fde68a;        /* Light amber - attribute values */
+}
+
+/* Water Tribe Theme */
+[data-theme="water-tribe"] {
+    /* Background Colors */
+    --bg-primary: #0c1821;
+    --bg-secondary: #1e3a5f;
+    --bg-tertiary: #2d5580;
+
+    /* Text Colors */
+    --text-primary: #e0f2fe;
+    --text-secondary: #bae6fd;
+    --text-tertiary: #7dd3fc;
+
+    /* Accent Colors */
+    --accent-primary: #0ea5e9;
+    --accent-hover: #0284c7;
+    --accent-light: #e0f2fe;
+
+    /* Semantic Color Palette (White Label Customizable) */
+    --color-primary: #0ea5e9;
+    --color-primary-hover: #0284c7;
+    --color-primary-text: #ffffff;
+
+    --color-secondary: #38bdf8;
+    --color-secondary-hover: #0ea5e9;
+    --color-secondary-text: #0c1821;
+
+    --color-success: #06b6d4;
+    --color-success-hover: #0891b2;
+    --color-success-text: #ffffff;
+
+    --color-danger: #7dd3fc;
+    --color-danger-hover: #38bdf8;
+    --color-danger-text: #0c1821;
+
+    --color-warning: #22d3ee;
+    --color-warning-hover: #06b6d4;
+    --color-warning-text: #0c1821;
+
+    --color-info: #bae6fd;
+    --color-info-hover: #7dd3fc;
+    --color-info-text: #0c1821;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(14, 165, 233, 0.15);
+    --glass-border: rgba(186, 230, 253, 0.2);
+    --glass-shadow: rgba(14, 165, 233, 0.3);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #075985;
+    --shadow-sm: 0 1px 2px 0 rgba(14, 165, 233, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(14, 165, 233, 0.4);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #0ea5e9;      /* Bright cyan - keywords, directives */
+    --syntax-string: #7dd3fc;       /* Light cyan - string literals */
+    --syntax-number: #06b6d4;       /* Aqua - numeric values */
+    --syntax-comment: #0891b2;      /* Darker cyan - comments */
+    --syntax-tag: #38bdf8;          /* Sky blue - HTML/XML tags */
+    --syntax-attribute: #bae6fd;    /* Pale cyan - attribute names */
+    --syntax-value: #7dd3fc;        /* Light sky - attribute values */
+}
+
+/* Earth Kingdom Theme */
+[data-theme="earth-kingdom"] {
+    /* Background Colors */
+    --bg-primary: #1c1410;
+    --bg-secondary: #2d2417;
+    --bg-tertiary: #44321e;
+
+    /* Text Colors */
+    --text-primary: #fef3c7;
+    --text-secondary: #d4c5a0;
+    --text-tertiary: #a89968;
+
+    /* Accent Colors */
+    --accent-primary: #65a30d;
+    --accent-hover: #4d7c0f;
+    --accent-light: #ecfccb;
+
+    /* Semantic Color Palette (White Label Customizable) */
+    --color-primary: #65a30d;
+    --color-primary-hover: #4d7c0f;
+    --color-primary-text: #fef3c7;
+
+    --color-secondary: #a89968;
+    --color-secondary-hover: #92400e;
+    --color-secondary-text: #fef3c7;
+
+    --color-success: #84cc16;
+    --color-success-hover: #65a30d;
+    --color-success-text: #1c1410;
+
+    --color-danger: #b45309;
+    --color-danger-hover: #92400e;
+    --color-danger-text: #fef3c7;
+
+    --color-warning: #eab308;
+    --color-warning-hover: #ca8a04;
+    --color-warning-text: #1c1410;
+
+    --color-info: #a3e635;
+    --color-info-hover: #84cc16;
+    --color-info-text: #1c1410;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(101, 163, 13, 0.15);
+    --glass-border: rgba(212, 197, 160, 0.2);
+    --glass-shadow: rgba(68, 50, 30, 0.5);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #78350f;
+    --shadow-sm: 0 1px 2px 0 rgba(68, 50, 30, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(68, 50, 30, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(68, 50, 30, 0.5);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #84cc16;      /* Lime green - keywords, directives */
+    --syntax-string: #eab308;       /* Yellow - string literals */
+    --syntax-number: #a3e635;       /* Light green - numeric values */
+    --syntax-comment: #4d7c0f;      /* Darker green - comments */
+    --syntax-tag: #65a30d;          /* Bright lime - HTML/XML tags */
+    --syntax-attribute: #d4c5a0;    /* Gold - attribute names */
+    --syntax-value: #fef3c7;        /* Pale yellow - attribute values */
+}
+
+/* Air Nomads Theme */
+[data-theme="air-nomads"] {
+    /* Background Colors */
+    --bg-primary: #fef3c7;
+    --bg-secondary: #fde68a;
+    --bg-tertiary: #fcd34d;
+
+    /* Text Colors */
+    --text-primary: #451a03;
+    --text-secondary: #78350f;
+    --text-tertiary: #92400e;
+
+    /* Accent Colors */
+    --accent-primary: #ea580c;
+    --accent-hover: #c2410c;
+    --accent-light: #ffedd5;
+
+    /* Semantic Color Palette (White Label Customizable) */
+    --color-primary: #ea580c;
+    --color-primary-hover: #c2410c;
+    --color-primary-text: #fef3c7;
+
+    --color-secondary: #f59e0b;
+    --color-secondary-hover: #d97706;
+    --color-secondary-text: #451a03;
+
+    --color-success: #f97316;
+    --color-success-hover: #ea580c;
+    --color-success-text: #451a03;
+
+    --color-danger: #dc2626;
+    --color-danger-hover: #b91c1c;
+    --color-danger-text: #fef3c7;
+
+    --color-warning: #eab308;
+    --color-warning-hover: #ca8a04;
+    --color-warning-text: #451a03;
+
+    --color-info: #fb923c;
+    --color-info-hover: #f97316;
+    --color-info-text: #451a03;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(254, 243, 199, 0.6);
+    --glass-border: rgba(234, 88, 12, 0.2);
+    --glass-shadow: rgba(234, 88, 12, 0.1);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #f59e0b;
+    --shadow-sm: 0 1px 2px 0 rgba(234, 88, 12, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(234, 88, 12, 0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(234, 88, 12, 0.3);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #ea580c;      /* Dark orange - keywords, directives */
+    --syntax-string: #f59e0b;       /* Amber - string literals */
+    --syntax-number: #f97316;       /* Orange - numeric values */
+    --syntax-comment: #92400e;      /* Brown - comments */
+    --syntax-tag: #fb923c;          /* Bright orange - HTML/XML tags */
+    --syntax-attribute: #78350f;    /* Dark brown - attribute names */
+    --syntax-value: #eab308;        /* Gold - attribute values */
+}
+
+/* Accessible Theme (High Contrast) */
+[data-theme="accessible"] {
+    /* Background Colors */
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2d2d2d;
+
+    /* Text Colors */
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --text-tertiary: #e5e5e5;
+
+    /* Accent Colors */
+    --accent-primary: #ffff00;
+    --accent-hover: #ffdd00;
+    --accent-light: #333300;
+
+    /* Semantic Color Palette (White Label Customizable) */
+    --color-primary: #0000ff;
+    --color-primary-hover: #0000cc;
+    --color-primary-text: #ffffff;
+
+    --color-secondary: #888888;
+    --color-secondary-hover: #666666;
+    --color-secondary-text: #ffffff;
+
+    --color-success: #00ff00;
+    --color-success-hover: #00cc00;
+    --color-success-text: #000000;
+
+    --color-danger: #ff0000;
+    --color-danger-hover: #cc0000;
+    --color-danger-text: #ffffff;
+
+    --color-warning: #ffff00;
+    --color-warning-hover: #cccc00;
+    --color-warning-text: #000000;
+
+    --color-info: #00ffff;
+    --color-info-hover: #00cccc;
+    --color-info-text: #000000;
+
+    /* DEPRECATED - Button Colors (Use --color-* instead) */
+    --btn-primary: var(--color-primary);
+    --btn-primary-hover: var(--color-primary-hover);
+    --btn-primary-text: var(--color-primary-text);
+
+    --btn-secondary: var(--color-secondary);
+    --btn-secondary-hover: var(--color-secondary-hover);
+    --btn-secondary-text: var(--color-secondary-text);
+
+    --btn-success: var(--color-success);
+    --btn-success-hover: var(--color-success-hover);
+    --btn-success-text: var(--color-success-text);
+
+    --btn-danger: var(--color-danger);
+    --btn-danger-hover: var(--color-danger-hover);
+    --btn-danger-text: var(--color-danger-text);
+
+    --btn-warning: var(--color-warning);
+    --btn-warning-hover: var(--color-warning-hover);
+    --btn-warning-text: var(--color-warning-text);
+
+    --btn-info: var(--color-info);
+    --btn-info-hover: var(--color-info-hover);
+    --btn-info-text: var(--color-info-text);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(0, 0, 0, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-shadow: rgba(255, 255, 255, 0.2);
+
+    /* DEPRECATED - Status Colors (Use --color-* instead) */
+    --status-success: var(--color-success);
+    --status-error: var(--color-danger);
+    --status-warning: var(--color-warning);
+    --status-info: var(--color-info);
+
+    /* Border & Shadow */
+    --border-color: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgba(255, 255, 255, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(255, 255, 255, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(255, 255, 255, 0.5);
+
+    /* Z-Index Layers (White Label Customizable) */
+    --z-sticky: 100;
+    --z-backdrop: 999;
+    --z-dropdown: 1000;
+    --z-popover: 1500;
+    --z-modal: 2000;
+    --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #00ffff;      /* Bright cyan - keywords, directives */
+    --syntax-string: #ffff00;       /* Bright yellow - string literals */
+    --syntax-number: #00ff00;       /* Bright green - numeric values */
+    --syntax-comment: #888888;      /* Light gray - comments */
+    --syntax-tag: #ff00ff;          /* Bright magenta - HTML/XML tags */
+    --syntax-attribute: #00ffff;    /* Bright cyan - attribute names */
+    --syntax-value: #ffff00;        /* Bright yellow - attribute values */
+}
+
+/* Apply theme colors to body and common elements */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar {
+    background: var(--glass-bg);
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px var(--glass-shadow);
+}
+
+.top-row {
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.nav-item ::deep a {
+    color: var(--text-secondary);
+}
+
+.nav-item ::deep a.active {
+    background: var(--accent-light);
+    color: var(--accent-primary);
+}
+
+.nav-item ::deep a:hover {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+}
