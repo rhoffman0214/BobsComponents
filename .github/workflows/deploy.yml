@@ -85,35 +85,38 @@ jobs:
 
     - name: Run tests
       id: test
-      continue-on-error: true
-      timeout-minutes: 2
       run: |
-        # Run tests with timeout settings - exit 0 on timeout to allow deployment
-        dotnet test src/BobsComponents.sln \
+        # Run tests with 2 minute timeout using bash timeout command
+        # Exit code 124 = timeout, 0 = success, other = test failure
+        set +e  # Don't exit on error
+        timeout 120 dotnet test src/BobsComponents.sln \
           --configuration ${{ env.CONFIGURATION }} \
           --no-build \
           --verbosity normal \
-          --settings src/BobsComponent.Library.Tests/test.runsettings \
-          -- RunConfiguration.TestSessionTimeout=120000 || echo "tests_failed=$?"
+          --settings src/BobsComponent.Library.Tests/test.runsettings
+        TEST_EXIT=$?
+        set -e
+        echo "test_exit_code=$TEST_EXIT" >> $GITHUB_OUTPUT
 
     - name: Check test results
       run: |
-        if [ "${{ steps.test.outcome }}" == "success" ]; then
-          echo "tests_result=passed" >> $GITHUB_OUTPUT
+        EXIT_CODE=${{ steps.test.outputs.test_exit_code }}
+
+        if [ "$EXIT_CODE" == "0" ]; then
           echo "✅ All tests passed!" >> $GITHUB_STEP_SUMMARY
-        elif [ "${{ steps.test.outcome }}" == "cancelled" ]; then
-          echo "tests_result=timeout" >> $GITHUB_OUTPUT
+        elif [ "$EXIT_CODE" == "124" ]; then
           echo "⏱️ Tests timed out after 2 minutes! This is expected with bUnit tests in headless CI. Deployment will proceed." >> $GITHUB_STEP_SUMMARY
-        else
-          # Check if it's actually a test failure or no tests
+        elif [ -z "$EXIT_CODE" ]; then
+          # Check if there are no tests
           if dotnet test src/BobsComponents.sln --configuration ${{ env.CONFIGURATION }} --no-build --list-tests 2>&1 | grep -q "No test is available"; then
-            echo "tests_result=no_tests" >> $GITHUB_OUTPUT
             echo "⚠️ No test projects found. Continuing deployment." >> $GITHUB_STEP_SUMMARY
           else
-            echo "tests_result=failed" >> $GITHUB_OUTPUT
-            echo "❌ Tests failed! Blocking deployment." >> $GITHUB_STEP_SUMMARY
+            echo "❌ Tests failed with unknown error! Blocking deployment." >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+        else
+          echo "❌ Tests failed with exit code $EXIT_CODE! Blocking deployment." >> $GITHUB_STEP_SUMMARY
+          exit 1
         fi
 
     - name: Publish Blazor WASM (with AOT for master, without AOT for feature branches)
