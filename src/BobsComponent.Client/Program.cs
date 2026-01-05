@@ -23,6 +23,9 @@ builder.Services.AddScoped<MockApiService>(sp =>
 // Register Theme service
 builder.Services.AddScoped<ThemeService>();
 
+// Register Clipboard service (for CodeSnippet component)
+builder.Services.AddScoped<ClipboardService>();
+
 var host = builder.Build();
 
 // Initialize theme on startup

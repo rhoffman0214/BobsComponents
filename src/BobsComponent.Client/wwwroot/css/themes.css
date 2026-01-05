@@ -94,6 +94,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #0000ff;      /* Blue - keywords, directives */
+    --syntax-string: #a31515;       /* Dark red - string literals */
+    --syntax-number: #098658;       /* Green - numeric values */
+    --syntax-comment: #008000;      /* Green - comments */
+    --syntax-tag: #800000;          /* Maroon - HTML/XML tags */
+    --syntax-attribute: #ff0000;    /* Red - attribute names */
+    --syntax-value: #0000ff;        /* Blue - attribute values */
 }
 
 /* Dark Theme */
@@ -187,6 +196,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #569cd6;      /* Light blue - keywords, directives */
+    --syntax-string: #ce9178;       /* Light orange - string literals */
+    --syntax-number: #b5cea8;       /* Light green - numeric values */
+    --syntax-comment: #6a9955;      /* Green - comments */
+    --syntax-tag: #4ec9b0;          /* Cyan - HTML/XML tags */
+    --syntax-attribute: #9cdcfe;    /* Light cyan - attribute names */
+    --syntax-value: #ce9178;        /* Light orange - attribute values */
 }
 
 /* Fire Nation Theme */
@@ -280,6 +298,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #dc2626;      /* Bright red - keywords, directives */
+    --syntax-string: #fbbf24;       /* Amber - string literals */
+    --syntax-number: #f97316;       /* Orange - numeric values */
+    --syntax-comment: #92400e;      /* Dark amber - comments */
+    --syntax-tag: #ea580c;          /* Bright orange - HTML/XML tags */
+    --syntax-attribute: #fcd34d;    /* Yellow - attribute names */
+    --syntax-value: #fde68a;        /* Light amber - attribute values */
 }
 
 /* Water Tribe Theme */
@@ -373,6 +400,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #0ea5e9;      /* Bright cyan - keywords, directives */
+    --syntax-string: #7dd3fc;       /* Light cyan - string literals */
+    --syntax-number: #06b6d4;       /* Aqua - numeric values */
+    --syntax-comment: #0891b2;      /* Darker cyan - comments */
+    --syntax-tag: #38bdf8;          /* Sky blue - HTML/XML tags */
+    --syntax-attribute: #bae6fd;    /* Pale cyan - attribute names */
+    --syntax-value: #7dd3fc;        /* Light sky - attribute values */
 }
 
 /* Earth Kingdom Theme */
@@ -466,6 +502,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #84cc16;      /* Lime green - keywords, directives */
+    --syntax-string: #eab308;       /* Yellow - string literals */
+    --syntax-number: #a3e635;       /* Light green - numeric values */
+    --syntax-comment: #4d7c0f;      /* Darker green - comments */
+    --syntax-tag: #65a30d;          /* Bright lime - HTML/XML tags */
+    --syntax-attribute: #d4c5a0;    /* Gold - attribute names */
+    --syntax-value: #fef3c7;        /* Pale yellow - attribute values */
 }
 
 /* Air Nomads Theme */
@@ -559,6 +604,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #ea580c;      /* Dark orange - keywords, directives */
+    --syntax-string: #f59e0b;       /* Amber - string literals */
+    --syntax-number: #f97316;       /* Orange - numeric values */
+    --syntax-comment: #92400e;      /* Brown - comments */
+    --syntax-tag: #fb923c;          /* Bright orange - HTML/XML tags */
+    --syntax-attribute: #78350f;    /* Dark brown - attribute names */
+    --syntax-value: #eab308;        /* Gold - attribute values */
 }
 
 /* Accessible Theme (High Contrast) */
@@ -652,6 +706,15 @@
     --z-popover: 1500;
     --z-modal: 2000;
     --z-tooltip: 3000;
+
+    /* Syntax Highlighting Colors (CodeSnippet Component) */
+    --syntax-keyword: #00ffff;      /* Bright cyan - keywords, directives */
+    --syntax-string: #ffff00;       /* Bright yellow - string literals */
+    --syntax-number: #00ff00;       /* Bright green - numeric values */
+    --syntax-comment: #888888;      /* Light gray - comments */
+    --syntax-tag: #ff00ff;          /* Bright magenta - HTML/XML tags */
+    --syntax-attribute: #00ffff;    /* Bright cyan - attribute names */
+    --syntax-value: #ffff00;        /* Bright yellow - attribute values */
 }
 
 /* Apply theme colors to body and common elements */
