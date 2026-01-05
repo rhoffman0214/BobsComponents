@@ -1,0 +1,277 @@
+@using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+
+<div class="accessibility-guide">
+    <div class="guide-header">
+        <h2>Accessibility Best Practices</h2>
+        <p>Following WCAG 2.1 AA/AAA guidelines for inclusive button components</p>
+    </div>
+
+    <div class="guide-content">
+        <!-- Section 1: WCAG Compliance -->
+        <div class="guide-section">
+            <h3>WCAG 2.1 Compliance Checklist</h3>
+            <div class="checklist">
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <div class="check-content">
+                        <strong>Perceivable:</strong> All buttons have visible text or ARIA labels
+                    </div>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <div class="check-content">
+                        <strong>Operable:</strong> Fully keyboard accessible (Tab, Enter, Space)
+                    </div>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <div class="check-content">
+                        <strong>Understandable:</strong> Clear button states (loading, success, error)
+                    </div>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <div class="check-content">
+                        <strong>Robust:</strong> Compatible with assistive technologies
+                    </div>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <div class="check-content">
+                        <strong>Color Contrast:</strong> Minimum 4.5:1 ratio (AA), 7:1 for AAA
+                    </div>
+                </div>
+                <div class="checklist-item">
+                    <span class="check-icon">✓</span>
+                    <div class="check-content">
+                        <strong>Focus Visible:</strong> Clear focus indicators on all interactive elements
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Screen Reader Support -->
+        <div class="guide-section">
+            <h3>Screen Reader Best Practices</h3>
+            <p class="section-intro">Tested with NVDA, JAWS, and VoiceOver</p>
+
+            <div class="example-box">
+                <h4>Icon-Only Buttons</h4>
+                <p>Always provide ARIA labels for buttons with only icon content:</p>
+                <CodeSnippet
+                    Code="@iconOnlyExample"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+                <p class="help-text">
+                    <strong>Screen reader announces:</strong> "Delete item, button"
+                </p>
+            </div>
+
+            <div class="example-box">
+                <h4>Dynamic State Announcements</h4>
+                <p>aria-busy is automatically set during async operations:</p>
+                <CodeSnippet
+                    Code="@ariaBusyExample"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+                <p class="help-text">
+                    <strong>Screen reader announces:</strong> "Save changes, button, busy" (during loading)
+                </p>
+            </div>
+
+            <div class="example-box">
+                <h4>Additional Context with aria-describedby</h4>
+                <p>Provide extra information for complex actions:</p>
+                <CodeSnippet
+                    Code="@ariaDescribedByExample"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+                <p class="help-text">
+                    <strong>Screen reader announces:</strong> "Submit form, button, This action cannot be undone"
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 3: Keyboard Navigation -->
+        <div class="guide-section">
+            <h3>Keyboard Navigation</h3>
+            <p class="section-intro">All buttons are fully keyboard accessible</p>
+
+            <div class="keyboard-shortcuts">
+                <div class="shortcut-item">
+                    <kbd>Tab</kbd>
+                    <span>Move focus to next button</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Shift</kbd> + <kbd>Tab</kbd>
+                    <span>Move focus to previous button</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Enter</kbd> or <kbd>Space</kbd>
+                    <span>Activate focused button</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Esc</kbd>
+                    <span>Cancel loading operation (if supported)</span>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h4>Custom Tab Order</h4>
+                <p>Control focus order with TabIndex:</p>
+                <CodeSnippet
+                    Code="@tabIndexExample"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+            </div>
+        </div>
+
+        <!-- Section 4: Focus Management -->
+        <div class="guide-section">
+            <h3>Focus Indicators</h3>
+            <p class="section-intro">Visible focus states for keyboard users</p>
+
+            <div class="focus-examples">
+                <div class="focus-demo">
+                    <p><strong>Default Focus Ring:</strong></p>
+                    <p class="help-text">All buttons have a 2px outline with theme-specific accent color</p>
+                    <CodeSnippet
+                        Code="@focusStyleExample"
+                        Language="CodeLanguage.CSS"
+                        ShowLineNumbers="false" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: ARIA Labels vs Described By -->
+        <div class="guide-section">
+            <h3>aria-label vs aria-describedby</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <h4>Use aria-label when:</h4>
+                    <ul>
+                        <li>Button has no visible text (icon-only)</li>
+                        <li>Visible text is not descriptive enough</li>
+                        <li>Need to override default button text</li>
+                    </ul>
+                    <CodeSnippet
+                        Code="@ariaLabelWhenExample"
+                        Language="CodeLanguage.Razor"
+                        ShowLineNumbers="false" />
+                </div>
+
+                <div class="comparison-item">
+                    <h4>Use aria-describedby when:</h4>
+                    <ul>
+                        <li>Need to provide additional context</li>
+                        <li>Reference help text or warnings</li>
+                        <li>Describe consequences of action</li>
+                    </ul>
+                    <CodeSnippet
+                        Code="@ariaDescribedByWhenExample"
+                        Language="CodeLanguage.Razor"
+                        ShowLineNumbers="false" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Color Contrast -->
+        <div class="guide-section">
+            <h3>Color Contrast Requirements</h3>
+            <p class="section-intro">All button styles meet WCAG AA standards (4.5:1 minimum)</p>
+
+            <div class="contrast-info">
+                <div class="contrast-level">
+                    <strong>Level AA (Minimum):</strong>
+                    <span>4.5:1 contrast ratio for normal text</span>
+                </div>
+                <div class="contrast-level">
+                    <strong>Level AAA (Enhanced):</strong>
+                    <span>7:1 contrast ratio for normal text</span>
+                </div>
+                <div class="contrast-level">
+                    <strong>Large Text:</strong>
+                    <span>3:1 ratio (18pt+ or 14pt+ bold)</span>
+                </div>
+            </div>
+
+            <p class="help-text">
+                All six button styles (Primary, Secondary, Tertiary, Success, Warning, Error)
+                have been tested across all seven themes to ensure WCAG AA compliance.
+            </p>
+        </div>
+
+        <!-- Section 7: Best Practices Summary -->
+        <div class="guide-section">
+            <h3>Quick Reference</h3>
+            <div class="best-practices-grid">
+                <div class="practice-card">
+                    <h4>✓ Do</h4>
+                    <ul>
+                        <li>Provide descriptive button text</li>
+                        <li>Use aria-label for icon-only buttons</li>
+                        <li>Ensure 4.5:1 color contrast minimum</li>
+                        <li>Test with keyboard navigation</li>
+                        <li>Test with screen readers</li>
+                        <li>Show clear focus indicators</li>
+                        <li>Disable buttons during loading</li>
+                    </ul>
+                </div>
+
+                <div class="practice-card">
+                    <h4>✗ Don't</h4>
+                    <ul>
+                        <li>Use only color to convey state</li>
+                        <li>Remove focus outlines without replacement</li>
+                        <li>Create keyboard traps</li>
+                        <li>Use vague button text ("Click here")</li>
+                        <li>Forget to test with assistive tech</li>
+                        <li>Ignore loading state announcements</li>
+                        <li>Use low-contrast color combinations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly string iconOnlyExample = @"<AsyncButton
+    Text=""🗑️""
+    AriaLabel=""Delete item from cart""
+    Style=""ButtonStyle.Error"" />";
+
+    private readonly string ariaBusyExample = @"<AsyncButton
+    Text=""Save Changes""
+    AriaLabel=""Save changes to profile""
+    OnClickAsync=""@SaveAsync"" />
+<!-- aria-busy=""true"" is set automatically during loading -->";
+
+    private readonly string ariaDescribedByExample = @"<AsyncButton
+    Text=""Submit""
+    AriaDescribedBy=""warning-text""
+    Style=""ButtonStyle.Error"" />
+<p id=""warning-text"">This action cannot be undone</p>";
+
+    private readonly string tabIndexExample = @"<AsyncButton Text=""Step 1"" TabIndex=""1"" />
+<AsyncButton Text=""Step 2"" TabIndex=""2"" />
+<AsyncButton Text=""Step 3"" TabIndex=""3"" />";
+
+    private readonly string focusStyleExample = @".async-button:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}";
+
+    private readonly string ariaLabelWhenExample = @"<AsyncButton
+    Text=""🔍""
+    AriaLabel=""Search products"" />";
+
+    private readonly string ariaDescribedByWhenExample = @"<AsyncButton
+    Text=""Delete Account""
+    AriaDescribedBy=""delete-warning"" />
+<p id=""delete-warning"">
+    All your data will be permanently deleted
+</p>";
+}

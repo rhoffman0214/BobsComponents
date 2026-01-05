@@ -1,0 +1,377 @@
+@using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+
+<div class="performance-tips">
+    <div class="tips-header">
+        <h2>Performance & Best Practices</h2>
+        <p>Optimize async operations and improve user experience</p>
+    </div>
+
+    <div class="tips-content">
+        <!-- Section 1: Async Operation Best Practices -->
+        <div class="tip-section">
+            <h3>Async Operation Guidelines</h3>
+            <p class="section-intro">Follow these patterns for optimal performance</p>
+
+            <div class="tip-box">
+                <h4>Always Use OnClickAsync for Async Operations</h4>
+                <p>The component automatically handles loading states, error handling, and prevents double-clicks:</p>
+                <CodeSnippet
+                    Code="@asyncBestPractice"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+                <div class="tip-highlight tip-success">
+                    <strong>✓ Automatic Features:</strong>
+                    <ul>
+                        <li>Button disabled during operation</li>
+                        <li>Loading spinner after 200ms delay</li>
+                        <li>Success state with 2s auto-reset</li>
+                        <li>Error state with retry option</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Loading Delay -->
+        <div class="tip-section">
+            <h3>200ms Loading Delay</h3>
+            <p class="section-intro">Prevent spinner flashing for quick operations</p>
+
+            <div class="tip-box">
+                <h4>Why 200ms Matters</h4>
+                <p>Showing a spinner immediately can create a jarring experience. The component waits 200ms before displaying the loading state:</p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="time">0ms</span>
+                        <span class="event">Button clicked, immediately disabled</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="time">0-200ms</span>
+                        <span class="event">Button shows normal state (no spinner)</span>
+                    </div>
+                    <div class="timeline-item">
+                        <span class="time">200ms+</span>
+                        <span class="event">Spinner appears if operation still running</span>
+                    </div>
+                </div>
+                <p class="help-text">
+                    For operations that complete in under 200ms (like cache hits), users never see a loading spinner.
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 3: Double-Click Prevention -->
+        <div class="tip-section">
+            <h3>Preventing Double-Clicks</h3>
+            <p class="section-intro">Built-in protection against duplicate submissions</p>
+
+            <div class="tip-box">
+                <h4>Automatic Disabling</h4>
+                <p>The button is automatically disabled during async operations:</p>
+                <CodeSnippet
+                    Code="@doubleClickExample"
+                    Language="CodeLanguage.CSharp"
+                    ShowLineNumbers="false" />
+                <div class="tip-highlight tip-info">
+                    <strong>ℹ Protection Layers:</strong>
+                    <ul>
+                        <li>IsDisabled set to true during operation</li>
+                        <li>Click handler ignores events while busy</li>
+                        <li>Visual feedback (disabled styling + spinner)</li>
+                        <li>ActionQueueService prevents concurrent requests</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Slow API Handling -->
+        <div class="tip-section">
+            <h3>Handling Slow APIs</h3>
+            <p class="section-intro">Timeout strategies and user feedback</p>
+
+            <div class="tip-box">
+                <h4>Implement Timeouts</h4>
+                <p>Set reasonable timeouts for API calls:</p>
+                <CodeSnippet
+                    Code="@timeoutExample"
+                    Language="CodeLanguage.CSharp"
+                    ShowLineNumbers="false" />
+            </div>
+
+            <div class="tip-box">
+                <h4>Provide Custom Loading Text</h4>
+                <p>Give users context for long operations:</p>
+                <CodeSnippet
+                    Code="@loadingTextExample"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+            </div>
+        </div>
+
+        <!-- Section 5: Progress Tracking -->
+        <div class="tip-section">
+            <h3>Progress Tracking for Long Operations</h3>
+            <p class="section-intro">Show progress percentage for file uploads, batch operations, etc.</p>
+
+            <div class="tip-box">
+                <h4>Enable Progress Display</h4>
+                <p>Use ShowProgress parameter with IProgress&lt;int&gt;:</p>
+                <CodeSnippet
+                    Code="@progressExample"
+                    Language="CodeLanguage.CSharp"
+                    ShowLineNumbers="false" />
+                <p class="help-text">
+                    The button will display "Processing... 45%" instead of just a spinner.
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 6: ActionQueueService -->
+        <div class="tip-section">
+            <h3>ActionQueueService Integration</h3>
+            <p class="section-intro">Manage concurrent operations globally</p>
+
+            <div class="tip-box">
+                <h4>Concurrent Action Limit</h4>
+                <p>The ActionQueueService limits concurrent operations to 50 globally:</p>
+                <div class="tip-highlight tip-warning">
+                    <strong>⚠ Important:</strong>
+                    <ul>
+                        <li>Maximum 50 concurrent async operations across all buttons</li>
+                        <li>Additional requests are queued and processed in order</li>
+                        <li>Prevents overwhelming the browser or server</li>
+                        <li>Automatic cleanup when operations complete</li>
+                    </ul>
+                </div>
+                <p>All AsyncButton operations are automatically queued through this service.</p>
+            </div>
+        </div>
+
+        <!-- Section 7: Error Retry Strategies -->
+        <div class="tip-section">
+            <h3>Error Retry Patterns</h3>
+            <p class="section-intro">Smart retry logic for failed operations</p>
+
+            <div class="tip-box">
+                <h4>Enable Retry Button</h4>
+                <p>Allow users to retry failed operations:</p>
+                <CodeSnippet
+                    Code="@retryExample"
+                    Language="CodeLanguage.Razor"
+                    ShowLineNumbers="false" />
+            </div>
+
+            <div class="tip-box">
+                <h4>Automatic Retry with Exponential Backoff</h4>
+                <p>Implement smart retry logic in your handlers:</p>
+                <CodeSnippet
+                    Code="@exponentialBackoffExample"
+                    Language="CodeLanguage.CSharp"
+                    ShowLineNumbers="false" />
+            </div>
+        </div>
+
+        <!-- Section 8: Cancellation Patterns -->
+        <div class="tip-section">
+            <h3>Operation Cancellation</h3>
+            <p class="section-intro">Allow users to cancel long-running operations</p>
+
+            <div class="tip-box">
+                <h4>Use CancellationToken</h4>
+                <p>Support cancellation in your async methods:</p>
+                <CodeSnippet
+                    Code="@cancellationExample"
+                    Language="CodeLanguage.CSharp"
+                    ShowLineNumbers="false" />
+                <p class="help-text">
+                    Note: The component doesn't expose cancellation UI yet, but you can implement it in your handlers.
+                </p>
+            </div>
+        </div>
+
+        <!-- Section 9: Memory Management -->
+        <div class="tip-section">
+            <h3>Memory Management</h3>
+            <p class="section-intro">Prevent memory leaks and resource exhaustion</p>
+
+            <div class="tip-box">
+                <h4>Event Handler Cleanup</h4>
+                <p>The component automatically cleans up internal event handlers, but if you're using custom events:</p>
+                <CodeSnippet
+                    Code="@memoryExample"
+                    Language="CodeLanguage.CSharp"
+                    ShowLineNumbers="false" />
+            </div>
+
+            <div class="tip-highlight tip-success">
+                <strong>✓ Built-in Cleanup:</strong>
+                <ul>
+                    <li>OnStateChanged event handlers disposed automatically</li>
+                    <li>OnProgressChanged event handlers disposed automatically</li>
+                    <li>ActionQueueService entries removed on completion</li>
+                    <li>No manual cleanup required for standard usage</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Section 10: Performance Checklist -->
+        <div class="tip-section">
+            <h3>Performance Checklist</h3>
+            <div class="checklist-grid">
+                <div class="checklist-column">
+                    <h4>Before Launch</h4>
+                    <ul class="checklist">
+                        <li>✓ Use OnClickAsync for all async operations</li>
+                        <li>✓ Set appropriate timeouts (5-30s)</li>
+                        <li>✓ Provide custom LoadingText for slow operations</li>
+                        <li>✓ Enable ShowProgress for operations &gt; 5s</li>
+                        <li>✓ Enable ShowErrorRetry for unreliable operations</li>
+                        <li>✓ Test with slow network (DevTools throttling)</li>
+                        <li>✓ Test error scenarios and retry flows</li>
+                    </ul>
+                </div>
+
+                <div class="checklist-column">
+                    <h4>Optimization Tips</h4>
+                    <ul class="checklist">
+                        <li>✓ Cache frequently accessed data</li>
+                        <li>✓ Use debouncing for rapid clicks</li>
+                        <li>✓ Implement optimistic UI updates</li>
+                        <li>✓ Consider pagination for large datasets</li>
+                        <li>✓ Use lazy loading where appropriate</li>
+                        <li>✓ Monitor ActionQueueService queue length</li>
+                        <li>✓ Profile with browser DevTools</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly string asyncBestPractice = @"<AsyncButton
+    Text=""Save Changes""
+    OnClickAsync=""@SaveAsync""
+    LoadingText=""Saving...""
+    SuccessText=""Saved!""
+    ErrorText=""Save failed""
+    ShowErrorRetry=""true"" />
+
+@code {
+    private async Task SaveAsync()
+    {
+        await ApiService.SaveDataAsync();
+    }
+}";
+
+    private readonly string doubleClickExample = @"private async Task SubmitFormAsync()
+{
+    // Even if user clicks multiple times,
+    // this will only execute once
+    await ApiService.SubmitAsync(formData);
+}";
+
+    private readonly string timeoutExample = @"private async Task FetchDataAsync()
+{
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+    try
+    {
+        var data = await HttpClient.GetFromJsonAsync<Data>(
+            ""api/data"",
+            cts.Token
+        );
+    }
+    catch (TaskCanceledException)
+    {
+        throw new Exception(""Request timed out after 30 seconds"");
+    }
+}";
+
+    private readonly string loadingTextExample = @"<AsyncButton
+    Text=""Upload File""
+    LoadingText=""Uploading large file... please wait""
+    SuccessText=""Upload complete!""
+    OnClickAsync=""@UploadAsync"" />";
+
+    private readonly string progressExample = @"<AsyncButton
+    Text=""Process Files""
+    ShowProgress=""true""
+    OnClickAsync=""@ProcessFilesAsync"" />
+
+@code {
+    private async Task ProcessFilesAsync(IProgress<int> progress)
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            await ProcessFileAsync(i);
+            progress?.Report(i + 1); // Report 1-100%
+        }
+    }
+}";
+
+    private readonly string retryExample = @"<AsyncButton
+    Text=""Submit""
+    ErrorText=""Network error. Click to retry""
+    ShowErrorRetry=""true""
+    OnClickAsync=""@SubmitAsync"" />";
+
+    private readonly string exponentialBackoffExample = @"private async Task SubmitWithRetryAsync()
+{
+    int maxRetries = 3;
+    int delayMs = 1000;
+
+    for (int i = 0; i < maxRetries; i++)
+    {
+        try
+        {
+            await ApiService.SubmitAsync();
+            return; // Success
+        }
+        catch (HttpRequestException) when (i < maxRetries - 1)
+        {
+            await Task.Delay(delayMs);
+            delayMs *= 2; // Exponential backoff
+        }
+    }
+
+    throw new Exception(""Failed after 3 retries"");
+}";
+
+    private readonly string cancellationExample = @"private CancellationTokenSource? _cts;
+
+private async Task LongOperationAsync()
+{
+    _cts = new CancellationTokenSource();
+
+    try
+    {
+        await ApiService.ProcessAsync(_cts.Token);
+    }
+    finally
+    {
+        _cts?.Dispose();
+        _cts = null;
+    }
+}
+
+private void CancelOperation()
+{
+    _cts?.Cancel();
+}";
+
+    private readonly string memoryExample = @"public class MyComponent : ComponentBase, IDisposable
+{
+    private IDisposable? _subscription;
+
+    protected override void OnInitialized()
+    {
+        _subscription = SomeService.Subscribe(OnDataChanged);
+    }
+
+    public void Dispose()
+    {
+        _subscription?.Dispose();
+    }
+}";
+}
