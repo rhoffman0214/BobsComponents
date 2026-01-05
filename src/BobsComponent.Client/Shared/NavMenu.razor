@@ -10,22 +10,22 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <!-- Home -->
-        <div class="nav-item px-1">
+        <div class="nav-item">
             <NavLink class="nav-link nav-main-item" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
 
         <!-- MicroActions -->
-        <div class="nav-item px-1">
+        <div class="nav-item">
             <NavLink class="nav-link nav-main-item" href="/microactions">
-                <span class="oi oi-bolt" aria-hidden="true"></span> MicroActions
+                <span class="oi oi-bolt" aria-hidden="true"></span> Micro Actions
             </NavLink>
         </div>
 
         <!-- Input Examples Section -->
-        <div class="nav-item px-1">
-            <div class="nav-link nav-section" @onclick="ToggleInputExamples" @onclick:stopPropagation>
+        <div class="nav-item">
+            <div class="nav-link nav-main-item nav-expandable" @onclick="ToggleInputExamples">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Input Examples
                 <span class="toggle-icon @(inputExamplesExpanded ? "expanded" : "collapsed")">▼</span>
             </div>
@@ -34,26 +34,26 @@
             {
                 <div class="nav-submenu">
                     <!-- AsyncButton Component -->
-                    <div class="nav-item px-1">
-                        <div class="nav-link nav-section-sub" @onclick="ToggleAsyncButton" @onclick:stopPropagation>
-                            <span class="oi oi-command" aria-hidden="true"></span> AsyncButton Component
+                    <div class="nav-item">
+                        <div class="nav-link nav-sub-item nav-expandable" @onclick="ToggleAsyncButton" @onclick:stopPropagation>
+                            <span class="oi oi-command" aria-hidden="true"></span> Button
                             <span class="toggle-icon @(asyncButtonExpanded ? "expanded" : "collapsed")">▼</span>
                         </div>
 
                         @if (asyncButtonExpanded)
                         {
                             <div class="nav-submenu">
-                                <div class="nav-item px-1">
+                                <div class="nav-item">
                                     <NavLink class="nav-link nav-sub-item" href="/inputexamples/button#playground">
                                         <span class="oi oi-play-circle" aria-hidden="true"></span> Playground
                                     </NavLink>
                                 </div>
-                                <div class="nav-item px-1">
+                                <div class="nav-item">
                                     <NavLink class="nav-link nav-sub-item" href="/inputexamples/button#button-styles">
                                         <span class="oi oi-brush" aria-hidden="true"></span> Examples
                                     </NavLink>
                                 </div>
-                                <div class="nav-item px-1">
+                                <div class="nav-item">
                                     <NavLink class="nav-link nav-sub-item" href="/inputexamples/button#state-lifecycle">
                                         <span class="oi oi-book" aria-hidden="true"></span> Guides
                                     </NavLink>
@@ -63,7 +63,7 @@
                     </div>
 
                     <!-- Dropdown -->
-                    <div class="nav-item px-1">
+                    <div class="nav-item">
                         <NavLink class="nav-link nav-sub-item" href="/inputexamples/dropdown">
                             <span class="oi oi-menu" aria-hidden="true"></span> Dropdown
                         </NavLink>
