@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <!-- Test timeout: 60 seconds per test -->
+    <TestSessionTimeout>300000</TestSessionTimeout>
+    <!-- Disable parallel execution for bUnit tests -->
+    <MaxCpuCount>1</MaxCpuCount>
+    <DisableParallelization>true</DisableParallelization>
+  </RunConfiguration>
+
+  <!-- xUnit specific settings -->
+  <xUnit>
+    <MaxParallelThreads>1</MaxParallelThreads>
+    <ParallelizeAssembly>false</ParallelizeAssembly>
+    <ParallelizeTestCollections>false</ParallelizeTestCollections>
+    <DiagnosticMessages>false</DiagnosticMessages>
+    <InternalDiagnosticMessages>false</InternalDiagnosticMessages>
+  </xUnit>
+</RunSettings>
