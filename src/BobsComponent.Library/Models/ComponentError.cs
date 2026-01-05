@@ -71,10 +71,10 @@ public class ComponentError
 
     /// <summary>
     /// Base URL for error code reference page (configurable for local/QA/prod environments)
-    /// Default: /docs/error-codes (local relative URL)
-    /// Set this at app startup for production: ComponentError.BaseReferenceUrl = "https://yourdomain.com/docs/error-codes"
+    /// Default: docs/error-codes (relative URL that works with any base href)
+    /// Set this at app startup for absolute URL: ComponentError.BaseReferenceUrl = "https://yourdomain.com/docs/error-codes"
     /// </summary>
-    public static string BaseReferenceUrl { get; set; } = "/docs/error-codes";
+    public static string BaseReferenceUrl { get; set; } = "docs/error-codes";
 
     /// <summary>
     /// Creates a ComponentError from an exception

@@ -6,7 +6,6 @@ using System.Net.Http;
 using System;
 using BobsComponent.Client;
 using BobsComponent.Library.Services;
-using BobsComponent.Library.Models;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -32,12 +31,6 @@ builder.Services.AddScoped<ThemeService>();
 
 // Register Clipboard service (for CodeSnippet component)
 builder.Services.AddScoped<ClipboardService>();
-
-// Configure error documentation base URL for GitHub Pages deployment
-// This ensures error reference links work correctly regardless of deployment path
-var baseUri = new Uri(builder.HostEnvironment.BaseAddress);
-var basePath = baseUri.AbsolutePath.TrimEnd('/');
-ComponentError.BaseReferenceUrl = $"{basePath}/docs/error-codes";
 
 var host = builder.Build();
 
