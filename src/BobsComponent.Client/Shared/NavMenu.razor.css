@@ -66,6 +66,77 @@
     transform: translateX(4px);
 }
 
+/* Nav scrollable container */
+.nav-scrollable {
+    max-height: calc(100vh - 3.5rem);
+    overflow-y: auto;
+}
+
+/* Nav section headers (expandable) */
+.nav-section {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    justify-content: space-between;
+    padding-right: 2.5rem !important;
+}
+
+.nav-section:hover {
+    background: var(--glass-bg) !important;
+}
+
+.nav-section-sub {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    justify-content: space-between;
+    padding-right: 2.5rem !important;
+    font-size: 0.85rem;
+    height: 2.5rem !important;
+    line-height: 2.5rem !important;
+}
+
+.nav-section-sub:hover {
+    background: var(--glass-bg) !important;
+}
+
+/* Toggle icon */
+.toggle-icon {
+    position: absolute;
+    right: 1rem;
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+    color: var(--text-secondary);
+}
+
+.toggle-icon.expanded {
+    transform: rotate(180deg);
+}
+
+.toggle-icon.collapsed {
+    transform: rotate(0deg);
+}
+
+/* Submenu container */
+.nav-submenu {
+    padding-left: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Sub-items styling */
+.nav-sub-item {
+    font-size: 0.85rem !important;
+    height: 2.5rem !important;
+    line-height: 2.5rem !important;
+    padding-left: 2rem !important;
+}
+
+.nav-sub-item .oi {
+    font-size: 0.9rem;
+    width: 1.5rem;
+}
+
 @media (min-width: 641px) {
     .navbar-toggler {
         display: none;

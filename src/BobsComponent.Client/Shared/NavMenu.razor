@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-1">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
@@ -19,26 +19,77 @@
                 <span class="oi oi-bolt" aria-hidden="true"></span> MicroActions
             </NavLink>
         </div>
+
+        <!-- Input Examples Section -->
         <div class="nav-item px-1">
-            <NavLink class="nav-link" href="/inputexamples/button">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Button
-            </NavLink>
-        </div>
-        <div class="nav-item px-1">
-            <NavLink class="nav-link" href="/inputexamples/dropdown">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Dropdown
-            </NavLink>
+            <div class="nav-link nav-section" @onclick="ToggleInputExamples" @onclick:stopPropagation>
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Input Examples
+                <span class="toggle-icon @(inputExamplesExpanded ? "expanded" : "collapsed")">▼</span>
+            </div>
+
+            @if (inputExamplesExpanded)
+            {
+                <div class="nav-submenu">
+                    <!-- AsyncButton Component -->
+                    <div class="nav-item px-1">
+                        <div class="nav-link nav-section-sub" @onclick="ToggleAsyncButton" @onclick:stopPropagation>
+                            <span class="oi oi-command" aria-hidden="true"></span> AsyncButton Component
+                            <span class="toggle-icon @(asyncButtonExpanded ? "expanded" : "collapsed")">▼</span>
+                        </div>
+
+                        @if (asyncButtonExpanded)
+                        {
+                            <div class="nav-submenu">
+                                <div class="nav-item px-1">
+                                    <NavLink class="nav-link nav-sub-item" href="/inputexamples/button#playground">
+                                        <span class="oi oi-play-circle" aria-hidden="true"></span> Playground
+                                    </NavLink>
+                                </div>
+                                <div class="nav-item px-1">
+                                    <NavLink class="nav-link nav-sub-item" href="/inputexamples/button#button-styles">
+                                        <span class="oi oi-brush" aria-hidden="true"></span> Examples
+                                    </NavLink>
+                                </div>
+                                <div class="nav-item px-1">
+                                    <NavLink class="nav-link nav-sub-item" href="/inputexamples/button#state-lifecycle">
+                                        <span class="oi oi-book" aria-hidden="true"></span> Guides
+                                    </NavLink>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Dropdown -->
+                    <div class="nav-item px-1">
+                        <NavLink class="nav-link nav-sub-item" href="/inputexamples/dropdown">
+                            <span class="oi oi-menu" aria-hidden="true"></span> Dropdown
+                        </NavLink>
+                    </div>
+                </div>
+            }
         </div>
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
+    private bool inputExamplesExpanded = true; // Start expanded
+    private bool asyncButtonExpanded = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleInputExamples()
+    {
+        inputExamplesExpanded = !inputExamplesExpanded;
+    }
+
+    private void ToggleAsyncButton()
+    {
+        asyncButtonExpanded = !asyncButtonExpanded;
     }
 }

@@ -1,27 +1,103 @@
 @page "/inputexamples/dropdown"
-@using BobsComponent.Library.Components
 
-<BobsDropdown SelectItems=@TireList @bind-SelectedValue=SelectedDropItem></BobsDropdown>
-<p>Selected Value: @SelectedDropItem</p>
+<div class="wip-container">
+    <div class="wip-content">
+        <h1 class="wip-title">🚧 Work in Progress 🚧</h1>
+        <p class="wip-subtitle">Our chibi construction crew is hard at work building this page!</p>
 
-@code {
-  private string SelectedDropItem { get; set; } = string.Empty;
-  private List<SelectListItem> TireList { get; set; } = new()
-  {
-    new()
-    {
-      description = "Racing - Soft",
-      value = "RS",
-    },
-    new()
-    {
-      description = "Racing - Medium",
-      value = "RM",
-    },
-    new()
-    {
-      description = "Racing - Hard",
-      value = "RH",
-    },
-  };
-}
+        <pre class="wip-ascii">
+    ⛏️            ⚒️
+   ╭─╮          ╭─╮
+   │ │  dig dig │ │
+   ├─┤          ├─┤
+  ╱│ │╲        ╱│ │╲
+ ╱ └─┘ ╲      ╱ └─┘ ╲
+    ││           ││
+   ╱  ╲         ╱  ╲
+
+  "Almost      "Just a few
+   done!"       more commits!"
+
+╔════════════════════════════════╗
+║   🏗️  CONSTRUCTION ZONE  🏗️   ║
+║                                ║
+║  [ ] Design dropdown examples  ║
+║  [ ] Write documentation       ║
+║  [ ] Add code snippets         ║
+║  [ ] Create playground         ║
+║  [ ] Test all themes           ║
+║                                ║
+║  Stay tuned! 🎉               ║
+╚════════════════════════════════╝
+        </pre>
+
+        <p class="wip-message">
+            The <strong>BobsDropdown</strong> component examples are currently under construction.
+            Check back soon for interactive examples, code snippets, and comprehensive documentation!
+        </p>
+    </div>
+</div>
+
+<style>
+    .wip-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+        padding: 40px 20px;
+    }
+
+    .wip-content {
+        max-width: 800px;
+        text-align: center;
+    }
+
+    .wip-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--accent-primary);
+        margin-bottom: 16px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .wip-subtitle {
+        font-size: 1.3rem;
+        color: var(--text-secondary);
+        margin-bottom: 32px;
+    }
+
+    .wip-ascii {
+        background-color: var(--bg-secondary);
+        border: 2px solid var(--accent-primary);
+        border-radius: 8px;
+        padding: 32px;
+        font-size: 1rem;
+        line-height: 1.4;
+        color: var(--text-primary);
+        margin: 32px auto;
+        overflow-x: auto;
+        box-shadow: var(--shadow-lg);
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    .wip-message {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-top: 32px;
+        line-height: 1.6;
+    }
+
+    .wip-message strong {
+        color: var(--accent-primary);
+        font-weight: 600;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+</style>
