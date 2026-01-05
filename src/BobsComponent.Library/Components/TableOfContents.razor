@@ -1,6 +1,6 @@
 @* Table of Contents Component for Page Navigation *@
 
-<div class="table-of-contents @(IsSticky ? "sticky" : "")">
+<div class="table-of-contents @(IsSticky ? "sticky" : "")" @ref="tocElement">
     <div class="toc-header" @onclick="ToggleCollapse">
         <h3>@Title</h3>
         <button class="toggle-btn" aria-label="@(isCollapsed ? "Expand menu" : "Collapse menu")" type="button">
@@ -13,7 +13,7 @@
             @foreach (var item in Items)
             {
                 <li class="toc-item level-@item.Level">
-                    <a href="#@item.Id">@item.Text</a>
+                    <a href="#@item.Id" @onclick="() => ScrollToSection(item.Id)" @onclick:preventDefault>@item.Text</a>
                 </li>
             }
         </ul>
@@ -26,11 +26,28 @@
     [Parameter] public bool IsSticky { get; set; } = true;
 
     private bool isCollapsed = false;
+    private ElementReference tocElement;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && IsSticky)
+        {
+            // Add scroll detection for auto-collapse behavior
+            await JSRuntime.InvokeVoidAsync("TableOfContents.init", tocElement);
+        }
+    }
 
     private void ToggleCollapse()
     {
         isCollapsed = !isCollapsed;
     }
+
+    private async Task ScrollToSection(string sectionId)
+    {
+        await JSRuntime.InvokeVoidAsync("TableOfContents.scrollToSection", sectionId);
+    }
+
+    [Inject] private IJSRuntime JSRuntime { get; set; } = default!;
 
     public class TocItem
     {
