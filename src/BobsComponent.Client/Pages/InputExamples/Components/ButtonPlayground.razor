@@ -1,0 +1,383 @@
+@using BobsComponent.Library.Components
+@using BobsComponent.Library.Enums
+@using BobsComponent.Library.Services
+@using System.Text
+@inject MockApiService ApiService
+
+<div class="button-playground">
+    <div class="playground-header">
+        <h2>Interactive Playground</h2>
+        <p>Configure all button parameters and see live preview with generated code</p>
+    </div>
+
+    <div class="playground-content">
+        <!-- Configuration Panel -->
+        <div class="config-panel">
+            <h3>Configuration</h3>
+
+            <!-- Style Selector -->
+            <div class="config-section">
+                <label>Button Style</label>
+                <div class="style-selector">
+                    @foreach (var style in Enum.GetValues<ButtonStyle>())
+                    {
+                        <button type="button"
+                                class="style-option @(selectedStyle == style ? "selected" : "")"
+                                @onclick="() => selectedStyle = style">
+                            @style
+                        </button>
+                    }
+                </div>
+            </div>
+
+            <!-- Size Selector -->
+            <div class="config-section">
+                <label for="size-select">Button Size</label>
+                <select id="size-select" @bind="selectedSize" class="form-select">
+                    @foreach (var size in Enum.GetValues<ButtonSize>())
+                    {
+                        <option value="@size">@size</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Text Configuration -->
+            <div class="config-section">
+                <label for="button-text">Button Text</label>
+                <input id="button-text" type="text" @bind="buttonText" class="form-input" />
+            </div>
+
+            <div class="config-section">
+                <label for="loading-text">Loading Text (optional)</label>
+                <input id="loading-text" type="text" @bind="loadingText" class="form-input" placeholder="Leave empty for default" />
+            </div>
+
+            <div class="config-section">
+                <label for="success-text">Success Text (optional)</label>
+                <input id="success-text" type="text" @bind="successText" class="form-input" placeholder="Leave empty for default" />
+            </div>
+
+            <div class="config-section">
+                <label for="error-text">Error Text (optional)</label>
+                <input id="error-text" type="text" @bind="errorText" class="form-input" placeholder="Leave empty for default" />
+            </div>
+
+            <!-- State Toggles -->
+            <div class="config-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" @bind="isDisabled" />
+                    Disabled
+                </label>
+            </div>
+
+            <div class="config-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" @bind="fullWidth" />
+                    Full Width
+                </label>
+            </div>
+
+            <div class="config-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" @bind="showErrorRetry" />
+                    Show Error Retry
+                </label>
+            </div>
+
+            <div class="config-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" @bind="showProgress" />
+                    Show Progress
+                </label>
+            </div>
+
+            <!-- Icon Configuration -->
+            <div class="config-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" @bind="showIcon" />
+                    Show Icon
+                </label>
+            </div>
+
+            @if (showIcon)
+            {
+                <div class="config-section indented">
+                    <label for="icon-emoji">Icon Emoji</label>
+                    <input id="icon-emoji" type="text" @bind="iconEmoji" class="form-input" maxlength="2" />
+                </div>
+
+                <div class="config-section indented">
+                    <label for="icon-position">Icon Position</label>
+                    <select id="icon-position" @bind="selectedIconPosition" class="form-select">
+                        @foreach (var position in Enum.GetValues<IconPosition>())
+                        {
+                            <option value="@position">@position</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            <!-- HTML Attributes (Collapsible) -->
+            <div class="config-section">
+                <button type="button" class="section-toggle" @onclick="() => showHtmlAttrs = !showHtmlAttrs">
+                    @(showHtmlAttrs ? "▼" : "▶") HTML Attributes
+                </button>
+            </div>
+
+            @if (showHtmlAttrs)
+            {
+                <div class="config-section indented">
+                    <label for="html-id">ID</label>
+                    <input id="html-id" type="text" @bind="htmlId" class="form-input" placeholder="e.g., submit-btn" />
+                </div>
+
+                <div class="config-section indented">
+                    <label for="html-name">Name</label>
+                    <input id="html-name" type="text" @bind="htmlName" class="form-input" placeholder="e.g., submitButton" />
+                </div>
+
+                <div class="config-section indented">
+                    <label for="html-title">Title</label>
+                    <input id="html-title" type="text" @bind="htmlTitle" class="form-input" placeholder="Tooltip text" />
+                </div>
+
+                <div class="config-section indented">
+                    <label for="aria-label">ARIA Label</label>
+                    <input id="aria-label" type="text" @bind="ariaLabel" class="form-input" placeholder="Screen reader text" />
+                </div>
+
+                <div class="config-section indented">
+                    <label for="aria-describedby">ARIA Described By</label>
+                    <input id="aria-describedby" type="text" @bind="ariaDescribedBy" class="form-input" placeholder="Element ID" />
+                </div>
+
+                <div class="config-section indented">
+                    <label for="tab-index">Tab Index</label>
+                    <input id="tab-index" type="number" @bind="tabIndex" class="form-input" placeholder="Tab order" />
+                </div>
+            }
+
+            <!-- Data Attributes -->
+            <div class="config-section">
+                <button type="button" class="section-toggle" @onclick="() => showDataAttrs = !showDataAttrs">
+                    @(showDataAttrs ? "▼" : "▶") Data Attributes (@dataAttributes.Count)
+                </button>
+            </div>
+
+            @if (showDataAttrs)
+            {
+                <div class="config-section indented">
+                    @foreach (var attr in dataAttributes)
+                    {
+                        <div class="data-attr-item">
+                            <input type="text" @bind="attr.Key" class="form-input small" placeholder="Key" />
+                            <input type="text" @bind="attr.Value" class="form-input small" placeholder="Value" />
+                            <button type="button" class="btn-remove" @onclick="() => RemoveDataAttribute(attr)">✕</button>
+                        </div>
+                    }
+                    <button type="button" class="btn-add" @onclick="AddDataAttribute">+ Add Data Attribute</button>
+                </div>
+            }
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel">
+            <h3>Live Preview</h3>
+
+            <div class="preview-area">
+                @if (showIcon)
+                {
+                    <AsyncButton Text="@buttonText"
+                                 Style="@selectedStyle"
+                                 Size="@selectedSize"
+                                 IsDisabled="@isDisabled"
+                                 FullWidth="@fullWidth"
+                                 ShowErrorRetry="@showErrorRetry"
+                                 ShowProgress="@showProgress"
+                                 LoadingText="@loadingText"
+                                 SuccessText="@successText"
+                                 ErrorText="@errorText"
+                                 Id="@htmlId"
+                                 Name="@htmlName"
+                                 Title="@htmlTitle"
+                                 AriaLabel="@ariaLabel"
+                                 AriaDescribedBy="@ariaDescribedBy"
+                                 TabIndex="@tabIndex"
+                                 IconPosition="@selectedIconPosition"
+                                 OnClickAsync="@HandlePreviewClick"
+                                 @attributes="GetDataAttributes()">
+                        <Icon>
+                            <span>@iconEmoji</span>
+                        </Icon>
+                    </AsyncButton>
+                }
+                else
+                {
+                    <AsyncButton Text="@buttonText"
+                                 Style="@selectedStyle"
+                                 Size="@selectedSize"
+                                 IsDisabled="@isDisabled"
+                                 FullWidth="@fullWidth"
+                                 ShowErrorRetry="@showErrorRetry"
+                                 ShowProgress="@showProgress"
+                                 LoadingText="@loadingText"
+                                 SuccessText="@successText"
+                                 ErrorText="@errorText"
+                                 Id="@htmlId"
+                                 Name="@htmlName"
+                                 Title="@htmlTitle"
+                                 AriaLabel="@ariaLabel"
+                                 AriaDescribedBy="@ariaDescribedBy"
+                                 TabIndex="@tabIndex"
+                                 OnClickAsync="@HandlePreviewClick"
+                                 @attributes="GetDataAttributes()" />
+                }
+            </div>
+
+            <h3>Generated Code</h3>
+            <CodeSnippet Code="@GenerateMarkup()" Language="CodeLanguage.Razor" Title="Copy this code" />
+        </div>
+    </div>
+</div>
+
+@code {
+    // Style and Size
+    private ButtonStyle selectedStyle = ButtonStyle.Primary;
+    private ButtonSize selectedSize = ButtonSize.Medium;
+
+    // Text Configuration
+    private string buttonText = "Click me";
+    private string? loadingText = null;
+    private string? successText = null;
+    private string? errorText = null;
+
+    // State Toggles
+    private bool isDisabled = false;
+    private bool fullWidth = false;
+    private bool showErrorRetry = true;
+    private bool showProgress = false;
+
+    // Icon Configuration
+    private bool showIcon = false;
+    private string iconEmoji = "💾";
+    private IconPosition selectedIconPosition = IconPosition.Left;
+
+    // HTML Attributes
+    private bool showHtmlAttrs = false;
+    private string? htmlId = null;
+    private string? htmlName = null;
+    private string? htmlTitle = null;
+    private string? ariaLabel = null;
+    private string? ariaDescribedBy = null;
+    private int? tabIndex = null;
+
+    // Data Attributes
+    private bool showDataAttrs = false;
+    private List<DataAttribute> dataAttributes = new();
+
+    private class DataAttribute
+    {
+        public string Key { get; set; } = "";
+        public string Value { get; set; } = "";
+    }
+
+    private void AddDataAttribute()
+    {
+        dataAttributes.Add(new DataAttribute());
+    }
+
+    private void RemoveDataAttribute(DataAttribute attr)
+    {
+        dataAttributes.Remove(attr);
+    }
+
+    private Dictionary<string, object> GetDataAttributes()
+    {
+        var attrs = new Dictionary<string, object>();
+        foreach (var attr in dataAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Key)))
+        {
+            attrs[$"data-{attr.Key}"] = attr.Value ?? "";
+        }
+        return attrs;
+    }
+
+    private async Task HandlePreviewClick()
+    {
+        await ApiService.MediumOperationAsync();
+    }
+
+    private string GenerateMarkup()
+    {
+        var sb = new StringBuilder();
+        sb.AppendLine("<AsyncButton");
+        sb.AppendLine($"    Text=\"{buttonText}\"");
+
+        // Only show non-default values
+        if (selectedStyle != ButtonStyle.Primary)
+            sb.AppendLine($"    Style=\"ButtonStyle.{selectedStyle}\"");
+
+        if (selectedSize != ButtonSize.Medium)
+            sb.AppendLine($"    Size=\"ButtonSize.{selectedSize}\"");
+
+        if (isDisabled)
+            sb.AppendLine("    IsDisabled=\"true\"");
+
+        if (fullWidth)
+            sb.AppendLine("    FullWidth=\"true\"");
+
+        if (!showErrorRetry)
+            sb.AppendLine("    ShowErrorRetry=\"false\"");
+
+        if (showProgress)
+            sb.AppendLine("    ShowProgress=\"true\"");
+
+        if (!string.IsNullOrWhiteSpace(loadingText))
+            sb.AppendLine($"    LoadingText=\"{loadingText}\"");
+
+        if (!string.IsNullOrWhiteSpace(successText))
+            sb.AppendLine($"    SuccessText=\"{successText}\"");
+
+        if (!string.IsNullOrWhiteSpace(errorText))
+            sb.AppendLine($"    ErrorText=\"{errorText}\"");
+
+        if (!string.IsNullOrWhiteSpace(htmlId))
+            sb.AppendLine($"    Id=\"{htmlId}\"");
+
+        if (!string.IsNullOrWhiteSpace(htmlName))
+            sb.AppendLine($"    Name=\"{htmlName}\"");
+
+        if (!string.IsNullOrWhiteSpace(htmlTitle))
+            sb.AppendLine($"    Title=\"{htmlTitle}\"");
+
+        if (!string.IsNullOrWhiteSpace(ariaLabel))
+            sb.AppendLine($"    AriaLabel=\"{ariaLabel}\"");
+
+        if (!string.IsNullOrWhiteSpace(ariaDescribedBy))
+            sb.AppendLine($"    AriaDescribedBy=\"{ariaDescribedBy}\"");
+
+        if (tabIndex.HasValue)
+            sb.AppendLine($"    TabIndex=\"{tabIndex.Value}\"");
+
+        if (showIcon)
+            sb.AppendLine($"    IconPosition=\"IconPosition.{selectedIconPosition}\"");
+
+        // Data attributes
+        foreach (var attr in dataAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Key)))
+        {
+            sb.AppendLine($"    data-{attr.Key}=\"{attr.Value}\"");
+        }
+
+        sb.AppendLine("    OnClickAsync=\"@HandleClick\">");
+
+        if (showIcon)
+        {
+            sb.AppendLine("    <Icon>");
+            sb.AppendLine($"        <span>{iconEmoji}</span>");
+            sb.AppendLine("    </Icon>");
+        }
+
+        sb.Append("</AsyncButton>");
+
+        return sb.ToString();
+    }
+}

@@ -2,6 +2,7 @@
 @using BobsComponent.Library.Components
 @using BobsComponent.Library.Enums
 @using BobsComponent.Library.Services
+@using BobsComponent.Client.Pages.InputExamples.Components
 @inject MockApiService ApiService
 
 <div class="button-examples-page">
@@ -12,7 +13,12 @@
         </p>
     </div>
 
-    <!-- Section 1: Basic Button Styles -->
+    <!-- Section 1: Interactive Playground -->
+    <section class="example-section">
+        <ButtonPlayground />
+    </section>
+
+    <!-- Section 2: Basic Button Styles -->
     <section class="example-section">
         <h2 class="section-title">1. Button Styles</h2>
         <p class="section-description">Six semantic color variants for different use cases</p>
