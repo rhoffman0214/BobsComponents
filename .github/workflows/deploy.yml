@@ -123,7 +123,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: 'publish/wwwroot'
+        path: 'publish/wwwroot/BobsComponents'
 
     - name: Notify Discord on Build Failure
       if: failure() && env.DISCORD_NOTIFY != 'off'
