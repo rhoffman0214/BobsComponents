@@ -127,7 +127,15 @@ jobs:
       run: |
         # Update base href from "/" to "/BobsComponents/" for GitHub Pages
         sed -i 's|<base href="/" />|<base href="/BobsComponents/" />|g' publish/wwwroot/index.html
+
+        # Verify 404.html exists for SPA routing
+        if [ ! -f "publish/wwwroot/404.html" ]; then
+          echo "⚠️ 404.html not found - creating it for SPA routing" >> $GITHUB_STEP_SUMMARY
+          cp publish/wwwroot/index.html publish/wwwroot/404.html
+        fi
+
         echo "✅ Updated base href to /BobsComponents/" >> $GITHUB_STEP_SUMMARY
+        echo "✅ Verified 404.html for SPA routing" >> $GITHUB_STEP_SUMMARY
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
