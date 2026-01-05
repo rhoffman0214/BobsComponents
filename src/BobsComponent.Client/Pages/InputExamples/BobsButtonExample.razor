@@ -21,7 +21,7 @@
     <!-- Section 2: Basic Button Styles -->
     <section class="example-section">
         <h2 class="section-title">1. Button Styles</h2>
-        <p class="section-description">Six semantic color variants for different use cases</p>
+        <p class="section-description">Six semantic color variants for different use cases. Use the Playground above to see the code.</p>
 
         <div class="example-grid">
             <div class="example-item">
@@ -29,7 +29,6 @@
                 <AsyncButton Text="Primary Action"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@stylePrimary" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -37,7 +36,6 @@
                 <AsyncButton Text="Secondary Action"
                              Style="ButtonStyle.Secondary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@styleSecondary" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -45,7 +43,6 @@
                 <AsyncButton Text="Tertiary Action"
                              Style="ButtonStyle.Tertiary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@styleTertiary" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -53,7 +50,6 @@
                 <AsyncButton Text="Success Action"
                              Style="ButtonStyle.Success"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@styleSuccess" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -61,7 +57,6 @@
                 <AsyncButton Text="Warning Action"
                              Style="ButtonStyle.Warning"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@styleWarning" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -69,7 +64,6 @@
                 <AsyncButton Text="Error Action"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@styleError" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -86,7 +80,6 @@
                              Size="ButtonSize.Small"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@sizeSmall" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -95,7 +88,6 @@
                              Size="ButtonSize.Medium"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@sizeMedium" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -104,7 +96,6 @@
                              Size="ButtonSize.Large"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@sizeLarge" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
@@ -112,7 +103,7 @@
     <!-- Section 3: Icons -->
     <section class="example-section">
         <h2 class="section-title">3. Button Icons</h2>
-        <p class="section-description">Add icons before or after button text</p>
+        <p class="section-description">Add icons before or after button text using the Icon render fragment</p>
 
         <div class="example-grid">
             <div class="example-item">
@@ -125,82 +116,39 @@
                         <span>💾</span>
                     </Icon>
                 </AsyncButton>
-                <CodeSnippet Code="@iconLeft" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
                 <h3>Icon Right</h3>
-                <AsyncButton Text="Next Step"
-                             Style="ButtonStyle.Primary"
+                <AsyncButton Text="Save File"
+                             Style="ButtonStyle.Success"
                              IconPosition="IconPosition.Right"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())">
                     <Icon>
-                        <span>→</span>
+                        <span>💾</span>
                     </Icon>
                 </AsyncButton>
-                <CodeSnippet Code="@iconRight" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
                 <h3>Multiple Icons</h3>
                 <AsyncButton Text="Download"
-                             Style="ButtonStyle.Tertiary"
+                             Style="ButtonStyle.Primary"
                              IconPosition="IconPosition.Left"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())">
                     <Icon>
                         <span>⬇️</span>
+                        <span style="margin-left: 4px;">📄</span>
                     </Icon>
                 </AsyncButton>
-                <CodeSnippet Code="@iconCode" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
 
-    <!-- Section 4: HTML Attributes -->
+    <!-- Section 4: ARIA Attributes -->
     <section class="example-section">
-        <h2 class="section-title">4. HTML Attributes</h2>
-        <p class="section-description">Standard HTML button attributes for forms and accessibility</p>
-
-        <div class="example-grid">
-            <div class="example-item">
-                <h3>Submit Button</h3>
-                <AsyncButton Text="Submit Form"
-                             ButtonType="submit"
-                             Id="submit-btn"
-                             Name="submitButton"
-                             Title="Click to submit the form"
-                             Style="ButtonStyle.Primary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@htmlSubmit" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
-            </div>
-
-            <div class="example-item">
-                <h3>Reset Button</h3>
-                <AsyncButton Text="Reset Form"
-                             ButtonType="reset"
-                             Id="reset-btn"
-                             Title="Reset all form fields"
-                             Style="ButtonStyle.Secondary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@htmlReset" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
-            </div>
-
-            <div class="example-item">
-                <h3>With TabIndex</h3>
-                <AsyncButton Text="Focused Button"
-                             TabIndex="1"
-                             Title="This button has tab index 1"
-                             Style="ButtonStyle.Tertiary"
-                             OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@htmlTabIndex" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 5: ARIA Attributes -->
-    <section class="example-section">
-        <h2 class="section-title">5. ARIA Accessibility Attributes</h2>
-        <p class="section-description">Screen reader support and accessibility features</p>
+        <h2 class="section-title">4. ARIA Accessibility Attributes</h2>
+        <p class="section-description">Screen reader support and accessibility features. Use the Playground above to see the code.</p>
 
         <div class="example-grid">
             <div class="example-item">
@@ -210,7 +158,6 @@
                              Title="Delete"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@ariaLabel" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -220,7 +167,6 @@
                              AriaDescribedBy="form-help-text"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@ariaDescribedBy" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
                 <p id="form-help-text" class="help-text">Form will be validated before submission</p>
             </div>
 
@@ -230,15 +176,15 @@
                              AriaLabel="Demonstration of aria-busy during loading"
                              Style="ButtonStyle.Success"
                              OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
-                <CodeSnippet Code="@ariaBusy" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">aria-busy is set automatically during loading</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 6: Data Attributes -->
+    <!-- Section 5: Data Attributes -->
     <section class="example-section">
-        <h2 class="section-title">6. Data Attributes</h2>
-        <p class="section-description">Custom data attributes for analytics, testing, and tracking</p>
+        <h2 class="section-title">5. Data Attributes</h2>
+        <p class="section-description">Custom data attributes for analytics, testing, and tracking. Use the Playground above to see the code.</p>
 
         <div class="example-grid">
             <div class="example-item">
@@ -249,7 +195,6 @@
                              data-analytics-category="user_action"
                              data-analytics-label="homepage_cta"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@dataAnalytics" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -260,7 +205,6 @@
                              data-test-category="form-submission"
                              data-qa="primary-cta"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@dataTestId" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -271,7 +215,6 @@
                              data-experiment-id="exp-2024-q1"
                              data-variant="control"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@dataFeatureFlag" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -283,7 +226,6 @@
                              data-price="29.99"
                              data-currency="USD"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@dataProduct" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -294,7 +236,6 @@
                              data-modal-size="large"
                              data-backdrop="static"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@dataModal" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
 
             <div class="example-item">
@@ -307,15 +248,14 @@
                              data-danger-level="high"
                              data-undo-available="false"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@dataMultiple" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
             </div>
         </div>
     </section>
 
-    <!-- Section 7: Loading States -->
+    <!-- Section 6: Loading States -->
     <section class="example-section">
-        <h2 class="section-title">7. Loading States</h2>
-        <p class="section-description">Automatic state management during async operations</p>
+        <h2 class="section-title">6. Loading States</h2>
+        <p class="section-description">Automatic state management during async operations. Click the buttons to see loading spinners in action.</p>
 
         <div class="example-grid">
             <div class="example-item">
@@ -323,7 +263,7 @@
                 <AsyncButton Text="Quick Action"
                              Style="ButtonStyle.Primary"
                              OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
-                <CodeSnippet Code="@loadingAuto" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">Automatic loading spinner</p>
             </div>
 
             <div class="example-item">
@@ -332,7 +272,7 @@
                              LoadingText="Processing..."
                              Style="ButtonStyle.Secondary"
                              OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
-                <CodeSnippet Code="@loadingText" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">Custom loading text</p>
             </div>
 
             <div class="example-item">
@@ -342,15 +282,15 @@
                              SuccessText="Completed!"
                              Style="ButtonStyle.Success"
                              OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
-                <CodeSnippet Code="@successText" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">Custom loading and success text</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 8: Error Handling -->
+    <!-- Section 7: Error Handling -->
     <section class="example-section">
-        <h2 class="section-title">8. Error Handling</h2>
-        <p class="section-description">Automatic error state with retry functionality</p>
+        <h2 class="section-title">7. Error Handling</h2>
+        <p class="section-description">Automatic error state with retry functionality. These buttons will always fail to demonstrate error handling.</p>
 
         <div class="example-grid">
             <div class="example-item">
@@ -360,7 +300,7 @@
                              ShowErrorRetry="true"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
-                <CodeSnippet Code="@errorRetryTrue" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">Shows retry button on error</p>
             </div>
 
             <div class="example-item">
@@ -369,7 +309,7 @@
                              ShowErrorRetry="false"
                              Style="ButtonStyle.Warning"
                              OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
-                <CodeSnippet Code="@errorRetryFalse" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">No retry button shown</p>
             </div>
 
             <div class="example-item">
@@ -379,15 +319,15 @@
                              ShowErrorRetry="true"
                              Style="ButtonStyle.Error"
                              OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))" />
-                <CodeSnippet Code="@errorText" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
+                <p class="help-text">Custom error message</p>
             </div>
         </div>
     </section>
 
-    <!-- Section 9: Full Width -->
+    <!-- Section 8: Full Width -->
     <section class="example-section">
-        <h2 class="section-title">9. Full Width Buttons</h2>
-        <p class="section-description">Buttons that span the full width of their container</p>
+        <h2 class="section-title">8. Full Width Buttons</h2>
+        <p class="section-description">Buttons that span the full width of their container. Use the Playground above to see the code.</p>
 
         <div class="example-column">
             <div class="example-item">
@@ -407,13 +347,12 @@
                     </Icon>
                 </AsyncButton>
             </div>
-            <CodeSnippet Code="@fullWidth" Language="CodeLanguage.Razor" ShowLineNumbers="false" />
         </div>
     </section>
 
-    <!-- Section 10: Complete Example -->
+    <!-- Section 9: Complete Example -->
     <section class="example-section">
-        <h2 class="section-title">10. Complete Example</h2>
+        <h2 class="section-title">9. Complete Example</h2>
         <p class="section-description">All features combined in a single button</p>
 
         <div class="example-full">
@@ -456,47 +395,6 @@
 </div>
 
 @code {
-    // Code snippets
-    private readonly string stylePrimary = "Style=\"ButtonStyle.Primary\"";
-    private readonly string styleSecondary = "Style=\"ButtonStyle.Secondary\"";
-    private readonly string styleTertiary = "Style=\"ButtonStyle.Tertiary\"";
-    private readonly string styleSuccess = "Style=\"ButtonStyle.Success\"";
-    private readonly string styleWarning = "Style=\"ButtonStyle.Warning\"";
-    private readonly string styleError = "Style=\"ButtonStyle.Error\"";
-
-    private readonly string sizeSmall = "Size=\"ButtonSize.Small\"";
-    private readonly string sizeMedium = "Size=\"ButtonSize.Medium\"";
-    private readonly string sizeLarge = "Size=\"ButtonSize.Large\"";
-
-    private readonly string iconLeft = "IconPosition=\"IconPosition.Left\"";
-    private readonly string iconRight = "IconPosition=\"IconPosition.Right\"";
-    private readonly string iconCode = "<Icon><span>⬇️</span></Icon>";
-
-    private readonly string htmlSubmit = "ButtonType=\"submit\"\nId=\"submit-btn\"\nName=\"submitButton\"";
-    private readonly string htmlReset = "ButtonType=\"reset\"";
-    private readonly string htmlTabIndex = "TabIndex=\"1\"";
-
-    private readonly string ariaLabel = "AriaLabel=\"Delete item from cart\"";
-    private readonly string ariaDescribedBy = "AriaDescribedBy=\"form-help-text\"";
-    private readonly string ariaBusy = "aria-busy=\"true\" set automatically during loading";
-
-    private readonly string dataAnalytics = "data-analytics-event=\"button_click\"\ndata-analytics-category=\"user_action\"";
-    private readonly string dataTestId = "data-testid=\"submit-form-button\"\ndata-qa=\"primary-cta\"";
-    private readonly string dataFeatureFlag = "data-feature-flag=\"new-checkout-flow\"\ndata-variant=\"control\"";
-    private readonly string dataProduct = "data-product-id=\"prod-12345\"\ndata-sku=\"SKU-ABC-001\"";
-    private readonly string dataModal = "data-modal-target=\"user-settings\"\ndata-modal-size=\"large\"";
-    private readonly string dataMultiple = "data-action=\"delete\"\ndata-confirm-required=\"true\"";
-
-    private readonly string loadingAuto = "Automatic loading spinner";
-    private readonly string loadingText = "LoadingText=\"Processing...\"";
-    private readonly string successText = "SuccessText=\"Completed!\"";
-
-    private readonly string errorRetryTrue = "ShowErrorRetry=\"true\"";
-    private readonly string errorRetryFalse = "ShowErrorRetry=\"false\"";
-    private readonly string errorText = "ErrorText=\"Oops! Try again\"";
-
-    private readonly string fullWidth = "FullWidth=\"true\"";
-
     private string completeExampleCode = @"<AsyncButton
     Text=""Complete Example""
     Size=""ButtonSize.Large""
