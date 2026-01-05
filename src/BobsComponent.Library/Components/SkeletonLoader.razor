@@ -51,16 +51,36 @@ else
     {
         var styles = new List<string>
         {
-            $"width: {Width}",
-            $"height: {Height}"
+            $"width: {SanitizeCssValue(Width)}",
+            $"height: {SanitizeCssValue(Height)}"
         };
 
         if (!string.IsNullOrEmpty(BorderRadius) && Shape == SkeletonShape.Rectangle)
         {
-            styles.Add($"border-radius: {BorderRadius}");
+            styles.Add($"border-radius: {SanitizeCssValue(BorderRadius)}");
         }
 
         return string.Join("; ", styles);
+    }
+
+    /// <summary>
+    /// Sanitizes CSS values to prevent CSS injection attacks.
+    /// Only allows alphanumeric, spaces, %, px, em, rem, vh, vw, and basic units.
+    /// </summary>
+    private string SanitizeCssValue(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return "0";
+
+        // Remove any potentially dangerous characters
+        // Allow: letters, numbers, %, -, ., spaces, and common CSS units
+        var sanitized = System.Text.RegularExpressions.Regex.Replace(
+            value,
+            @"[^a-zA-Z0-9%\-\.\s]",
+            ""
+        );
+
+        return string.IsNullOrEmpty(sanitized) ? "0" : sanitized;
     }
 
     public enum SkeletonShape

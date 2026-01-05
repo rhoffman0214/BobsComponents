@@ -20,4 +20,13 @@ builder.Services.AddScoped<MockApiService>(sp =>
     return new MockApiService(httpClient);
 });
 
-await builder.Build().RunAsync();
+// Register Theme service
+builder.Services.AddScoped<ThemeService>();
+
+var host = builder.Build();
+
+// Initialize theme on startup
+var themeService = host.Services.GetRequiredService<ThemeService>();
+await themeService.InitializeThemeAsync();
+
+await host.RunAsync();

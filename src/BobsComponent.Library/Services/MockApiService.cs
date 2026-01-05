@@ -10,6 +10,11 @@ namespace BobsComponent.Library.Services;
 /// <summary>
 /// Provides simulated and real API operations for testing async actions
 /// </summary>
+/// <remarks>
+/// WARNING: This service exposes exception details in error messages for demo/testing purposes.
+/// In production services, NEVER expose exception.Message to clients - log errors server-side
+/// and return generic error messages to prevent information disclosure vulnerabilities.
+/// </remarks>
 public class MockApiService
 {
     private readonly HttpClient _httpClient;

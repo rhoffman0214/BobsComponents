@@ -1,18 +1,4 @@
 /* =====================================================
-   CSS Variables for Theming
-   ===================================================== */
-:root {
-    --async-primary: #0d6efd;
-    --async-secondary: #6c757d;
-    --async-success: #198754;
-    --async-danger: #dc3545;
-    --async-warning: #ffc107;
-    --async-info: #0dcaf0;
-    --async-light: #f8f9fa;
-    --async-dark: #212529;
-}
-
-/* =====================================================
    Loading Spinner Styles
    ===================================================== */
 .loading-spinner {
@@ -97,7 +83,7 @@
 
 .progress-bar {
     height: 100%;
-    background-color: var(--async-primary);
+    background-color: var(--color-primary);
     transition: width 0.3s ease;
     display: flex;
     align-items: center;
@@ -107,11 +93,12 @@
     font-weight: 500;
 }
 
-.progress-bar-primary { background-color: var(--async-primary); }
-.progress-bar-success { background-color: var(--async-success); }
-.progress-bar-info { background-color: var(--async-info); }
-.progress-bar-warning { background-color: var(--async-warning); }
-.progress-bar-danger { background-color: var(--async-danger); }
+.progress-bar-primary { background-color: var(--color-primary); }
+.progress-bar-secondary { background-color: var(--color-secondary); }
+.progress-bar-tertiary { background-color: var(--color-info); }
+.progress-bar-success { background-color: var(--color-success); }
+.progress-bar-warning { background-color: var(--color-warning); }
+.progress-bar-error { background-color: var(--color-danger); }
 
 .progress-bar-container.striped .progress-bar {
     background-image: linear-gradient(
@@ -184,7 +171,7 @@
 
 .error-icon .icon {
     font-size: 1.5rem;
-    color: var(--async-warning);
+    color: var(--color-warning);
     animation: shake 0.5s ease;
 }
 
@@ -195,7 +182,7 @@
 .error-message strong {
     display: block;
     margin-bottom: 4px;
-    color: var(--async-danger);
+    color: var(--color-danger);
 }
 
 .error-message p {
@@ -221,12 +208,12 @@
 }
 
 .btn-retry {
-    background-color: var(--async-warning);
-    color: #000;
+    background-color: var(--color-warning);
+    color: var(--color-warning-text);
 }
 
 .btn-retry:hover {
-    background-color: #ffb300;
+    background-color: var(--color-warning-hover);
 }
 
 .btn-dismiss {
@@ -237,7 +224,7 @@
 }
 
 .btn-dismiss:hover {
-    color: var(--async-danger);
+    color: var(--color-danger);
 }
 
 /* =====================================================
@@ -253,7 +240,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: var(--z-modal);
 }
 
 .loading-overlay.fullscreen {
@@ -274,7 +261,7 @@
 .loading-text {
     margin: 0;
     font-size: 1rem;
-    color: var(--async-dark);
+    color: var(--text-primary);
     font-weight: 500;
 }
 
@@ -293,7 +280,6 @@
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
-    position: relative;
     overflow: hidden;
 }
 
@@ -307,19 +293,19 @@
 }
 
 /* Button Styles */
-.btn-primary { background-color: var(--async-primary); color: white; }
-.btn-secondary { background-color: var(--async-secondary); color: white; }
-.btn-success { background-color: var(--async-success); color: white; }
-.btn-danger { background-color: var(--async-danger); color: white; }
-.btn-warning { background-color: var(--async-warning); color: #000; }
-.btn-info { background-color: var(--async-info); color: #000; }
+.btn-primary { background-color: var(--color-primary); color: var(--color-primary-text); }
+.btn-secondary { background-color: var(--color-secondary); color: var(--color-secondary-text); }
+.btn-tertiary { background-color: var(--color-info); color: var(--color-info-text); }
+.btn-success { background-color: var(--color-success); color: var(--color-success-text); }
+.btn-warning { background-color: var(--color-warning); color: var(--color-warning-text); }
+.btn-error { background-color: var(--color-danger); color: var(--color-danger-text); }
 
-.btn-primary:hover:not(:disabled) { background-color: #0b5ed7; }
-.btn-secondary:hover:not(:disabled) { background-color: #5c636a; }
-.btn-success:hover:not(:disabled) { background-color: #157347; }
-.btn-danger:hover:not(:disabled) { background-color: #bb2d3b; }
-.btn-warning:hover:not(:disabled) { background-color: #ffb300; }
-.btn-info:hover:not(:disabled) { background-color: #31d2f2; }
+.btn-primary:hover:not(:disabled) { background-color: var(--color-primary-hover); }
+.btn-secondary:hover:not(:disabled) { background-color: var(--color-secondary-hover); }
+.btn-tertiary:hover:not(:disabled) { background-color: var(--color-info-hover); }
+.btn-success:hover:not(:disabled) { background-color: var(--color-success-hover); }
+.btn-warning:hover:not(:disabled) { background-color: var(--color-warning-hover); }
+.btn-error:hover:not(:disabled) { background-color: var(--color-danger-hover); }
 
 /* Button States */
 .async-button.state-loading {
@@ -335,23 +321,23 @@
 }
 
 .async-button.state-error .error-icon {
-    color: var(--async-danger);
+    color: var(--color-danger);
 }
 
 .retry-button {
     margin-left: 8px;
     padding: 6px 12px;
     font-size: 0.875rem;
-    border: 1px solid var(--async-secondary);
+    border: 1px solid var(--color-secondary);
     background-color: white;
-    color: var(--async-secondary);
+    color: var(--color-secondary);
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .retry-button:hover {
-    background-color: var(--async-secondary);
+    background-color: var(--color-secondary);
     color: white;
 }
 

@@ -22,6 +22,14 @@ public partial class MicroActions : IDisposable
     // Sample data for skeleton loading demo
     private List<SampleUser> SampleUsers { get; set; } = new();
 
+    // Pre-assigned button styles (assigned once, never change)
+    private ButtonStyle[] SuccessButtonStyles = new ButtonStyle[3];
+    private ButtonStyle[] ErrorButtonStyles = new ButtonStyle[3];
+    private ButtonStyle[] ConcurrentButtonStyles = new ButtonStyle[50];
+
+    // References to the 50 concurrent action buttons
+    private AsyncButton?[] ConcurrentButtons = new AsyncButton?[50];
+
     // Computed property for completed actions count
     private int CompletedCount => QueueService.Actions.Count(a =>
         a.State == LoadingState.Success || a.State == LoadingState.Error);
@@ -35,7 +43,7 @@ public partial class MicroActions : IDisposable
         ProgressItems = new List<ProgressItem>
         {
             new() { Name = "Upload File", Style = ButtonStyle.Primary },
-            new() { Name = "Process Data", Style = ButtonStyle.Info },
+            new() { Name = "Process Data", Style = ButtonStyle.Tertiary },
             new() { Name = "Generate Report", Style = ButtonStyle.Success }
         };
 
@@ -48,6 +56,18 @@ public partial class MicroActions : IDisposable
             new() { Id = 4, Name = "Alice Williams", Email = "alice.williams@example.com" },
             new() { Id = 5, Name = "Charlie Brown", Email = "charlie.brown@example.com" }
         };
+
+        // Pre-assign random button styles (so they don't change on every render)
+        for (int i = 0; i < 3; i++)
+        {
+            SuccessButtonStyles[i] = GetRandomButtonStyle();
+            ErrorButtonStyles[i] = GetRandomButtonStyle();
+        }
+
+        for (int i = 0; i < 50; i++)
+        {
+            ConcurrentButtonStyles[i] = GetRandomButtonStyle();
+        }
     }
 
     private void OnQueueChanged(object? sender, EventArgs e)
@@ -93,7 +113,10 @@ public partial class MicroActions : IDisposable
 
         try
         {
-            await ApiService.MediumOperationAsync();
+            // Add random delay between 500ms and 3000ms for variety
+            var randomDelay = _random.Next(500, 3001);
+            await Task.Delay(randomDelay);
+
             QueueService.UpdateActionState(metadata.Id, LoadingState.Success);
         }
         catch
@@ -106,22 +129,34 @@ public partial class MicroActions : IDisposable
         QueueService.CleanupCompletedActions();
     }
 
-    private void ClearAllActions()
+    private async Task ClearAllActions()
     {
         QueueService.ClearAll();
+
+        // Reset all concurrent buttons to idle state
+        for (int i = 0; i < 50; i++)
+        {
+            if (ConcurrentButtons[i] != null)
+            {
+                await ConcurrentButtons[i]!.ResetAsync();
+            }
+        }
     }
 
     private async Task StartAllActions()
     {
         // This will attempt to start all 50 actions simultaneously
         // Demonstrating the queue limit
-        var tasks = new List<Task>();
         for (int i = 0; i < 50; i++)
         {
-            var actionName = $"Bulk Action {i + 1}";
-            tasks.Add(HandleQueuedAction(actionName));
+            if (ConcurrentButtons[i] != null)
+            {
+                // Fire and forget - don't await
+                _ = ConcurrentButtons[i]!.TriggerClickAsync();
+                // Small delay to allow UI updates
+                await Task.Delay(10);
+            }
         }
-        await Task.WhenAll(tasks);
     }
 
     // Skeleton loading demo

@@ -1,0 +1,81 @@
+@using BobsComponent.Library.Services
+@inject ThemeService ThemeService
+
+<div class="theme-picker">
+    <button class="theme-toggle" @onclick="ToggleDropdown" aria-label="Change theme">
+        <span class="theme-icon">🎨</span>
+        <span class="theme-label">@GetCurrentThemeName()</span>
+        <span class="dropdown-arrow">▼</span>
+    </button>
+
+    @if (isOpen)
+    {
+        <div class="theme-dropdown" @onclick:stopPropagation="true">
+            <div class="theme-dropdown-header">Choose Theme</div>
+            <div class="theme-options">
+                @foreach (var theme in availableThemes)
+                {
+                    <button class="theme-option @(ThemeService.CurrentTheme == theme.Id ? "active" : "")"
+                            @onclick="() => SelectTheme(theme.Id)">
+                        <div class="theme-preview" data-theme-preview="@theme.Id"></div>
+                        <div class="theme-info">
+                            <div class="theme-name">@theme.Name</div>
+                            <div class="theme-description">@theme.Description</div>
+                        </div>
+                        @if (ThemeService.CurrentTheme == theme.Id)
+                        {
+                            <span class="theme-check">✓</span>
+                        }
+                    </button>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@if (isOpen)
+{
+    <div class="theme-backdrop" @onclick="CloseDropdown"></div>
+}
+
+@code {
+    private bool isOpen = false;
+    private List<ThemeInfo> availableThemes = new();
+
+    protected override void OnInitialized()
+    {
+        availableThemes = ThemeService.GetAvailableThemes();
+        ThemeService.ThemeChanged += OnThemeChanged;
+    }
+
+    private void OnThemeChanged(object? sender, string theme)
+    {
+        StateHasChanged();
+    }
+
+    private void ToggleDropdown()
+    {
+        isOpen = !isOpen;
+    }
+
+    private void CloseDropdown()
+    {
+        isOpen = false;
+    }
+
+    private async Task SelectTheme(string themeId)
+    {
+        await ThemeService.SaveThemeAsync(themeId);
+        isOpen = false;
+    }
+
+    private string GetCurrentThemeName()
+    {
+        return availableThemes.FirstOrDefault(t => t.Id == ThemeService.CurrentTheme)?.Name ?? "Light Mode";
+    }
+
+    public void Dispose()
+    {
+        ThemeService.ThemeChanged -= OnThemeChanged;
+    }
+}

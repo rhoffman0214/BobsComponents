@@ -34,6 +34,39 @@
         </div>
     </div>
 
+    <!-- Color Legend -->
+    <div class="showcase-section">
+        <h2 class="section-title">Color Legend</h2>
+        <p class="section-description">All button colors update based on the selected theme</p>
+
+        <div class="color-legend">
+            <div class="legend-item">
+                <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Primary - Main actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Secondary" Style="ButtonStyle.Secondary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Secondary - Alternative actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Tertiary" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Tertiary - Informational actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Success - Positive actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Warning" Style="ButtonStyle.Warning" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Warning - Caution actions</span>
+            </div>
+            <div class="legend-item">
+                <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(() => Task.CompletedTask)" />
+                <span class="legend-label">Error - Destructive actions</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Section 1: Basic Async Buttons -->
     <div class="showcase-section">
         <h2 class="section-title">1. Basic Async Buttons</h2>
@@ -42,13 +75,13 @@
         <div class="button-grid button-grid-3 mb-3">
             <AsyncButton Text="Quick Action" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
             <AsyncButton Text="Medium Action" Style="ButtonStyle.Secondary" OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
-            <AsyncButton Text="Slow Action" Style="ButtonStyle.Info" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+            <AsyncButton Text="Slow Action" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
         </div>
 
         <div class="button-grid button-grid-3">
             <AsyncButton Text="Success Style" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.QuickOperationAsync())" />
             <AsyncButton Text="Warning Style" Style="ButtonStyle.Warning" OnClickAsync="@(() => ApiService.MediumOperationAsync())" />
-            <AsyncButton Text="Danger Style" Style="ButtonStyle.Danger" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
+            <AsyncButton Text="Error Style" Style="ButtonStyle.Error" OnClickAsync="@(() => ApiService.SlowOperationAsync())" />
         </div>
     </div>
 
@@ -59,7 +92,7 @@
 
         <div class="button-grid button-grid-3">
             <AsyncButton Text="Fetch Post" Style="ButtonStyle.Primary" OnClickAsync="@(() => ApiService.FetchPostAsync())" />
-            <AsyncButton Text="Fetch User" Style="ButtonStyle.Info" OnClickAsync="@(() => ApiService.FetchUserAsync())" />
+            <AsyncButton Text="Fetch User" Style="ButtonStyle.Tertiary" OnClickAsync="@(() => ApiService.FetchUserAsync())" />
             <AsyncButton Text="Fetch Todos" Style="ButtonStyle.Success" OnClickAsync="@(() => ApiService.FetchTodosAsync())" />
         </div>
     </div>
@@ -91,15 +124,28 @@
     <!-- Section 4: Error Handling -->
     <div class="showcase-section">
         <h2 class="section-title">4. Error Handling</h2>
-        <p class="section-description">Simulated errors with 30% failure rate - automatic retry functionality</p>
+        <p class="section-description">Demonstrating error states and retry functionality</p>
 
-        <div class="button-grid button-grid-3">
-            @for (int i = 0; i < 6; i++)
+        <h3 class="subsection-title">Always Succeed</h3>
+        <div class="button-grid button-grid-3 mb-3">
+            @for (int i = 0; i < 3; i++)
             {
                 var index = i;
-                <AsyncButton Text="@($"Unreliable Action {index + 1}")"
-                             Style="@GetRandomButtonStyle()"
-                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(0.3))"
+                <AsyncButton Text="@($"Success Action {index + 1}")"
+                             Style="@SuccessButtonStyles[index]"
+                             OnClickAsync="@(() => ApiService.QuickOperationAsync())"
+                             ShowErrorRetry="false" />
+            }
+        </div>
+
+        <h3 class="subsection-title">Always Fail (with Retry)</h3>
+        <div class="button-grid button-grid-3">
+            @for (int i = 0; i < 3; i++)
+            {
+                var index = i;
+                <AsyncButton Text="@($"Fail Action {index + 1}")"
+                             Style="@ErrorButtonStyles[index]"
+                             OnClickAsync="@(() => ApiService.UnreliableOperationAsync(1.0))"
                              ShowErrorRetry="true" />
             }
         </div>
@@ -111,16 +157,17 @@
         <p class="section-description">Test the 50 concurrent action limit - buttons disable when limit is reached</p>
 
         <div class="mb-3 d-flex gap-2">
-            <button class="btn-retry" @onclick="ClearAllActions">Clear All</button>
-            <button class="btn-retry" @onclick="StartAllActions">Start All (Test Limit)</button>
+            <AsyncButton Text="Clear All" Style="ButtonStyle.Secondary" OnClickAsync="ClearAllActions" />
+            <AsyncButton Text="Start All (Test Limit)" Style="ButtonStyle.Primary" OnClickAsync="StartAllActions" />
         </div>
 
         <div class="button-grid button-grid-10">
             @for (int i = 0; i < 50; i++)
             {
                 var index = i;
-                <AsyncButton Text="@((index + 1).ToString())"
-                             Style="@GetRandomButtonStyle()"
+                <AsyncButton @ref="@ConcurrentButtons[index]"
+                             Text="@((index + 1).ToString())"
+                             Style="@ConcurrentButtonStyles[index]"
                              OnClickAsync="@(() => HandleQueuedAction($"Action {index + 1}"))"
                              ShowErrorRetry="false"
                              AutoResetDelay="1000" />

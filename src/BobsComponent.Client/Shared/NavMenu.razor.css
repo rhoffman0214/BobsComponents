@@ -1,14 +1,24 @@
 .navbar-toggler {
-    background-color: rgba(255, 255, 255, 0.1);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
 }
 
 .top-row {
     height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-border);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .navbar-brand {
     font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    transition: color 0.3s ease;
 }
 
 .oi {
@@ -32,22 +42,28 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
-        border-radius: 4px;
+        color: var(--text-secondary);
+        border-radius: 8px;
         height: 3rem;
         display: flex;
         align-items: center;
         line-height: 3rem;
+        padding: 0 1rem;
+        margin: 0 0.5rem;
+        transition: all 0.2s ease;
+        font-weight: 500;
     }
 
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.25);
-    color: white;
+    background: var(--accent-light);
+    color: var(--accent-primary);
+    font-weight: 600;
 }
 
 .nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    transform: translateX(4px);
 }
 
 @media (min-width: 641px) {

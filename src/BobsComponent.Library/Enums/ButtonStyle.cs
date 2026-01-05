@@ -16,14 +16,14 @@ public enum ButtonStyle
     Secondary,
 
     /// <summary>
+    /// Tertiary action button (info/accent color)
+    /// </summary>
+    Tertiary,
+
+    /// <summary>
     /// Success action button (green color)
     /// </summary>
     Success,
-
-    /// <summary>
-    /// Danger/destructive action button (red color)
-    /// </summary>
-    Danger,
 
     /// <summary>
     /// Warning action button (yellow/orange color)
@@ -31,7 +31,7 @@ public enum ButtonStyle
     Warning,
 
     /// <summary>
-    /// Informational action button (light blue color)
+    /// Error/destructive action button (red color)
     /// </summary>
-    Info
+    Error
 }

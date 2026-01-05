@@ -1,0 +1,192 @@
+.theme-picker {
+    position: relative;
+    display: inline-block;
+}
+
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border, rgba(0, 0, 0, 0.08));
+    border-radius: 8px;
+    color: var(--text-primary, #111827);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background: var(--accent-light, rgba(59, 130, 246, 0.1));
+    border-color: var(--accent-primary, #3b82f6);
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+}
+
+.theme-label {
+    white-space: nowrap;
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover .dropdown-arrow {
+    transform: translateY(2px);
+}
+
+.theme-dropdown {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    min-width: 320px;
+    background: var(--bg-primary, #ffffff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 12px;
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+    z-index: var(--z-dropdown);
+    overflow: hidden;
+    animation: dropdownSlide 0.2s ease;
+}
+
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.theme-dropdown-header {
+    padding: 1rem;
+    background: var(--bg-secondary, #f9fafb);
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary, #111827);
+}
+
+.theme-options {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color, #e5e7eb);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.theme-option:last-child {
+    border-bottom: none;
+}
+
+.theme-option:hover {
+    background: var(--bg-secondary, #f9fafb);
+}
+
+.theme-option.active {
+    background: var(--accent-light, #dbeafe);
+}
+
+.theme-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid var(--border-color, #e5e7eb);
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Theme preview colors */
+.theme-preview[data-theme-preview="light"] {
+    background: linear-gradient(135deg, #ffffff 50%, #3b82f6 50%);
+}
+
+.theme-preview[data-theme-preview="dark"] {
+    background: linear-gradient(135deg, #111827 50%, #60a5fa 50%);
+}
+
+.theme-preview[data-theme-preview="fire-nation"] {
+    background: linear-gradient(135deg, #1a0f0a 50%, #dc2626 50%);
+}
+
+.theme-preview[data-theme-preview="water-tribe"] {
+    background: linear-gradient(135deg, #0c1821 50%, #0ea5e9 50%);
+}
+
+.theme-preview[data-theme-preview="earth-kingdom"] {
+    background: linear-gradient(135deg, #1c1410 50%, #65a30d 50%);
+}
+
+.theme-preview[data-theme-preview="air-nomads"] {
+    background: linear-gradient(135deg, #fef3c7 50%, #ea580c 50%);
+}
+
+.theme-preview[data-theme-preview="accessible"] {
+    background: linear-gradient(135deg, #000000 50%, #ffff00 50%);
+}
+
+.theme-info {
+    flex: 1;
+}
+
+.theme-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary, #111827);
+    margin-bottom: 0.2rem;
+}
+
+.theme-description {
+    font-size: 0.8rem;
+    color: var(--text-secondary, #6b7280);
+}
+
+.theme-check {
+    color: var(--accent-primary, #3b82f6);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.theme-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-backdrop);
+    background: transparent;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .theme-label {
+        display: none;
+    }
+
+    .theme-dropdown {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
