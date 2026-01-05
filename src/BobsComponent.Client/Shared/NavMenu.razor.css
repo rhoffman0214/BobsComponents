@@ -71,6 +71,7 @@
 .nav-scrollable {
     max-height: calc(100vh - 3.5rem);
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Main nav items (Home, MicroActions) */
@@ -84,10 +85,14 @@
     user-select: none;
     justify-content: space-between;
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .nav-expandable:hover {
     background: var(--glass-bg);
+    color: var(--text-primary);
+    transform: translateX(4px);
 }
 
 /* Toggle icon */
@@ -110,6 +115,30 @@
     padding-left: 0.5rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
+}
+
+/* Navigation with inline toggle button */
+.nav-with-toggle {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.nav-with-toggle .nav-link {
+    flex: 1;
+}
+
+.nav-toggle-btn-inline {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.nav-toggle-btn-inline:hover {
+    color: var(--text-primary);
 }
 
 /* Sub-items styling */
