@@ -1,4 +1,5 @@
-﻿@using BobsComponent.Library.Components
+﻿@using BobsComponent.Library
+@using BobsComponent.Library.Components
 @inherits LayoutComponentBase
 
 <div class="page">
@@ -8,7 +9,7 @@
 
     <main>
         <div class="top-row">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <VersionBadge />
             <ThemePicker />
         </div>
 
