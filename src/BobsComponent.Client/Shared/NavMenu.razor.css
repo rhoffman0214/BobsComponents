@@ -53,6 +53,7 @@
         transition: all 0.2s ease;
         font-weight: 500;
         white-space: nowrap;
+        gap: 0.5rem;
     }
 
 .nav-item ::deep a.active {
@@ -112,7 +113,7 @@
 
 /* Submenu container */
 .nav-submenu {
-    padding-left: 0.5rem;
+    padding-left: 1.5rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
 }
@@ -122,10 +123,12 @@
     display: flex;
     align-items: center;
     position: relative;
+    gap: 0.25rem;
 }
 
 .nav-with-toggle .nav-link {
     flex: 1;
+    min-width: 0;
 }
 
 .nav-toggle-btn-inline {
@@ -134,23 +137,101 @@
     padding: 0.5rem;
     cursor: pointer;
     color: var(--text-secondary);
-    transition: color 0.2s ease;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
 }
 
 .nav-toggle-btn-inline:hover {
     color: var(--text-primary);
+    background: var(--glass-bg);
 }
 
-/* Sub-items styling */
+/* Sub-items styling (second level) */
 .nav-sub-item {
     font-size: 0.85rem !important;
     height: 2.5rem !important;
     line-height: 2.5rem !important;
-    padding-left: 2rem !important;
+    padding-left: 0.5rem !important;
+    gap: 0.5rem;
 }
 
-.nav-sub-item .oi {
-    font-size: 0.9rem;
+/* Nested items styling (third level) */
+.nav-nested-item {
+    font-size: 0.8rem !important;
+    height: 2.25rem !important;
+    line-height: 2.25rem !important;
+    padding-left: 0.5rem !important;
+    gap: 0.5rem;
+}
+
+/* Current page indicator (hidden by default, shown when collapsed) */
+.current-page-indicator {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--glass-bg);
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    font-weight: 600;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.current-page-indicator:hover {
+    background: var(--accent-light);
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+/* Collapsed state - triggered by scroll */
+.nav-scrollable.nav-collapsed {
+    position: fixed;
+    top: 3.5rem;
+    left: 0;
+    width: auto;
+    max-width: 250px;
+    max-height: auto;
+    background: transparent;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-scrollable.nav-collapsed .current-page-indicator {
+    display: flex;
+}
+
+.nav-scrollable.nav-collapsed nav.flex-column {
+    display: none;
+}
+
+/* Expanded state (when collapsed nav is hovered/clicked) */
+.nav-scrollable.nav-collapsed.nav-expanded {
+    max-width: 250px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    max-height: calc(100vh - 3.5rem);
+    overflow-y: auto;
+}
+
+.nav-scrollable.nav-collapsed.nav-expanded .current-page-indicator {
+    background: var(--accent-light);
+    color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.nav-scrollable.nav-collapsed.nav-expanded nav.flex-column {
+    display: flex;
+    padding-bottom: 1rem;
 }
 
 @media (min-width: 641px) {

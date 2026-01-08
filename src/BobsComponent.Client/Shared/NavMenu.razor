@@ -1,4 +1,4 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BobsComponents</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -7,27 +7,37 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu" @ref="navMenuElement">
+    <!-- Current page indicator (shown when collapsed) -->
+    <div class="current-page-indicator">
+        <LucideIcon Name="@currentIcon" Size="20" />
+        <span>@currentPageName</span>
+    </div>
+
     <nav class="flex-column">
         <!-- Home -->
         <div class="nav-item">
             <NavLink class="nav-link nav-main-item" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <LucideIcon Name="home" Size="20" /> Home
             </NavLink>
         </div>
 
         <!-- MicroActions -->
         <div class="nav-item">
             <NavLink class="nav-link nav-main-item" href="microactions">
-                <span class="oi oi-bolt" aria-hidden="true"></span> Micro Actions
+                <LucideIcon Name="bolt" Size="20" /> Micro Actions
             </NavLink>
         </div>
 
         <!-- Docs Section -->
         <div class="nav-item">
-            <div class="nav-link nav-main-item nav-expandable" @onclick="ToggleDocs">
-                <span class="oi oi-book" aria-hidden="true"></span> Docs
-                <span class="toggle-icon @(docsExpanded ? "expanded" : "collapsed")">▼</span>
+            <div class="nav-with-toggle">
+                <NavLink class="nav-link nav-main-item" href="docs">
+                    <LucideIcon Name="book" Size="20" /> Docs
+                </NavLink>
+                <button class="nav-toggle-btn-inline" @onclick="ToggleDocs" @onclick:stopPropagation="true" aria-label="Toggle Docs submenu">
+                    <span class="toggle-icon @(docsExpanded ? "expanded" : "collapsed")">▼</span>
+                </button>
             </div>
 
             @if (docsExpanded)
@@ -35,7 +45,7 @@
                 <div class="nav-submenu">
                     <div class="nav-item">
                         <NavLink class="nav-link nav-sub-item" href="docs/error-codes">
-                            <span class="oi oi-warning" aria-hidden="true"></span> Error Codes
+                            <LucideIcon Name="warning" Size="16" /> Error Codes
                         </NavLink>
                     </div>
                 </div>
@@ -44,9 +54,13 @@
 
         <!-- Input Examples Section -->
         <div class="nav-item">
-            <div class="nav-link nav-main-item nav-expandable" @onclick="ToggleInputExamples">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Input Examples
-                <span class="toggle-icon @(inputExamplesExpanded ? "expanded" : "collapsed")">▼</span>
+            <div class="nav-with-toggle">
+                <NavLink class="nav-link nav-main-item" href="inputexamples">
+                    <LucideIcon Name="list" Size="20" /> Input Examples
+                </NavLink>
+                <button class="nav-toggle-btn-inline" @onclick="ToggleInputExamples" @onclick:stopPropagation="true" aria-label="Toggle Input Examples submenu">
+                    <span class="toggle-icon @(inputExamplesExpanded ? "expanded" : "collapsed")">▼</span>
+                </button>
             </div>
 
             @if (inputExamplesExpanded)
@@ -54,27 +68,31 @@
                 <div class="nav-submenu">
                     <!-- AsyncButton Component -->
                     <div class="nav-item">
-                        <div class="nav-link nav-sub-item nav-expandable" @onclick="ToggleAsyncButton">
-                            <span class="oi oi-command" aria-hidden="true"></span> Button
-                            <span class="toggle-icon @(asyncButtonExpanded ? "expanded" : "collapsed")">▼</span>
+                        <div class="nav-with-toggle">
+                            <NavLink class="nav-link nav-sub-item" href="inputexamples/button">
+                                <LucideIcon Name="square" Size="16" /> Button
+                            </NavLink>
+                            <button class="nav-toggle-btn-inline" @onclick="ToggleAsyncButton" @onclick:stopPropagation="true" aria-label="Toggle Button submenu">
+                                <span class="toggle-icon @(asyncButtonExpanded ? "expanded" : "collapsed")">▼</span>
+                            </button>
                         </div>
 
                         @if (asyncButtonExpanded)
                         {
                             <div class="nav-submenu">
                                 <div class="nav-item">
-                                    <NavLink class="nav-link nav-sub-item" href="inputexamples/button#playground">
-                                        <span class="oi oi-play-circle" aria-hidden="true"></span> Playground
+                                    <NavLink class="nav-link nav-nested-item" href="inputexamples/button#playground">
+                                        <LucideIcon Name="play-circle" Size="14" /> Playground
                                     </NavLink>
                                 </div>
                                 <div class="nav-item">
-                                    <NavLink class="nav-link nav-sub-item" href="inputexamples/button#button-styles">
-                                        <span class="oi oi-brush" aria-hidden="true"></span> Examples
+                                    <NavLink class="nav-link nav-nested-item" href="inputexamples/button#button-styles">
+                                        <LucideIcon Name="brush" Size="14" /> Examples
                                     </NavLink>
                                 </div>
                                 <div class="nav-item">
-                                    <NavLink class="nav-link nav-sub-item" href="inputexamples/button#state-lifecycle">
-                                        <span class="oi oi-book" aria-hidden="true"></span> Guides
+                                    <NavLink class="nav-link nav-nested-item" href="inputexamples/button#state-lifecycle">
+                                        <LucideIcon Name="book" Size="14" /> Guides
                                     </NavLink>
                                 </div>
                             </div>
@@ -84,7 +102,7 @@
                     <!-- Dropdown -->
                     <div class="nav-item">
                         <NavLink class="nav-link nav-sub-item" href="inputexamples/dropdown">
-                            <span class="oi oi-menu" aria-hidden="true"></span> Dropdown
+                            <LucideIcon Name="menu" Size="16" /> Dropdown
                         </NavLink>
                     </div>
                 </div>
@@ -93,13 +111,61 @@
     </nav>
 </div>
 
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@implements IDisposable
+
 @code {
     private bool collapseNavMenu = true;
     private bool docsExpanded = false;
     private bool inputExamplesExpanded = true; // Start expanded
     private bool asyncButtonExpanded = false;
+    private ElementReference navMenuElement;
+    private string currentPageName = "Home";
+    private string currentIcon = "home";
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+        UpdateCurrentPage();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("NavMenu.init", navMenuElement, null);
+        }
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        UpdateCurrentPage();
+        StateHasChanged();
+    }
+
+    private void UpdateCurrentPage()
+    {
+        var path = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).ToLowerInvariant();
+
+        // Remove query strings and anchors
+        var cleanPath = path.Split('?', '#')[0];
+
+        (currentPageName, currentIcon) = cleanPath switch
+        {
+            "" => ("Home", "home"),
+            "microactions" => ("Micro Actions", "bolt"),
+            "docs" => ("Docs", "book"),
+            var p when p.StartsWith("docs/") => ("Docs", "book"),
+            "inputexamples" => ("Input Examples", "list"),
+            var p when p.StartsWith("inputexamples/button") => ("Button", "square"),
+            var p when p.StartsWith("inputexamples/dropdown") => ("Dropdown", "menu"),
+            var p when p.StartsWith("inputexamples/") => ("Input Examples", "list"),
+            _ => ("Home", "home")
+        };
+    }
 
     private void ToggleNavMenu()
     {
@@ -119,5 +185,10 @@
     private void ToggleAsyncButton()
     {
         asyncButtonExpanded = !asyncButtonExpanded;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 }

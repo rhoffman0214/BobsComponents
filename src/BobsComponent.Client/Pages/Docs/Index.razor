@@ -1,0 +1,33 @@
+@page "/docs"
+@using BobsComponent.Library.Components.Icons
+
+<PageTitle>Documentation - BobsComponents</PageTitle>
+
+<div class="page-header">
+    <h1>
+        <LucideIcon Name="book" Size="32" />
+        Documentation
+    </h1>
+    <p class="lead">Comprehensive guides and references for working with BobsComponents.</p>
+</div>
+
+<div class="docs-grid">
+    <!-- Error Codes Card -->
+    <div class="doc-card">
+        <div class="card-icon">
+            <LucideIcon Name="warning" Size="48" />
+        </div>
+        <h2>Error Codes</h2>
+        <p>Complete reference for all error codes, their meanings, and how to resolve common issues.</p>
+        <div class="card-links">
+            <a href="docs/error-codes" class="btn btn-primary">
+                <LucideIcon Name="book" Size="18" />
+                View Error Codes
+            </a>
+        </div>
+    </div>
+</div>
+
+@code {
+    // No code needed for this static page
+}
