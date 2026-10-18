@@ -1,0 +1,147 @@
+@page "/bob/errors"
+@using BobsComponents.Infrastructure
+
+<PageTitle>Error model - BobsComponents</PageTitle>
+
+<div class="errors-page">
+    <header>
+        <h1>Error model</h1>
+        <p class="lead">
+            Every exception is classified once into a <code>BobError</code> with one of six origins, and the card says whose fault it is.
+            The exact message is always shown. Stack traces and inner exceptions sit behind a Details toggle.
+            Classification looks at exception types and validated state, never at message text.
+        </p>
+        <p>
+            Each button below triggers a real failure inside a <code>BobErrorBoundary</code>. With the dev kit open
+            (bottom right) you can see the same errors collected, including the ones no boundary caught.
+        </p>
+    </header>
+
+    <section aria-labelledby="origins-h">
+        <h2 id="origins-h">The six origins</h2>
+        <div class="origin-grid">
+            @foreach (var demo in _demos)
+            {
+                <article class="origin-card">
+                    <h3>@demo.Title</h3>
+                    <p>@demo.Detected</p>
+                    <button type="button" class="bob-button" @onclick="() => Trigger(demo)">Trigger</button>
+                    <BobErrorBoundary @key="demo.Key(_generation)" ComponentName="@demo.Title">
+                        @if (_active.Contains(demo.Title))
+                        {
+                            @demo.Render()
+                        }
+                    </BobErrorBoundary>
+                </article>
+            }
+        </div>
+    </section>
+
+    <section aria-labelledby="config-h">
+        <h2 id="config-h">Configuring the card</h2>
+        <pre class="code"><code>@Config</code></pre>
+    </section>
+
+    <section aria-labelledby="own-h">
+        <h2 id="own-h">Using it in your components</h2>
+        <pre class="code"><code>@OwnComponent</code></pre>
+    </section>
+</div>
+
+@code {
+    private readonly HashSet<string> _active = [];
+    private int _generation;
+
+    private sealed record OriginDemo(string Title, string Detected, Func<RenderFragment> Render)
+    {
+        public string Key(int generation) => $"{Title}-{generation}";
+    }
+
+    private OriginDemo[] _demos = [];
+
+    protected override void OnInitialized()
+    {
+        _demos =
+        [
+            new("Bug inside a component", "An exception from library code that matches no rule below.", () => Thrower(() =>
+            {
+                try { BobDiagnostics.ThrowSimulatedComponentBug(); } catch (Exception ex) { return ex; }
+                return null!;
+            })),
+            new("Wrong parameters", "Checks in SetParametersAsync: required value missing, invalid value, conflicting combination.", () => b =>
+            {
+                b.OpenComponent<LoadingSpinner>(0);
+                b.AddAttribute(1, nameof(LoadingSpinner.Size), -5);
+                b.CloseComponent();
+            }),
+            new("Data shape mismatch", "A deserialization or shape check that fails, naming the path.", () => Thrower(() =>
+                new BobDataShapeException("ProgressChart", "$.points[3].value", "number", "string \"n/a\""))),
+            new("Missing asset or service", "A JSException, a failed script import, or an unregistered service.", () => Thrower(() =>
+                BobMissingDependencyException.Script("ModalSheet", BobJs.FocusTrap, new JSException("Failed to fetch dynamically imported module")))),
+            new("Failed network call", "An HttpRequestException or a problem details response; the server's own message, verbatim.", () => Thrower(() =>
+                new BobHttpException("OrderForm", "POST", "https://example.test/api/orders", 422, "Unprocessable Entity",
+                    "Quantity must be at least 1."))),
+            new("Your callback threw", "An exception escaping your EventCallback or RenderFragment: your message and your top stack frame.", () => b =>
+            {
+                b.OpenComponent<AsyncButton>(0);
+                b.AddAttribute(1, nameof(AsyncButton.OnClick), EventCallback.Factory.Create(this, () =>
+                    throw new InvalidOperationException("The save handler in this page threw.")));
+                b.AddAttribute(2, nameof(AsyncButton.Variant), BobButtonVariant.Primary);
+                b.AddAttribute(3, nameof(AsyncButton.ChildContent), (RenderFragment)(c => c.AddContent(0, "Click me (my handler throws)")));
+                b.CloseComponent();
+            }),
+        ];
+    }
+
+    private static RenderFragment Thrower(Func<Exception> make) => b =>
+    {
+        b.OpenComponent<DemoThrower>(0);
+        b.AddAttribute(1, nameof(DemoThrower.Make), make);
+        b.CloseComponent();
+    };
+
+    private void Trigger(OriginDemo demo)
+    {
+        _generation++;
+        _active.Clear();
+        _active.Add(demo.Title);
+    }
+
+    private const string Config = """
+        builder.Services.AddBobComponents(o =>
+        {
+            o.EnvironmentName = builder.HostEnvironment.Environment;
+            o.Errors.Details = BobErrorDetailsMode.Toggle;   // Toggle (default), AlwaysOpen, Hidden
+            o.Errors.ShowStackTrace = true;                  // default
+            o.Errors.ShowInnerExceptions = true;             // default
+            o.Errors.ShowErrorId = true;                     // default
+            o.Errors.CatalogBaseUrl = "bob/error-catalog";   // makes the code a link; null = no link
+        });
+        """;
+
+    private const string OwnComponent = """
+        public class PriceTag : BobComponentBase
+        {
+            [Parameter] public decimal? Amount { get; set; }
+
+            protected override void ValidateParameters(BobParameterValidator check) =>
+                check.Required(nameof(Amount), Amount, "a price in dollars");   // BOB-PARAM-001
+
+            // App callbacks: exceptions become "Your callback threw" cards that name the callback.
+            private Task Clicked() => InvokeCallbackAsync(nameof(OnClick), OnClick);
+
+            // Fire-and-forget work never reaches a boundary; send failures to the hub yourself.
+            private void Refresh() => _ = LoadAsync().ContinueWith(t => ReportError(t.Exception!), TaskContinuationOptions.OnlyOnFaulted);
+        }
+
+        // Wrap a page or layout once:
+        <BobErrorBoundary ComponentName="Checkout"> ... </BobErrorBoundary>
+        """;
+
+    private sealed class DemoThrower : ComponentBase
+    {
+        [Parameter] public Func<Exception> Make { get; set; } = default!;
+        protected override void OnInitialized() =>
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw(Make());
+    }
+}

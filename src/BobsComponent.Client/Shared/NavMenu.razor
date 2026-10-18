@@ -29,6 +29,32 @@
             </NavLink>
         </div>
 
+        <!-- Bob components (prefixed, layered) -->
+        <div class="nav-item">
+            <div class="nav-with-toggle">
+                <NavLink class="nav-link nav-main-item" href="bob">
+                    <LucideIcon Name="square" Size="20" /> Bob Components
+                </NavLink>
+                <button class="nav-toggle-btn-inline" @onclick="ToggleBob" @onclick:stopPropagation="true" aria-label="Toggle Bob Components submenu">
+                    <span class="toggle-icon @(bobExpanded ? "expanded" : "collapsed")">▼</span>
+                </button>
+            </div>
+
+            @if (bobExpanded)
+            {
+                <div class="nav-submenu">
+                    @foreach (var (href, label) in BobLinks)
+                    {
+                        <div class="nav-item">
+                            <NavLink class="nav-link nav-sub-item" href="@href">
+                                <LucideIcon Name="square" Size="16" /> @label
+                            </NavLink>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
         <!-- Docs Section -->
         <div class="nav-item">
             <div class="nav-with-toggle">
@@ -118,6 +144,20 @@
 @code {
     private bool collapseNavMenu = true;
     private bool docsExpanded = false;
+    private bool bobExpanded = true;
+
+    private static readonly (string Href, string Label)[] BobLinks =
+    [
+        ("bob/errors", "Error model"),
+        ("bob/error-catalog", "Error catalog"),
+        ("bob/dev-kit", "Dev kit"),
+        ("bob/async-button", "AsyncButton"),
+        ("bob/loading-spinner", "LoadingSpinner"),
+        ("bob/full-screen-loader", "FullScreenLoader"),
+        ("bob/modal-sheet", "ModalSheet"),
+        ("bob/confirm-dialog", "ConfirmDialog"),
+        ("bob/toasts", "Toasts"),
+    ];
     private bool inputExamplesExpanded = true; // Start expanded
     private bool asyncButtonExpanded = false;
     private ElementReference navMenuElement;
@@ -157,6 +197,8 @@
         {
             "" => ("Home", "home"),
             "microactions" => ("Micro Actions", "bolt"),
+            "bob" => ("Bob Components", "square"),
+            var p when p.StartsWith("bob/") => ("Bob Components", "square"),
             "docs" => ("Docs", "book"),
             var p when p.StartsWith("docs/") => ("Docs", "book"),
             "inputexamples" => ("Input Examples", "list"),
@@ -170,6 +212,11 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleBob()
+    {
+        bobExpanded = !bobExpanded;
     }
 
     private void ToggleDocs()

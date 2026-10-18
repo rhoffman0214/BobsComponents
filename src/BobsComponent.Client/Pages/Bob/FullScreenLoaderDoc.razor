@@ -1,0 +1,75 @@
+@page "/bob/full-screen-loader"
+
+<ComponentDocPage Title="FullScreenLoader"
+                  Lead="A full-viewport loading state for login redirects and route authorization checks, so users never see a raw framework default."
+                  UsageCode="@Usage" CssFile="_content/BobsComponents/css/components/fullscreen-loader.css" CssExample="@CssExample"
+                  Parameters="@_params" Parts="@_parts" Variables="@_vars" Accessibility="@_a11y" Errors="@_errors">
+    <Demo>
+        <p>The real component fills the viewport. This demo shows it inside a bordered box with a reduced height.</p>
+        <div style="--bob-fullscreen-loader-padding: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; overflow: hidden;">
+            <div style="min-height: 12rem; display: flex;">
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem; text-align: center;">
+                    <LoadingSpinner Size="40" ShowLabel="false" Label="Signing you in…" />
+                    <p class="bob-fullscreen-loader__text" style="margin: 0;">Signing you in…</p>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="bob-button" @onclick="() => _full = true">Show it full screen</button>
+        @if (_full)
+        {
+            <div style="position: fixed; inset: 0; background: var(--bob-color-ground); z-index: 1500;" @onclick="() => _full = false">
+                <FullScreenLoader Message="Click anywhere to close" />
+            </div>
+        }
+    </Demo>
+</ComponentDocPage>
+
+@code {
+    private bool _full;
+
+    private const string Usage = """
+        @if (!_ready)
+        {
+            <FullScreenLoader Message="Signing you in…" />
+        }
+        """;
+
+    private const string CssExample = """
+        :root {
+            --bob-fullscreen-loader-text-color: rebeccapurple;
+            --bob-fullscreen-loader-text-size: 1.5rem;
+        }
+        """;
+
+    private static readonly DocParam[] _params =
+    [
+        new("Message", "string", "\"Loading…\"", "Text shown under the spinner and announced to screen readers. Must not be empty."),
+        new("AdditionalAttributes", "Dictionary<string, object>?", "null", "Any other attribute is placed on the root element."),
+    ];
+
+    private static readonly DocPart[] _parts =
+    [
+        new("root", "bob-fullscreen-loader", "div, role=status, min-height 100dvh"),
+        new("text", "bob-fullscreen-loader__text", "p with the message"),
+    ];
+
+    private static readonly DocVar[] _vars =
+    [
+        new("--bob-fullscreen-loader-gap", "1.25rem", "Space between spinner and text"),
+        new("--bob-fullscreen-loader-padding", "2rem", "Inner padding"),
+        new("--bob-fullscreen-loader-text-color", "var(--bob-color-text)", "Message color"),
+        new("--bob-fullscreen-loader-text-size", "1.15rem", "Message size"),
+    ];
+
+    private static readonly string[] _a11y =
+    [
+        "The root is role=\"status\" with aria-live=\"polite\" (WCAG 4.1.3), so the wait is announced without moving focus.",
+        "The inner spinner's label is visually hidden: the message is shown and announced once, not twice.",
+        "Shown during redirects, so there is no focus to restore; the page that replaces it owns focus.",
+    ];
+
+    private static readonly DocError[] _errors =
+    [
+        new("BOB-PARAM-001", "when Message is empty."),
+    ];
+}

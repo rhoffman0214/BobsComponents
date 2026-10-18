@@ -1,0 +1,38 @@
+.doc-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.doc-header h1 { margin: 0 0 0.25rem; }
+.doc-header .lead { margin: 0; color: var(--text-secondary); font-size: 1.1rem; }
+
+.doc-section { display: flex; flex-direction: column; gap: 0.75rem; }
+.doc-section h2 { margin: 0; padding-bottom: 0.25rem; border-bottom: 1px solid var(--border-color, #d1d5db); }
+.doc-section h3 { margin: 0.5rem 0 0; font-size: 1rem; }
+
+.doc-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px dashed var(--border-color, #d1d5db);
+    border-radius: 0.5rem;
+}
+
+.doc-code {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    border-radius: 0.5rem;
+    background: var(--bg-tertiary, #f3f4f6);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+}
+
+.doc-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.doc-table th, .doc-table td { padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--border-color, #d1d5db); text-align: left; vertical-align: top; }
+.doc-required { color: var(--color-danger, #b91c1c); font-size: 0.8rem; font-weight: 700; }

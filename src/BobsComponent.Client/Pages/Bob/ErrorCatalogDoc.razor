@@ -1,0 +1,32 @@
+@page "/bob/error-catalog"
+@inject BobErrorCatalog Catalog
+
+<PageTitle>Error catalog - BobsComponents</PageTitle>
+
+<div class="catalog-page">
+    <header>
+        <h1>Error catalog</h1>
+        <p class="lead">
+            Every code BobsComponents can raise: origin, message shape, cause and fix. The error card links straight to its entry here
+            when <code>BobOptions.Errors.CatalogBaseUrl</code> is set. This page is generated from <code>error-catalog.json</code>.
+        </p>
+    </header>
+
+    @foreach (var group in Catalog.All.GroupBy(e => e.Origin))
+    {
+        <section aria-labelledby="@($"origin-{group.Key}")">
+            <h2 id="@($"origin-{group.Key}")">@group.Key.Badge()</h2>
+            @foreach (var entry in group)
+            {
+                <article id="@entry.Code" class="entry">
+                    <h3><code>@entry.Code</code> @entry.Title</h3>
+                    <dl>
+                        <dt>Message</dt><dd><code>@entry.Message</code></dd>
+                        <dt>Cause</dt><dd>@entry.Cause</dd>
+                        <dt>Fix</dt><dd>@entry.Fix</dd>
+                    </dl>
+                </article>
+            }
+        </section>
+    }
+</div>

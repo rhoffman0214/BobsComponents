@@ -1,0 +1,80 @@
+@page "/bob/toasts"
+@inject IBobToastService Toasts
+
+<ComponentDocPage Title="ToastService and ToastHost"
+                  Lead="Any component calls Toasts.Show(...) without a reference to the host. The host, mounted once in the layout, renders and dismisses them."
+                  UsageCode="@Usage" CssFile="_content/BobsComponents/css/components/toast.css" CssExample="@CssExample"
+                  Parameters="@_params" Parts="@_parts" Variables="@_vars" Accessibility="@_a11y" Errors="@_errors">
+    <Demo>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <button type="button" class="bob-button" @onclick='() => Toasts.Show("Saved", BobToastLevel.Success)'>Success</button>
+            <button type="button" class="bob-button" @onclick='() => Toasts.Show("Heads up", BobToastLevel.Info)'>Info</button>
+            <button type="button" class="bob-button" @onclick='() => Toasts.Show("Could not save", BobToastLevel.Error)'>Error</button>
+            <button type="button" class="bob-button" @onclick='() => Toasts.Show("Stays ten seconds", BobToastLevel.Info, TimeSpan.FromSeconds(10))'>Custom duration</button>
+        </div>
+        <p>The host for this site is mounted once in the layout, so the toast appears at the bottom of the window.</p>
+    </Demo>
+</ComponentDocPage>
+
+@code {
+    private const string Usage = """
+        // Program.cs
+        builder.Services.AddBobComponents(o => o.Toasts.DefaultDuration = TimeSpan.FromSeconds(4));
+
+        // MainLayout.razor (once)
+        <ToastHost />
+
+        // anywhere
+        @inject IBobToastService Toasts
+        Toasts.Show("Saved");                                   // success, default duration
+        Toasts.Show("Could not save", BobToastLevel.Error);     // role="alert"
+        Toasts.Show("Undo available", BobToastLevel.Info, TimeSpan.FromSeconds(8));
+        """;
+
+    private const string CssExample = """
+        :root { --bob-toast-bg: #222; --bob-toast-offset: 4rem; }
+        .bob-toast--error { border-left: 4px solid tomato; }
+        """;
+
+    private static readonly DocParam[] _params =
+    [
+        new("ToastHost.Service", "IBobToastService?", "from DI", "Replaces the injected service; for tests and multiple hosts."),
+        new("IBobToastService.Show(text, level, duration)", "method", "Success, options default", "Shows a toast. level is Info, Success or Error; duration null uses BobOptions.Toasts.DefaultDuration (3 seconds)."),
+        new("BobOptions.Toasts.DefaultDuration", "TimeSpan", "3 seconds", "How long a toast stays when the caller gives no duration."),
+        new("BobOptions.Toasts.MaxVisible", "int", "5", "Most toasts on screen; the oldest is dropped."),
+    ];
+
+    private static readonly DocPart[] _parts =
+    [
+        new("host", "bob-toast-host", "Fixed, centered container, aria-live=polite"),
+        new("toast", "bob-toast", "One message; modifiers bob-toast--info|success|error. Error toasts have role=alert"),
+        new("icon", "bob-toast__icon", "Inline SVG, aria-hidden"),
+        new("text", "bob-toast__text", "The message"),
+    ];
+
+    private static readonly DocVar[] _vars =
+    [
+        new("--bob-toast-z", "var(--bob-z-toast)", "Stacking order"),
+        new("--bob-toast-bg", "var(--bob-color-text)", "Toast background"),
+        new("--bob-toast-fg", "var(--bob-color-ground)", "Toast text color"),
+        new("--bob-toast-radius", "var(--bob-radius-md)", "Corner radius"),
+        new("--bob-toast-shadow", "0 0.25rem 0.75rem rgb(0 0 0 / 0.25)", "Drop shadow"),
+        new("--bob-toast-offset", "1.25rem", "Distance from the bottom edge"),
+        new("--bob-toast-icon-success", "var(--bob-color-success)", "Success icon color"),
+        new("--bob-toast-icon-error", "var(--bob-color-danger)", "Error icon color"),
+        new("--bob-toast-icon-info", "var(--bob-color-info)", "Info icon color"),
+    ];
+
+    private static readonly string[] _a11y =
+    [
+        "The host is a polite live region (aria-live=\"polite\"), so confirmations are announced without moving focus (WCAG 4.1.3).",
+        "Error toasts also carry role=\"alert\" so a failure is not missed.",
+        "Meaning is in the text, never in color or the icon alone; icons are aria-hidden and differ in shape.",
+        "Known gap: toasts disappear on a timer (WCAG 2.2.1). Raise the duration for important messages, and show failures in persistent UI too (BobFit lists set-save failures in a role=alert block as well).",
+    ];
+
+    private static readonly DocError[] _errors =
+    [
+        new("BOB-ASSET-002", "when ToastHost is mounted but AddBobComponents() was not called, so IBobToastService is not registered."),
+    ];
+}

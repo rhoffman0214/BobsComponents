@@ -1,0 +1,89 @@
+/* ModalSheet. Variables: --bob-modal-z, --bob-modal-backdrop, --bob-modal-bg, --bob-modal-border,
+   --bob-modal-radius, --bob-modal-max-width, --bob-modal-max-height, --bob-modal-padding, --bob-modal-shadow */
+.bob-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background: var(--bob-modal-backdrop, rgb(0 0 0 / 0.5));
+    z-index: var(--bob-modal-z, var(--bob-z-modal));
+}
+
+.bob-modal {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--bob-modal-max-width, 26rem);
+    max-height: var(--bob-modal-max-height, 88vh);
+    overflow-y: auto;
+    padding: var(--bob-modal-padding, 0.9rem 1rem 1.1rem);
+    border: 1px solid var(--bob-modal-border, var(--bob-color-border));
+    border-radius: var(--bob-modal-radius, 1.25rem 1.25rem 0 0);
+    background: var(--bob-modal-bg, var(--bob-color-surface));
+    color: var(--bob-color-text);
+    box-shadow: var(--bob-modal-shadow, var(--bob-shadow));
+    -webkit-overflow-scrolling: touch;
+}
+
+.bob-modal__handle {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 0.3rem;
+    margin: 0 auto 0.75rem;
+    border-radius: 999px;
+    background: var(--bob-color-border);
+}
+
+.bob-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.bob-modal__title {
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--bob-font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bob-modal__close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--bob-color-text-muted);
+    cursor: pointer;
+}
+
+.bob-modal__close:hover {
+    background: color-mix(in srgb, var(--bob-color-text) 10%, transparent);
+    color: var(--bob-color-text);
+}
+
+.bob-modal__body {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 640px) {
+    .bob-modal-backdrop {
+        align-items: center;
+        padding: 1rem;
+    }
+
+    .bob-modal {
+        border-radius: var(--bob-modal-radius, var(--bob-radius-lg));
+    }
+}

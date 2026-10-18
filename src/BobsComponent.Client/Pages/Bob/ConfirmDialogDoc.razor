@@ -1,0 +1,84 @@
+@page "/bob/confirm-dialog"
+@inject IBobToastService Toasts
+
+<ComponentDocPage Title="ConfirmDialog"
+                  Lead="An are-you-sure gate for destructive actions that have no undo. Built on ModalSheet."
+                  UsageCode="@Usage" CssFile="_content/BobsComponents/css/components/confirm.css" CssExample="@CssExample"
+                  Parameters="@_params" Parts="@_parts" Variables="@_vars" Accessibility="@_a11y" Errors="@_errors">
+    <Demo>
+        <button type="button" class="bob-button bob-button--danger" @onclick="() => _show = true">Delete workout</button>
+        <p role="status">@_status</p>
+        <ConfirmDialog Show="_show" Title="Delete this workout?" Message="This cannot be undone."
+                       ConfirmLabel="Delete" Busy="_busy" OnConfirm="Confirm" OnCancel="() => _show = false" />
+    </Demo>
+</ComponentDocPage>
+
+@code {
+    private bool _show;
+    private bool _busy;
+    private string _status = "Nothing deleted yet.";
+
+    private async Task Confirm()
+    {
+        _busy = true;
+        await Task.Delay(1500);
+        _busy = false;
+        _show = false;
+        _status = "Deleted.";
+        Toasts.Show("Workout deleted", BobToastLevel.Success);
+    }
+
+    private const string Usage = """
+        <ConfirmDialog Show="@_confirming" Title="Delete this workout?" Message="This cannot be undone."
+                       ConfirmLabel="Delete" Busy="@_deleting"
+                       OnConfirm="DeleteAsync" OnCancel="() => _confirming = false" />
+        """;
+
+    private const string CssExample = """
+        :root { --bob-confirm-gap: 1.5rem; --bob-confirm-message-color: inherit; }
+        .bob-confirm__actions { justify-content: space-between; }
+        """;
+
+    private static readonly DocParam[] _params =
+    [
+        new("Show", "bool", "false", "Whether the dialog is open."),
+        new("Title", "string", "\"Are you sure?\"", "Heading and accessible name. Must not be empty."),
+        new("Message", "string", "\"\"", "Plain text above the buttons."),
+        new("ConfirmLabel", "string", "\"Delete\"", "Confirm button text. Must not be empty."),
+        new("CancelLabel", "string", "\"Cancel\"", "Cancel button text. Must not be empty."),
+        new("Danger", "bool", "true", "Style the confirm button as destructive; false uses the primary look."),
+        new("Busy", "bool", "false", "Spinner on the confirm button while the action runs; it is disabled."),
+        new("EnableBackButton", "bool", "false", "Browser back-button integration of the underlying ModalSheet."),
+        new("OnConfirm", "EventCallback", "none", "Called when the user confirms."),
+        new("OnCancel", "EventCallback", "none", "Called for Cancel, Escape, the backdrop and the close button."),
+        new("ChildContent", "RenderFragment?", "null", "Richer content above the buttons."),
+    ];
+
+    private static readonly DocPart[] _parts =
+    [
+        new("root", "bob-confirm", "Wrapper inside the sheet body"),
+        new("message", "bob-confirm__message", "p with Message"),
+        new("actions", "bob-confirm__actions", "Button row"),
+        new("cancel", "bob-confirm__cancel", "Cancel button (also bob-button)"),
+        new("confirm", "bob-confirm__confirm", "Confirm AsyncButton (bob-button--danger or --primary)"),
+    ];
+
+    private static readonly DocVar[] _vars =
+    [
+        new("--bob-confirm-gap", "1rem", "Space between message and buttons"),
+        new("--bob-confirm-message-color", "var(--bob-color-text-muted)", "Message color"),
+    ];
+
+    private static readonly string[] _a11y =
+    [
+        "Everything ModalSheet does: dialog role, focus trap, focus restore, Escape (see the ModalSheet page).",
+        "Busy announces \"<ConfirmLabel>…\" through the spinner's polite status region.",
+        "Both buttons are real buttons at least 44px tall; the destructive one is also labeled by its text, not by color alone.",
+    ];
+
+    private static readonly DocError[] _errors =
+    [
+        new("BOB-PARAM-001", "when Title, ConfirmLabel or CancelLabel is empty."),
+        new("BOB-CB-001", "when your OnConfirm or OnCancel handler throws."),
+    ];
+}

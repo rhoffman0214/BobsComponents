@@ -1,0 +1,107 @@
+@namespace BobsComponent.Client.Pages.Bob.Docs
+
+@* Interim page template for BobsComponents docs (phase 4 replaces it with a generated one). Every component page
+   fills the same sections: demo, usage, parameters, CSS reference, accessibility, errors. *@
+<PageTitle>@Title - BobsComponents</PageTitle>
+
+<div class="doc-page">
+    <header class="doc-header">
+        <h1>@Title</h1>
+        <p class="lead">@Lead</p>
+    </header>
+
+    <section class="doc-section" id="demo" aria-labelledby="demo-h">
+        <h2 id="demo-h">Demo</h2>
+        <div class="doc-demo">@Demo</div>
+    </section>
+
+    <section class="doc-section" id="usage" aria-labelledby="usage-h">
+        <h2 id="usage-h">Usage</h2>
+        <pre class="doc-code"><code>@UsageCode</code></pre>
+    </section>
+
+    <section class="doc-section" id="parameters" aria-labelledby="parameters-h">
+        <h2 id="parameters-h">Parameters</h2>
+        <table class="doc-table">
+            <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">What it does</th></tr></thead>
+            <tbody>
+                @foreach (var p in Parameters)
+                {
+                    <tr>
+                        <td><code>@p.Name</code>@if (p.Required){<span class="doc-required"> required</span>}</td>
+                        <td><code>@p.Type</code></td>
+                        <td><code>@p.Default</code></td>
+                        <td>@p.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+
+    <section class="doc-section" id="css" aria-labelledby="css-h">
+        <h2 id="css-h">CSS reference</h2>
+        <p>Sheet: <code>@CssFile</code>. Everything is in cascade layer <code>bob</code>, so your own unlayered CSS wins.</p>
+        <h3>Parts</h3>
+        <table class="doc-table">
+            <thead><tr><th scope="col"><code>data-bob-part</code></th><th scope="col">Class</th><th scope="col">Element</th></tr></thead>
+            <tbody>
+                @foreach (var part in Parts)
+                {
+                    <tr><td><code>@part.Part</code></td><td><code>.@part.Class</code></td><td>@part.Description</td></tr>
+                }
+            </tbody>
+        </table>
+        <h3>Custom properties</h3>
+        <table class="doc-table">
+            <thead><tr><th scope="col">Property</th><th scope="col">Default</th><th scope="col">Effect</th></tr></thead>
+            <tbody>
+                @foreach (var v in Variables)
+                {
+                    <tr><td><code>@v.Name</code></td><td><code>@v.Default</code></td><td>@v.Effect</td></tr>
+                }
+            </tbody>
+        </table>
+        <pre class="doc-code"><code>@CssExample</code></pre>
+    </section>
+
+    <section class="doc-section" id="accessibility" aria-labelledby="a11y-h">
+        <h2 id="a11y-h">Accessibility</h2>
+        <ul>
+            @foreach (var note in Accessibility)
+            {
+                <li>@note</li>
+            }
+        </ul>
+    </section>
+
+    <section class="doc-section" id="errors" aria-labelledby="errors-h">
+        <h2 id="errors-h">Errors this component can raise</h2>
+        @if (Errors.Count == 0)
+        {
+            <p>None of its own beyond the general ones. See the <a href="bob/error-catalog">error catalog</a>.</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var e in Errors)
+                {
+                    <li><a href="bob/error-catalog#@e.Code"><code>@e.Code</code></a> @e.When</li>
+                }
+            </ul>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    [Parameter, EditorRequired] public string Lead { get; set; } = "";
+    [Parameter] public RenderFragment? Demo { get; set; }
+    [Parameter] public string UsageCode { get; set; } = "";
+    [Parameter] public string CssFile { get; set; } = "";
+    [Parameter] public string CssExample { get; set; } = "";
+    [Parameter] public IReadOnlyList<DocParam> Parameters { get; set; } = [];
+    [Parameter] public IReadOnlyList<DocPart> Parts { get; set; } = [];
+    [Parameter] public IReadOnlyList<DocVar> Variables { get; set; } = [];
+    [Parameter] public IReadOnlyList<string> Accessibility { get; set; } = [];
+    [Parameter] public IReadOnlyList<DocError> Errors { get; set; } = [];
+}

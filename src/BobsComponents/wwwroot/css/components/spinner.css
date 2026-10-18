@@ -1,0 +1,16 @@
+/* LoadingSpinner. Variables: --bob-spinner-color, --bob-spinner-gap, --bob-spinner-speed */
+.bob-spinner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--bob-spinner-gap, 0.5rem);
+    color: var(--bob-spinner-color, currentColor);
+}
+
+.bob-spinner__icon {
+    flex-shrink: 0;
+    animation: bob-spin var(--bob-spinner-speed, 0.8s) linear infinite;
+}
+
+@keyframes bob-spin {
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,119 @@
+@page "/bob/dev-kit"
+@using BobsComponents.DevKit
+@using BobsComponents.Infrastructure
+@using BobsComponents.Options
+@inject IHttpClientFactory HttpFactory
+@inject IJSRuntime JS
+@inject IBobErrorHub Hub
+@inject BobOptions Options
+
+<PageTitle>Dev kit - BobsComponents</PageTitle>
+
+<div class="devkit-page">
+    <header>
+        <h1>Dev kit</h1>
+        <p class="lead">
+            One <code>&lt;BobDevKit /&gt;</code> in the layout adds a floating panel (bottom right of this page) that collects errors,
+            requests, JS calls and missing services. It is off outside Development by default, because it shows exact errors and request bodies.
+            This docs site turns it on explicitly.
+        </p>
+        <p>Dev kit is currently <strong>@(DevKitOn ? "on" : "off")</strong>.</p>
+    </header>
+
+    <section aria-labelledby="try-h">
+        <h2 id="try-h">Try it</h2>
+        <p>Click, then open the dev kit panel.</p>
+        <div class="actions">
+            <button type="button" class="bob-button" @onclick="FailingRequest">Request that returns 404</button>
+            <button type="button" class="bob-button" @onclick="UnreachableHost">Request to an unreachable host</button>
+            <button type="button" class="bob-button" @onclick="MissingScript">Import a script that does not exist</button>
+            <button type="button" class="bob-button" @onclick="FireAndForget">Fire-and-forget failure</button>
+        </div>
+        <p role="status">@_status</p>
+    </section>
+
+    <section aria-labelledby="panels-h">
+        <h2 id="panels-h">Panels</h2>
+        <table class="table">
+            <thead><tr><th scope="col">Panel</th><th scope="col">Captures</th><th scope="col">Needs</th></tr></thead>
+            <tbody>
+                <tr><td>Errors</td><td>Every BobError with origin, exact message and catalog link, including ones no boundary caught</td><td><code>AddBobComponents()</code></td></tr>
+                <tr><td>Network</td><td>Each request: status, timing, request body, and the server's verbatim response body. Headers are never recorded.</td><td><code>services.AddHttpClient("x").AddBobNetworkLogging()</code>, or <code>BobNetworkHandler</code> directly</td></tr>
+                <tr><td>Interop</td><td>JavaScript calls and failed module imports (a failed import is reported as a missing-asset error naming the path)</td><td><code>services.AddBobInteropLogging()</code></td></tr>
+                <tr><td>DI</td><td>Services that components declare with <code>[BobRequiresService(typeof(T))]</code> and whether they are registered</td><td>nothing; add your own assembly with <code>BobDiRegistry.AddAssembly</code></td></tr>
+            </tbody>
+        </table>
+        <p>Parameters, renders, auth, fault injection and accessibility panels come in a later phase.</p>
+    </section>
+
+    <section aria-labelledby="setup-h">
+        <h2 id="setup-h">Setup and options</h2>
+        <pre class="code"><code>@Setup</code></pre>
+    </section>
+</div>
+
+@code {
+    private string _status = "";
+    private bool DevKitOn => Options.DevKit.Enabled ?? string.Equals(Options.EnvironmentName, "Development", StringComparison.OrdinalIgnoreCase);
+
+    private async Task FailingRequest()
+    {
+        var client = HttpFactory.CreateClient("bob-demo");
+        var response = await client.PostAsync("bob-demo/does-not-exist.json", new StringContent("{\"hello\":\"dev kit\"}"));
+        _status = $"Server answered {(int)response.StatusCode}.";
+    }
+
+    private async Task UnreachableHost()
+    {
+        try
+        {
+            var client = HttpFactory.CreateClient("bob-demo");
+            await client.GetAsync("http://nonexistent.invalid/");
+        }
+        catch (HttpRequestException ex)
+        {
+            _status = $"Failed before a response: {ex.Message}";
+        }
+    }
+
+    private async Task MissingScript()
+    {
+        try
+        {
+            await JS.InvokeAsync<IJSObjectReference>("import", "./_content/BobsComponents/js/does-not-exist.js");
+        }
+        catch (JSException ex)
+        {
+            _status = $"Import failed: {ex.Message}";
+        }
+    }
+
+    private void FireAndForget()
+    {
+        _ = Task.Run(() => throw new InvalidOperationException("Background work failed and nobody awaited it."))
+            .ContinueWith(t => Hub.Report(t.Exception!.InnerException!, "DevKitDoc"), TaskContinuationOptions.OnlyOnFaulted);
+        _status = "Started background work that fails; it was reported by hand.";
+    }
+
+    private const string Setup = """
+        // Program.cs
+        builder.Services.AddBobComponents(o =>
+        {
+            o.EnvironmentName = builder.HostEnvironment.Environment;
+            // o.DevKit.Enabled = true;               // null (default) = on only in Development
+            // o.DevKit.ShowNetworkPanel = false;     // each panel can be turned off
+            // o.DevKit.MaxEntries = 200;             // per panel
+            // o.DevKit.MaxBodyChars = 4096;
+            // o.DevKit.CaptureRequestBodies = true;
+            // o.DevKit.CaptureResponseBodies = true;
+            // o.DevKit.CaptureUnobservedTaskExceptions = true;
+            // o.DevKit.Position = BobDevKitPosition.BottomRight;
+            // o.DevKit.StartOpen = false;
+        });
+        builder.Services.AddHttpClient("api").AddBobNetworkLogging();
+        builder.Services.AddBobInteropLogging();   // after the host registered its JS runtime
+
+        // MainLayout.razor
+        <BobDevKit />
+        """;
+}

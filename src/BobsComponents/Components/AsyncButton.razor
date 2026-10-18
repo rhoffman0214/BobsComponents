@@ -1,0 +1,59 @@
+@inherits BobComponentBase
+
+@* Wrapper for any button that fires an async action the user has to wait on. Busy is owned by the caller:
+   some actions never return to idle (a modal that closes on success), so the caller decides when to flip it. *@
+<button type="@Type" class="bob-async-button @VariantClass @CssClass" data-bob-part="root"
+        disabled="@(Busy || Disabled)" aria-busy="@(Busy ? "true" : null)"
+        @onclick="HandleClick" @onclick:stopPropagation="StopPropagation" @attributes="AdditionalAttributes">
+    @if (Busy)
+    {
+        <LoadingSpinner ShowLabel="false" Size="SpinnerSize" Label="@BusyLabel" />
+    }
+    else
+    {
+        @ChildContent
+    }
+</button>
+
+@code {
+    /// <summary>HTML button type: button (default), submit or reset.</summary>
+    [Parameter] public string Type { get; set; } = "button";
+
+    /// <summary>Look to apply. Null (default) applies no colors, so your own classes style the button.</summary>
+    [Parameter] public BobButtonVariant? Variant { get; set; }
+
+    /// <summary>Extra classes on the button.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>True while the action runs: disables the button and swaps the content for a spinner.</summary>
+    [Parameter] public bool Busy { get; set; }
+
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Spinner size in pixels while busy.</summary>
+    [Parameter] public int SpinnerSize { get; set; } = 16;
+
+    /// <summary>Announced to screen readers while busy.</summary>
+    [Parameter] public string BusyLabel { get; set; } = "Working…";
+
+    /// <summary>Called on click. An exception it throws surfaces as a "Your callback threw" error.</summary>
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    /// <summary>Stop the click from reaching parent elements.</summary>
+    [Parameter] public bool StopPropagation { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>Any other attribute is placed on the button.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string? VariantClass => Variant is { } v ? $"bob-button bob-button--{v.ToString().ToLowerInvariant()}" : null;
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Must(nameof(Type), Type is "button" or "submit" or "reset", Type, "\"button\", \"submit\" or \"reset\"");
+        check.Range(nameof(SpinnerSize), SpinnerSize, 1, 512);
+    }
+
+    private Task HandleClick() => InvokeCallbackAsync(nameof(OnClick), OnClick);
+}

@@ -1,0 +1,48 @@
+@inherits BobComponentBase
+
+@* "Are you sure?" gate for destructive actions that have no undo. *@
+<ModalSheet Show="Show" Title="@Title" OnClose="Cancel" EnableBackButton="@EnableBackButton">
+    <div class="bob-confirm" data-bob-part="root">
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <p class="bob-confirm__message" data-bob-part="message">@Message</p>
+        }
+        @ChildContent
+        <div class="bob-confirm__actions" data-bob-part="actions">
+            <button type="button" class="bob-button bob-confirm__cancel" data-bob-part="cancel" @onclick="Cancel">@CancelLabel</button>
+            <AsyncButton Variant="@(Danger ? BobButtonVariant.Danger : BobButtonVariant.Primary)" CssClass="bob-confirm__confirm"
+                         Busy="Busy" BusyLabel="@($"{ConfirmLabel}…")" OnClick="Confirm" data-bob-part="confirm">
+                @ConfirmLabel
+            </AsyncButton>
+        </div>
+    </div>
+</ModalSheet>
+
+@code {
+    [Parameter] public bool Show { get; set; }
+    [Parameter] public string Title { get; set; } = "Are you sure?";
+    /// <summary>Plain text shown above the buttons. Use <see cref="ChildContent"/> for richer content.</summary>
+    [Parameter] public string Message { get; set; } = "";
+    [Parameter] public string ConfirmLabel { get; set; } = "Delete";
+    [Parameter] public string CancelLabel { get; set; } = "Cancel";
+    /// <summary>Style the confirm button as destructive (default) or as a primary action.</summary>
+    [Parameter] public bool Danger { get; set; } = true;
+    /// <summary>True while the confirmed action runs: spinner on the confirm button, which is disabled.</summary>
+    [Parameter] public bool Busy { get; set; }
+    /// <summary>Back-button integration of the underlying sheet. Default false: a confirm is transient.</summary>
+    [Parameter] public bool EnableBackButton { get; set; }
+    [Parameter] public EventCallback OnConfirm { get; set; }
+    /// <summary>Called for the Cancel button, Escape, the backdrop and the close button.</summary>
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Title), Title, "non-empty text (it names the dialog)");
+        check.Required(nameof(ConfirmLabel), ConfirmLabel, "non-empty button text");
+        check.Required(nameof(CancelLabel), CancelLabel, "non-empty button text");
+    }
+
+    private Task Cancel() => InvokeCallbackAsync(nameof(OnCancel), OnCancel);
+    private Task Confirm() => InvokeCallbackAsync(nameof(OnConfirm), OnConfirm);
+}

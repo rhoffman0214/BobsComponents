@@ -1,0 +1,40 @@
+/* ToastHost. Variables: --bob-toast-z, --bob-toast-bg, --bob-toast-fg, --bob-toast-radius, --bob-toast-shadow,
+   --bob-toast-offset, --bob-toast-icon-success, --bob-toast-icon-error, --bob-toast-icon-info */
+.bob-toast-host {
+    position: fixed;
+    left: 50%;
+    bottom: var(--bob-toast-offset, 1.25rem);
+    transform: translateX(-50%);
+    z-index: var(--bob-toast-z, var(--bob-z-toast));
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.5rem;
+    width: max-content;
+    max-width: calc(100vw - 2rem);
+    pointer-events: none;
+}
+
+.bob-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+    border-radius: var(--bob-toast-radius, var(--bob-radius-md));
+    background: var(--bob-toast-bg, var(--bob-color-text));
+    color: var(--bob-toast-fg, var(--bob-color-ground));
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: var(--bob-toast-shadow, 0 0.25rem 0.75rem rgb(0 0 0 / 0.25));
+    animation: bob-toast-in var(--bob-duration) ease-out;
+}
+
+.bob-toast__icon { flex-shrink: 0; }
+.bob-toast--success .bob-toast__icon { color: var(--bob-toast-icon-success, var(--bob-color-success)); }
+.bob-toast--error .bob-toast__icon { color: var(--bob-toast-icon-error, var(--bob-color-danger)); }
+.bob-toast--info .bob-toast__icon { color: var(--bob-toast-icon-info, var(--bob-color-info)); }
+
+@keyframes bob-toast-in {
+    from { opacity: 0; transform: translateY(0.5rem); }
+    to { opacity: 1; transform: translateY(0); }
+}

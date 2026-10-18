@@ -1,0 +1,17 @@
+/* ConfirmDialog. Variables: --bob-confirm-gap, --bob-confirm-message-color */
+.bob-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bob-confirm-gap, 1rem);
+}
+
+.bob-confirm__message {
+    margin: 0;
+    color: var(--bob-confirm-message-color, var(--bob-color-text-muted));
+}
+
+.bob-confirm__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}

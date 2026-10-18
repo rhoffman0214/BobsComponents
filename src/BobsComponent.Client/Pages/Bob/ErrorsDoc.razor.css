@@ -1,0 +1,8 @@
+.errors-page { display: flex; flex-direction: column; gap: 1.5rem; max-width: 62rem; margin: 0 auto; padding: 1.5rem; }
+.lead { color: var(--text-secondary); font-size: 1.1rem; }
+.origin-grid { display: flex; flex-wrap: wrap; gap: 1rem; }
+.origin-card { display: flex; flex: 1 1 18rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; padding: 1rem; border: 1px solid var(--border-color, #d1d5db); border-radius: 0.5rem; }
+.origin-card h3 { margin: 0; font-size: 1.05rem; }
+.origin-card p { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+.origin-card ::deep .bob-error-card { align-self: stretch; }
+.code { margin: 0; padding: 0.75rem 1rem; overflow-x: auto; border-radius: 0.5rem; background: var(--bg-tertiary, #f3f4f6); color: var(--text-primary); font-size: 0.85rem; }

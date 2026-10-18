@@ -6,6 +6,7 @@ using System.Net.Http;
 using System;
 using BobsComponent.Client;
 using BobsComponent.Library.Services;
+using BobsComponents;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -31,6 +32,17 @@ builder.Services.AddScoped<ThemeService>();
 
 // Register Clipboard service (for CodeSnippet component)
 builder.Services.AddScoped<ClipboardService>();
+
+// BobsComponents: error system, toasts and dev kit logs. The dev kit is on here on purpose (it is a docs site);
+// by default it is off outside Development.
+builder.Services.AddBobComponents(o =>
+{
+    o.EnvironmentName = builder.HostEnvironment.Environment;
+    o.DevKit.Enabled = true;
+    o.Errors.CatalogBaseUrl = "bob/error-catalog";
+});
+builder.Services.AddHttpClient("bob-demo", c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddBobNetworkLogging();
+builder.Services.AddBobInteropLogging();
 
 var host = builder.Build();
 

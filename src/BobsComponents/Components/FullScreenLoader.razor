@@ -1,0 +1,18 @@
+@inherits BobComponentBase
+
+@* Full-viewport loading state, e.g. for login redirects or route authorization checks. *@
+<div class="bob-fullscreen-loader" role="status" aria-live="polite" data-bob-part="root" @attributes="AdditionalAttributes">
+    <LoadingSpinner Size="40" ShowLabel="false" Label="@Message" />
+    <p class="bob-fullscreen-loader__text" data-bob-part="text">@Message</p>
+</div>
+
+@code {
+    /// <summary>Text shown under the spinner and announced to screen readers.</summary>
+    [Parameter] public string Message { get; set; } = "Loading…";
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    protected override void ValidateParameters(BobParameterValidator check) =>
+        check.Required(nameof(Message), Message, "non-empty text");
+}

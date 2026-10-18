@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../BobsComponent.Library/BobsComponent.Library.csproj" />
+    <ProjectReference Include="../BobsComponents/BobsComponents.csproj" />
   </ItemGroup>
 
   <!-- Custom target to create non-fingerprinted copies for GitHub Pages -->

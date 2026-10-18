@@ -1,0 +1,34 @@
+@inherits BobComponentBase
+
+@* Waiting always looks and sounds the same. role="status" + aria-live announces it without moving focus;
+   the spin is skipped under prefers-reduced-motion (see bob.css) but the text still appears. *@
+<span class="bob-spinner @CssClass" role="status" aria-live="polite" data-bob-part="root" @attributes="AdditionalAttributes">
+    <svg class="bob-spinner__icon" data-bob-part="icon" width="@Size" height="@Size" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="3" opacity="0.25" />
+        <path d="M21 12a9 9 0 0 0-9-9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+    </svg>
+    <span class="bob-spinner__label @(ShowLabel ? "" : "bob-visually-hidden")" data-bob-part="label">@Label</span>
+</span>
+
+@code {
+    /// <summary>Text announced to screen readers, and shown when <see cref="ShowLabel"/> is true.</summary>
+    [Parameter] public string Label { get; set; } = "Loading…";
+
+    /// <summary>Show the label next to the icon. When false it is visually hidden but still announced.</summary>
+    [Parameter] public bool ShowLabel { get; set; } = true;
+
+    /// <summary>Icon width and height in pixels (1 to 512).</summary>
+    [Parameter] public int Size { get; set; } = 18;
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Range(nameof(Size), Size, 1, 512);
+        check.Required(nameof(Label), Label, "non-empty text so the wait is announced");
+    }
+}

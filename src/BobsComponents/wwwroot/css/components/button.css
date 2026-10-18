@@ -1,0 +1,42 @@
+/* Generic button look, applied by AsyncButton Variant and used by ConfirmDialog.
+   Variables: --bob-button-bg, --bob-button-fg, --bob-button-border, --bob-button-radius,
+   --bob-button-padding, --bob-button-min-height, --bob-button-gap */
+.bob-async-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--bob-button-gap, 0.5rem);
+}
+
+.bob-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--bob-button-gap, 0.5rem);
+    min-height: var(--bob-button-min-height, 2.75rem);
+    padding: var(--bob-button-padding, 0.5rem 1rem);
+    border: 1px solid var(--bob-button-border, var(--bob-color-border));
+    border-radius: var(--bob-button-radius, var(--bob-radius-md));
+    background: var(--bob-button-bg, var(--bob-color-surface));
+    color: var(--bob-button-fg, var(--bob-color-text));
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.bob-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bob-button--primary {
+    --bob-button-bg: var(--bob-color-accent);
+    --bob-button-fg: var(--bob-color-accent-text);
+    --bob-button-border: var(--bob-color-accent);
+}
+
+.bob-button--danger {
+    --bob-button-bg: var(--bob-color-danger);
+    --bob-button-fg: var(--bob-color-danger-text);
+    --bob-button-border: var(--bob-color-danger);
+}

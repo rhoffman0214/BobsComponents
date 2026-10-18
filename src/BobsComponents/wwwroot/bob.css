@@ -10,5 +10,11 @@
 
 @import url("css/tokens.css") layer(bob.tokens);
 @import url("css/base.css") layer(bob.base);
+@import url("css/components/spinner.css") layer(bob.components);
+@import url("css/components/button.css") layer(bob.components);
+@import url("css/components/fullscreen-loader.css") layer(bob.components);
+@import url("css/components/modal.css") layer(bob.components);
+@import url("css/components/confirm.css") layer(bob.components);
+@import url("css/components/toast.css") layer(bob.components);
 @import url("css/components/error-card.css") layer(bob.components);
 @import url("css/components/devkit.css") layer(bob.components);

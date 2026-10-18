@@ -1,6 +1,7 @@
 ﻿@using BobsComponent.Library
 @using BobsComponent.Library.Components
 @inherits LayoutComponentBase
+@inject NavigationManager Navigation
 
 <div class="page">
     <div class="sidebar">
@@ -14,7 +15,13 @@
         </div>
 
         <article class="content">
-            @Body
+            @* Keyed by URL so a failed page recovers when you navigate away. *@
+            <BobsComponents.Errors.BobErrorBoundary @key="Navigation.Uri" ComponentName="Page">
+                @Body
+            </BobsComponents.Errors.BobErrorBoundary>
         </article>
     </main>
 </div>
+
+<BobsComponents.Components.ToastHost />
+<BobsComponents.Components.BobDevKit />

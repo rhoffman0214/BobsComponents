@@ -1,0 +1,21 @@
+/* FullScreenLoader. Variables: --bob-fullscreen-loader-gap, --bob-fullscreen-loader-padding,
+   --bob-fullscreen-loader-text-color, --bob-fullscreen-loader-text-size */
+.bob-fullscreen-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--bob-fullscreen-loader-gap, 1.25rem);
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: var(--bob-fullscreen-loader-padding, 2rem);
+    text-align: center;
+}
+
+.bob-fullscreen-loader__text {
+    margin: 0;
+    font-family: var(--bob-font-display);
+    font-size: var(--bob-fullscreen-loader-text-size, 1.15rem);
+    font-weight: 700;
+    color: var(--bob-fullscreen-loader-text-color, var(--bob-color-text));
+}
