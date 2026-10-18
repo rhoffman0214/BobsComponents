@@ -1,4 +1,5 @@
 @inherits BobComponentBase
+@attribute [System.ComponentModel.Description("An are-you-sure gate for destructive actions that have no undo. Built on ModalSheet.")]
 
 @* "Are you sure?" gate for destructive actions that have no undo. *@
 <ModalSheet Show="Show" Title="@Title" OnClose="Cancel" EnableBackButton="@EnableBackButton">
@@ -19,11 +20,15 @@
 </ModalSheet>
 
 @code {
+    /// <summary>Whether the dialog is open. The caller owns this state and clears it in OnConfirm or OnCancel.</summary>
     [Parameter] public bool Show { get; set; }
+    /// <summary>Heading text and the dialog's accessible name. Cannot be empty.</summary>
     [Parameter] public string Title { get; set; } = "Are you sure?";
     /// <summary>Plain text shown above the buttons. Use <see cref="ChildContent"/> for richer content.</summary>
     [Parameter] public string Message { get; set; } = "";
+    /// <summary>Text of the confirm button; say what will happen, such as Delete.</summary>
     [Parameter] public string ConfirmLabel { get; set; } = "Delete";
+    /// <summary>Text of the cancel button.</summary>
     [Parameter] public string CancelLabel { get; set; } = "Cancel";
     /// <summary>Style the confirm button as destructive (default) or as a primary action.</summary>
     [Parameter] public bool Danger { get; set; } = true;
@@ -31,9 +36,11 @@
     [Parameter] public bool Busy { get; set; }
     /// <summary>Back-button integration of the underlying sheet. Default false: a confirm is transient.</summary>
     [Parameter] public bool EnableBackButton { get; set; }
+    /// <summary>Called when the user confirms. An exception it throws surfaces as a "Your callback threw" error.</summary>
     [Parameter] public EventCallback OnConfirm { get; set; }
     /// <summary>Called for the Cancel button, Escape, the backdrop and the close button.</summary>
     [Parameter] public EventCallback OnCancel { get; set; }
+    /// <summary>Extra content shown between the message and the buttons.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     protected override void ValidateParameters(BobParameterValidator check)

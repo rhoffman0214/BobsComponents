@@ -1,6 +1,7 @@
 @inherits BobComponentBase
 @implements IDisposable
 @attribute [BobRequiresService(typeof(IBobToastService))]
+@attribute [System.ComponentModel.Description("Renders and dismisses toasts. Mount it once in the layout; any component then calls IBobToastService.Show(...) without a reference to the host.")]
 
 @* Mount once in the layout. Subscribes to IBobToastService; any component can call Show(...) without a reference to this one. *@
 <div class="bob-toast-host" aria-live="polite" data-bob-part="host">

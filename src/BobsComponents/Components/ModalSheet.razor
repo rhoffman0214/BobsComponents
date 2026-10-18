@@ -2,6 +2,7 @@
 @implements IAsyncDisposable
 @attribute [BobRequiresService(typeof(IJSRuntime))]
 @inject IJSRuntime JS
+@attribute [System.ComponentModel.Description("Backdrop, sheet and header for dialogs: a bottom sheet on phones, a centered dialog from 640px. Owns focus trapping and the browser back button.")]
 
 @* Backdrop + sheet + header scaffold for dialogs. Owns focus trapping (focusTrap.js) and the Android/browser
    back-button integration (modalHistory.js), so every caller gets both. *@
@@ -61,6 +62,7 @@
     /// <summary>Replaces the default title and close button.</summary>
     [Parameter] public RenderFragment? HeaderContent { get; set; }
 
+    /// <summary>The sheet body.</summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     private string? AccessibleName => Title ?? AriaLabel;

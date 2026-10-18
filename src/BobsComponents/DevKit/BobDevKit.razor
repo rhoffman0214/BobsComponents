@@ -6,6 +6,7 @@
 @attribute [BobRequiresService(typeof(BobNetworkLog))]
 @attribute [BobRequiresService(typeof(BobInteropLog))]
 @attribute [BobRequiresService(typeof(BobDiRegistry))]
+@attribute [System.ComponentModel.Description("A floating panel with errors, network, interop and DI checks for the page it sits on. Off outside Development unless enabled.")]
 
 @* Drop one <BobDevKit /> in the layout. Off unless Development (or Enabled=true). Shows what happened, with the exact messages. *@
 @if (_enabled)
