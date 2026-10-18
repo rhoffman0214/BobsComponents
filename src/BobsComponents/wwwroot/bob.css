@@ -1,0 +1,14 @@
+/* BobsComponents stylesheet entry point.
+   Link once:  <link rel="stylesheet" href="_content/BobsComponents/bob.css" />
+
+   Everything lives in the cascade layer `bob` (sublayers: tokens, base, components). Any style you write
+   outside a layer beats every rule here without !important or extra specificity.
+   Every class, custom property and data attribute starts with `bob-` / `--bob-` / `data-bob-`.
+   The documented variable set with defaults is in docs/CSS-CONTRACT.md. */
+
+@layer bob.tokens, bob.base, bob.components;
+
+@import url("css/tokens.css") layer(bob.tokens);
+@import url("css/base.css") layer(bob.base);
+@import url("css/components/error-card.css") layer(bob.components);
+@import url("css/components/devkit.css") layer(bob.components);

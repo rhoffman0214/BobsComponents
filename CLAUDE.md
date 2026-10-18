@@ -9,12 +9,90 @@ This file provides AI assistant instructions for working with code in this repos
 
 ## Project Organization
 
-**Components and Documentation:**
-- All reusable components and their documentation shall be added to the **Library** project (`BobsComponent.Library`)
-- All examples, showcases, and demonstrations shall exist in the **Client** project (`BobsComponent.Client`)
-- This separation ensures the Library remains clean and focused while the Client provides comprehensive usage examples
+There are two libraries. **New work goes in `BobsComponents`.** The older `BobsComponent.Library` is legacy: it is not
+prefixed, uses scoped CSS and the `--color-*` variables, and stays until its components are migrated one by one.
+
+| Project | Role |
+| --- | --- |
+| `src/BobsComponents` | The Razor class library (package id `BobsComponents`, namespace `BobsComponents`). All new reusable components, the error system, the dev kit. |
+| `src/BobsComponents.Tests` | bUnit + xUnit tests for `BobsComponents`. Every component and error origin has tests here. |
+| `src/BobsComponent.Client` | Demo and docs site (Blazor WebAssembly). New-library pages live in `Pages/Bob/`. Examples never go in the library. |
+| `src/BobsComponent.Library` / `.Library.Tests` | Legacy library and its tests. Do not add to it; fix bugs only. |
+
+The public contract (naming, variables, asset paths, error codes) is in [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md).
+A test (`ContractTests`, `DocsPageTests`) fails the build when code and contract drift apart, so update the doc in the same change.
+
+### Layout of `src/BobsComponents`
+
+```
+Components/        UI components (.razor), namespace BobsComponents.Components
+Errors/            BobError, classifier, catalog (error-catalog.json), boundary, hub
+DevKit/            BobDevKit, network handler, JS runtime logger, DI registry
+Infrastructure/    BobComponentBase, BobJs, BobHttp, AddBobComponents
+Options/           BobOptions (every default is configurable here)
+Services/          IBobToastService
+wwwroot/           bob.css, css/tokens.css, css/base.css, css/components/*.css, js/*.js
+                   served at _content/BobsComponents/
+```
 
 ---
+
+## CRITICAL: BobsComponents conventions (new library)
+
+1. **Prefix everything with `bob-`**: every CSS class (`bob-modal`, `bob-modal__header`, `bob-button--primary`),
+   every custom property (`--bob-modal-bg`), every part attribute (`data-bob-part="header"`). Root part is `root`.
+2. **Plain stylesheets in `@layer bob`.** No scoped `.razor.css` in the library (a test enforces this), no Bootstrap or
+   other framework requirement. One sheet per component in `wwwroot/css/components/`, imported by `wwwroot/bob.css`
+   into the `bob.components` layer. Do not set `!important` (the one exception is the shared reduced-motion rule).
+3. **Component variables are read with a fallback and never declared on the component:**
+   `background: var(--bob-modal-bg, var(--bob-color-surface))`. Add each new variable to docs/CSS-CONTRACT.md with its default.
+   Global tokens (`--bob-color-*`, `--bob-radius-*`, `--bob-z-*`) are in `css/tokens.css`. Component-specific variables
+   are allowed and expected here (this replaces the legacy "no component-specific variables" rule).
+4. **Flexbox for layout.** Grid only for true two-dimensional layouts (a test rejects `display: grid` in library CSS for now).
+5. **Components inherit `BobComponentBase`.** Validate parameters in `ValidateParameters(BobParameterValidator)`, invoke app
+   callbacks with `InvokeCallbackAsync`, get services with `RequireService<T>()`, send fire-and-forget failures to `ReportError`.
+   Components take data through parameters or small interfaces, never through an app's own services.
+6. **Static assets** are imported through `BobJs` using `./_content/BobsComponents/js/<file>`. Declare services a component
+   needs with `[BobRequiresService(typeof(T))]` so the dev kit DI panel can check them.
+7. **Accessibility is part of done.** Each component's docs page has an Accessibility section (seeded from BobFit's
+   ACCESSIBILITY.md) and each behavior in it has a test.
+8. **Adding a component** = component + `wwwroot/css/components/<name>.css` (+ `@import` line in bob.css) + contract doc entry
+   + bUnit tests + demo/docs page in `Pages/Bob/` (use `ComponentDocPage`) + nav link in `NavMenu.razor`.
+9. Names are public API. Renaming a class, variable, part, parameter or error code is a breaking change: note it in the changelog.
+
+### Error model
+
+Every exception is classified once into a `BobError` (`IBobErrorClassifier`). Six origins: component bug, wrong parameters,
+data shape mismatch, missing asset or service, failed network call, your callback threw. **Rules look at exception types,
+structured properties and the assembly of the first non-framework stack frame, never at message text.** The card
+(`BobErrorCard`, used by `BobErrorBoundary`) always shows the exact message; stack traces and inner exceptions are behind a
+Details toggle (`BobOptions.Errors.Details`). New error codes go in `Errors/error-catalog.json` (a test checks every code
+constant is in the catalog) and, if raised on purpose, get a `Bob*Exception` factory so the origin is explicit.
+Fire-and-forget failures never reach a boundary: report them via `ReportError`/`IBobErrorHub`.
+
+### Dev kit
+
+`<BobDevKit />` is off unless `BobOptions.DevKit.Enabled` is true or the environment is Development
+(`AddBobComponents(o => o.EnvironmentName = ...)`). It never records HTTP headers. All defaults live in `BobOptions`.
+
+### Build and test
+
+```powershell
+cd src
+dotnet test BobsComponents.Tests      # new library: build + all tests
+dotnet build BobsComponent.Client     # demo site
+dotnet test                           # everything (legacy tests included)
+```
+
+`RunAOTCompilation` is only requested when publishing (needs the `wasm-tools` workload); build and test do not need it.
+To look at the demo: `dotnet run --project BobsComponent.Client --urls http://localhost:5096`.
+
+---
+
+## Legacy library rules (`BobsComponent.Library` and the existing Client pages)
+
+The sections below describe the legacy library and the Client app. They do not apply to `BobsComponents`
+where they conflict with the section above (scoped CSS, `--color-*` variables, Bootstrap-era conventions).
 
 ## CRITICAL: Flexbox-First Layout Philosophy
 
@@ -102,9 +180,9 @@ This file provides AI assistant instructions for working with code in this repos
 
 ---
 
-## CRITICAL: CSS Organization for Component Library
+## CRITICAL: CSS Organization (legacy library and Client pages)
 
-**This project will be shipped as a component library.** Follow these CSS organization rules:
+**Applies to `BobsComponent.Library` and `BobsComponent.Client` only.** `BobsComponents` uses layered plain CSS (see above).
 
 ### Scoped CSS is Mandatory
 
@@ -182,7 +260,7 @@ Get-ChildItem -Path "src" -Filter "*.razor" -Recurse | Select-String -Pattern '@
 
 ---
 
-## Color System Architecture
+## Color System Architecture (legacy library)
 
 **Semantic Color Variables** - The single source of truth for all colors:
 
@@ -341,7 +419,7 @@ For detailed examples and code patterns, see [docs/EXAMPLES.md - Security Exampl
 
 ## Refactoring Policy
 
-**IMPORTANT:** Do NOT rename existing files, functions, classes, or components without explicit user approval.
+**IMPORTANT:** Do NOT rename existing files, functions, classes, or components without explicit user approval. (`BobsComponents` is pre-1.0 and its names are still flexible during the contract work, but once a name is documented in docs/CSS-CONTRACT.md it follows rule 9 above.)
 
 ### Rules for Renaming
 

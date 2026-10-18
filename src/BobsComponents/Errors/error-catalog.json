@@ -1,0 +1,106 @@
+[
+  {
+    "code": "BOB-COMP-001",
+    "origin": "ComponentBug",
+    "title": "Unexpected exception inside a component",
+    "message": "{exception message}",
+    "cause": "An exception was thrown from BobsComponents code and matched no more specific rule.",
+    "fix": "This is a bug in the library. Report the error id with the component name and the stack trace from the Details section."
+  },
+  {
+    "code": "BOB-PARAM-001",
+    "origin": "WrongParameters",
+    "title": "Required parameter missing",
+    "message": "{component}: required parameter '{parameter}' was not set. Expected {expected}.",
+    "cause": "A parameter marked required was not passed to the component.",
+    "fix": "Pass the parameter, for example <Component Parameter=\"...\" />."
+  },
+  {
+    "code": "BOB-PARAM-002",
+    "origin": "WrongParameters",
+    "title": "Parameter value invalid",
+    "message": "{component}: parameter '{parameter}' was {passed}. Expected {expected}.",
+    "cause": "The value passed is outside what the component accepts.",
+    "fix": "Pass a value that matches the expectation named in the message."
+  },
+  {
+    "code": "BOB-PARAM-003",
+    "origin": "WrongParameters",
+    "title": "Parameters conflict",
+    "message": "{component}: parameters '{parameter}' and '{other}' conflict. {expected}",
+    "cause": "Two parameters were set to a combination the component does not support.",
+    "fix": "Remove one of the two parameters or change its value as the message describes."
+  },
+  {
+    "code": "BOB-DATA-001",
+    "origin": "DataShapeMismatch",
+    "title": "Data shape mismatch",
+    "message": "Data shape mismatch at '{path}': expected {expected}, got {actual}.",
+    "cause": "A value at the given path was missing or had a different type than the component needs.",
+    "fix": "Fix the data source or map it into the type the component takes."
+  },
+  {
+    "code": "BOB-DATA-002",
+    "origin": "DataShapeMismatch",
+    "title": "Deserialization failed",
+    "message": "{JsonException message}",
+    "cause": "JSON could not be turned into the target type. The path in the details is where it failed.",
+    "fix": "Compare the JSON at that path with the target type and correct one of them."
+  },
+  {
+    "code": "BOB-ASSET-001",
+    "origin": "MissingAssetOrService",
+    "title": "Script or JS function not found",
+    "message": "Script or JS function '{script}' could not be loaded or called.",
+    "cause": "A static web asset under _content/BobsComponents/ was not served, or a JavaScript function it exports does not exist.",
+    "fix": "Make sure the host serves static web assets (UseStaticFiles in Development, or a published site), the base href is correct, and the package is the version the app expects."
+  },
+  {
+    "code": "BOB-ASSET-002",
+    "origin": "MissingAssetOrService",
+    "title": "Service not registered",
+    "message": "Service '{service}' is not registered.",
+    "cause": "A component asked for a service that was never added to dependency injection.",
+    "fix": "Call builder.Services.AddBobComponents() in Program.cs, or register the service named in the message."
+  },
+  {
+    "code": "BOB-NET-001",
+    "origin": "NetworkFailure",
+    "title": "Server returned an error status",
+    "message": "{the server's own message, verbatim}",
+    "cause": "The server answered with a non-success status code.",
+    "fix": "Read the status and message shown; they come from the server. Check the request URL and body in the dev kit Network panel."
+  },
+  {
+    "code": "BOB-NET-002",
+    "origin": "NetworkFailure",
+    "title": "Request failed before a response",
+    "message": "{HttpRequestException message}",
+    "cause": "The request never got a response: offline, DNS failure, connection refused, or blocked by CORS.",
+    "fix": "Check connectivity, the URL, and the server's CORS settings."
+  },
+  {
+    "code": "BOB-NET-003",
+    "origin": "NetworkFailure",
+    "title": "Request timed out",
+    "message": "{timeout message}",
+    "cause": "The server did not answer within the HttpClient timeout.",
+    "fix": "Check the server, or raise HttpClient.Timeout if the call is legitimately slow."
+  },
+  {
+    "code": "BOB-CB-001",
+    "origin": "CallbackThrew",
+    "title": "Your callback threw",
+    "message": "{the exception message from your code}",
+    "cause": "An EventCallback you passed to the component, or other app code running in the component's render path, threw.",
+    "fix": "The Details section lists your top stack frame. Fix the exception there; the component itself is working."
+  },
+  {
+    "code": "BOB-CB-002",
+    "origin": "CallbackThrew",
+    "title": "Your render fragment threw",
+    "message": "{the exception message from your code}",
+    "cause": "A RenderFragment you passed to the component threw while rendering.",
+    "fix": "The Details section lists your top stack frame. Fix the exception in the fragment's markup or code."
+  }
+]

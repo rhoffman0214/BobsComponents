@@ -1,0 +1,94 @@
+/* BobErrorCard / BobErrorBoundary. Variables: --bob-error-card-bg, --bob-error-card-border,
+   --bob-error-card-radius, --bob-error-card-accent, --bob-error-card-font-mono, --bob-error-card-padding */
+.bob-error-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: var(--bob-error-card-padding, 0.9rem 1rem);
+    border: 1px solid var(--bob-error-card-border, var(--bob-color-border));
+    border-left: 0.35rem solid var(--bob-error-card-accent, var(--bob-color-danger));
+    border-radius: var(--bob-error-card-radius, var(--bob-radius-md));
+    background: var(--bob-error-card-bg, var(--bob-color-surface));
+    color: var(--bob-color-text);
+    font-family: var(--bob-font-family);
+}
+
+.bob-error-card--origin-wrong-parameters,
+.bob-error-card--origin-data-shape { --bob-error-card-accent: var(--bob-color-warning); }
+.bob-error-card--origin-network,
+.bob-error-card--origin-missing { --bob-error-card-accent: var(--bob-color-info); }
+.bob-error-card--origin-callback { --bob-error-card-accent: var(--bob-color-accent); }
+
+.bob-error-card__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bob-error-card__badge {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    background: var(--bob-error-card-accent, var(--bob-color-danger));
+    color: var(--bob-color-accent-text);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.bob-error-card__code {
+    font-family: var(--bob-error-card-font-mono, var(--bob-font-mono));
+    font-size: 0.8rem;
+    color: var(--bob-color-text-muted);
+}
+
+.bob-error-card__blame { margin: 0; color: var(--bob-color-text-muted); font-size: 0.9rem; }
+
+.bob-error-card__message {
+    margin: 0;
+    font-weight: 600;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.bob-error-card__facts { display: flex; flex-direction: column; gap: 0.15rem; margin: 0; font-size: 0.85rem; }
+.bob-error-card__fact { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.bob-error-card__fact dt { min-width: 6rem; color: var(--bob-color-text-muted); }
+.bob-error-card__fact dd { margin: 0; overflow-wrap: anywhere; }
+
+.bob-error-card__toggle,
+.bob-error-card__recover {
+    align-self: flex-start;
+    min-height: 2.25rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--bob-color-border);
+    border-radius: var(--bob-radius-sm);
+    background: var(--bob-color-surface-alt);
+    color: var(--bob-color-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.bob-error-card__details { display: flex; flex-direction: column; gap: 0.5rem; }
+.bob-error-card__details[hidden] { display: none; }
+
+.bob-error-card__stack {
+    margin: 0;
+    padding: 0.5rem;
+    overflow-x: auto;
+    border-radius: var(--bob-radius-sm);
+    background: var(--bob-color-surface-alt);
+    font-family: var(--bob-error-card-font-mono, var(--bob-font-mono));
+    font-size: 0.75rem;
+}
+
+.bob-error-card__inner p { margin: 0.15rem 0; }
+
+.bob-error-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--bob-color-text-muted);
+}

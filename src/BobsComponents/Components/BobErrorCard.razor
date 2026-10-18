@@ -1,0 +1,99 @@
+@namespace BobsComponents.Components
+@inherits BobComponentBase
+
+@* The one visual for every BobError. Exact message always; stack and inner exceptions per BobErrorOptions.Details. *@
+@{
+    var errorOptions = BobOptions.Errors;
+    var catalogUrl = errorOptions.CatalogBaseUrl is { Length: > 0 } baseUrl ? $"{baseUrl}#{Error.Code}" : null;
+    var detailsId = $"bob-error-details-{Error.Id}";
+    var hasDetails = errorOptions.Details != BobErrorDetailsMode.Hidden
+        && ((errorOptions.ShowStackTrace && !string.IsNullOrEmpty(Error.StackTrace))
+            || (errorOptions.ShowInnerExceptions && Error.Inner.Count > 0));
+    var showDetails = hasDetails && (errorOptions.Details == BobErrorDetailsMode.AlwaysOpen || _open);
+}
+<div class="bob-error-card bob-error-card--origin-@Error.Origin.CssName()" role="alert"
+     data-bob-part="root" data-bob-origin="@Error.Origin.CssName()" data-bob-code="@Error.Code">
+    <div class="bob-error-card__header" data-bob-part="header">
+        <span class="bob-error-card__badge" data-bob-part="badge">@Error.Badge</span>
+        @if (catalogUrl is not null)
+        {
+            <a class="bob-error-card__code" data-bob-part="code" href="@catalogUrl">@Error.Code</a>
+        }
+        else
+        {
+            <span class="bob-error-card__code" data-bob-part="code">@Error.Code</span>
+        }
+    </div>
+    <p class="bob-error-card__blame" data-bob-part="blame">@Error.Origin.Blame()</p>
+    <p class="bob-error-card__message" data-bob-part="message">@Error.Message</p>
+
+    @if (Error.Facts.Count > 0 || Error.Component is not null)
+    {
+        <dl class="bob-error-card__facts" data-bob-part="facts">
+            @if (Error.Component is not null)
+            {
+                <div class="bob-error-card__fact"><dt>component</dt><dd>@Error.Component</dd></div>
+            }
+            @foreach (var fact in Error.Facts)
+            {
+                <div class="bob-error-card__fact"><dt>@fact.Key</dt><dd>@fact.Value</dd></div>
+            }
+        </dl>
+    }
+
+    @if (hasDetails)
+    {
+        @if (errorOptions.Details == BobErrorDetailsMode.Toggle)
+        {
+            <button type="button" class="bob-error-card__toggle" data-bob-part="toggle"
+                    aria-expanded="@(showDetails ? "true" : "false")" aria-controls="@detailsId"
+                    @onclick="() => _open = !_open">
+                Details
+            </button>
+        }
+        <div id="@detailsId" class="bob-error-card__details" data-bob-part="details" hidden="@(!showDetails)">
+            @if (errorOptions.ShowStackTrace && !string.IsNullOrEmpty(Error.StackTrace))
+            {
+                <pre class="bob-error-card__stack" data-bob-part="stack">@Error.StackTrace</pre>
+            }
+            @if (errorOptions.ShowInnerExceptions)
+            {
+                @foreach (var inner in Error.Inner)
+                {
+                    <div class="bob-error-card__inner" data-bob-part="inner">
+                        <strong>@inner.Type</strong>
+                        <p>@inner.Message</p>
+                        @if (errorOptions.ShowStackTrace && !string.IsNullOrEmpty(inner.StackTrace))
+                        {
+                            <pre class="bob-error-card__stack">@inner.StackTrace</pre>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    }
+
+    <div class="bob-error-card__footer" data-bob-part="footer">
+        @if (errorOptions.ShowErrorId)
+        {
+            <span class="bob-error-card__id" data-bob-part="id">Error id <code>@Error.Id</code></span>
+        }
+        @if (OnRecover.HasDelegate && errorOptions.ShowRecoverButton)
+        {
+            <button type="button" class="bob-error-card__recover" data-bob-part="recover" @onclick="OnRecover">Try again</button>
+        }
+    </div>
+</div>
+
+@code {
+    private bool _open;
+
+    /// <summary>The classified error to show.</summary>
+    [Parameter, EditorRequired] public BobError Error { get; set; } = default!;
+
+    /// <summary>When set (and enabled in options), a "Try again" button calls it.</summary>
+    [Parameter] public EventCallback OnRecover { get; set; }
+
+    protected override void ValidateParameters(BobParameterValidator check) =>
+        check.Required(nameof(Error), Error, "a BobError from IBobErrorClassifier or IBobErrorHub");
+}

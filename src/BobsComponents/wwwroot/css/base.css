@@ -1,0 +1,29 @@
+/* Shared utilities used by more than one component. */
+
+.bob-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Visible keyboard focus on every interactive bob part. */
+[class*="bob-"]:focus-visible {
+    outline: 2px solid var(--bob-color-focus);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [class*="bob-"],
+    [class*="bob-"]::before,
+    [class*="bob-"]::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+}

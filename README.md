@@ -302,3 +302,18 @@ Always verify your changes before pushing:
 ---
 
 **For AI Assistants:** See [CLAUDE.md](CLAUDE.md) for detailed coding rules and policies.
+
+## BobsComponents (prefixed library)
+
+`src/BobsComponents` is the new Razor class library: every class, custom property and part attribute starts with `bob-`,
+CSS is plain and lives in `@layer bob`, and every failure becomes an error card that shows the exact cause.
+It includes an error system (`BobErrorBoundary`, `BobError`), a drop-in `<BobDevKit />`, and the first components
+(AsyncButton, LoadingSpinner, FullScreenLoader, ModalSheet, ConfirmDialog, ToastHost).
+
+```powershell
+cd src
+dotnet test BobsComponents.Tests
+dotnet run --project BobsComponent.Client --urls http://localhost:5096   # demo and docs at /bob
+```
+
+The contract (naming, variables, asset paths, error codes) is in [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md).

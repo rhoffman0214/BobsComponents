@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>$(NetVersion)</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>BobsComponents</RootNamespace>
+    <PackageId>BobsComponents</PackageId>
+    <Title>BobsComponents</Title>
+    <Description>Bob's Blazor component library: prefixed, layered CSS; an error system that always shows the exact cause; a drop-in dev kit.</Description>
+    <Version>0.1.0</Version>
+    <PackageVersion>0.1.0</PackageVersion>
+    <!-- Private package for now: nothing is published anywhere. -->
+    <IsPackable>true</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- Static web assets are served at _content/BobsComponents/ (the default for a Razor class library). -->
+    <StaticWebAssetBasePath>_content/BobsComponents</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Errors\error-catalog.json" LogicalName="BobsComponents.error-catalog.json" />
+    <InternalsVisibleTo Include="BobsComponents.Tests" />
+  </ItemGroup>
+
+</Project>

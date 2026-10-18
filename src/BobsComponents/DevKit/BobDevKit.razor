@@ -1,0 +1,219 @@
+@namespace BobsComponents.Components
+@using BobsComponents.DevKit
+@inherits BobComponentBase
+@implements IDisposable
+@attribute [BobRequiresService(typeof(IBobErrorHub))]
+@attribute [BobRequiresService(typeof(BobNetworkLog))]
+@attribute [BobRequiresService(typeof(BobInteropLog))]
+@attribute [BobRequiresService(typeof(BobDiRegistry))]
+
+@* Drop one <BobDevKit /> in the layout. Off unless Development (or Enabled=true). Shows what happened, with the exact messages. *@
+@if (_enabled)
+{
+    <div class="bob-devkit bob-devkit--@PositionName" data-bob-part="root">
+        <button type="button" class="bob-devkit__toggle" data-bob-part="toggle"
+                aria-expanded="@(_open ? "true" : "false")" aria-controls="bob-devkit-panel"
+                @onclick="() => _open = !_open">
+            Dev kit
+            @if (_errors.Count > 0)
+            {
+                <span class="bob-devkit__count" data-bob-part="count">@_errors.Count</span>
+            }
+        </button>
+
+        @if (_open)
+        {
+            <section id="bob-devkit-panel" class="bob-devkit__panel" data-bob-part="panel" aria-label="Bob dev kit">
+                <div class="bob-devkit__tabs" role="tablist" data-bob-part="tabs">
+                    @foreach (var tab in Tabs())
+                    {
+                        <button type="button" role="tab" class="bob-devkit__tab" data-bob-part="tab"
+                                aria-selected="@(_tab == tab ? "true" : "false")"
+                                aria-controls="bob-devkit-tabpanel"
+                                @onclick="() => _tab = tab">@tab</button>
+                    }
+                </div>
+
+                <div id="bob-devkit-tabpanel" class="bob-devkit__body" role="tabpanel" data-bob-part="body">
+                    @if (_tab == "Errors")
+                    {
+                        <div class="bob-devkit__toolbar">
+                            <button type="button" class="bob-devkit__clear" @onclick="() => Hub?.Clear()">Clear</button>
+                        </div>
+                        @if (_errors.Count == 0)
+                        {
+                            <p class="bob-devkit__empty" data-bob-part="empty">No errors yet.</p>
+                        }
+                        @foreach (var error in _errors.AsEnumerable().Reverse())
+                        {
+                            <BobErrorCard @key="error.Id" Error="error" />
+                        }
+                    }
+                    else if (_tab == "Network")
+                    {
+                        <div class="bob-devkit__toolbar">
+                            <button type="button" class="bob-devkit__clear" @onclick="() => NetworkLog?.Clear()">Clear</button>
+                        </div>
+                        @if (_network.Count == 0)
+                        {
+                            <p class="bob-devkit__empty" data-bob-part="empty">
+                                No requests seen. Add <code>.AddBobNetworkLogging()</code> to your HttpClient registration.
+                            </p>
+                        }
+                        @foreach (var entry in _network.AsEnumerable().Reverse())
+                        {
+                            <details class="bob-devkit__entry @(entry.Status is >= 400 or null ? "bob-devkit__entry--failed" : "")" data-bob-part="entry">
+                                <summary>
+                                    <span class="bob-devkit__method">@entry.Method</span>
+                                    <span class="bob-devkit__status">@(entry.Status?.ToString() ?? "no response")</span>
+                                    <span class="bob-devkit__url">@entry.Url</span>
+                                    <span class="bob-devkit__time">@((int)entry.Duration.TotalMilliseconds) ms</span>
+                                </summary>
+                                @if (entry.TransportError is not null)
+                                {
+                                    <p class="bob-devkit__message">@entry.TransportError</p>
+                                }
+                                @if (entry.RequestBody is not null)
+                                {
+                                    <h4>Request body</h4>
+                                    <pre>@entry.RequestBody</pre>
+                                }
+                                @if (entry.ResponseBody is not null)
+                                {
+                                    <h4>Response body (the server's own words)</h4>
+                                    <pre>@entry.ResponseBody</pre>
+                                }
+                            </details>
+                        }
+                    }
+                    else if (_tab == "Interop")
+                    {
+                        <div class="bob-devkit__toolbar">
+                            <button type="button" class="bob-devkit__clear" @onclick="() => InteropLog?.Clear()">Clear</button>
+                        </div>
+                        @if (_interop.Count == 0)
+                        {
+                            <p class="bob-devkit__empty" data-bob-part="empty">
+                                No JS calls seen. Call <code>services.AddBobInteropLogging()</code> after the host registers its JS runtime.
+                            </p>
+                        }
+                        @foreach (var entry in _interop.AsEnumerable().Reverse())
+                        {
+                            <div class="bob-devkit__entry @(entry.Failure is null ? "" : "bob-devkit__entry--failed")" data-bob-part="entry">
+                                <span class="bob-devkit__method">@entry.Target</span>
+                                <span class="bob-devkit__url">@(entry.Identifier + "(" + entry.Arguments + ")")</span>
+                                <span class="bob-devkit__time">@((int)entry.Duration.TotalMilliseconds) ms</span>
+                                @if (entry.Failure is not null)
+                                {
+                                    <p class="bob-devkit__message">@entry.Failure</p>
+                                }
+                            </div>
+                        }
+                    }
+                    else if (_tab == "DI")
+                    {
+                        <table class="bob-devkit__table" data-bob-part="di-table">
+                            <thead><tr><th>Component</th><th>Needs</th><th>State</th></tr></thead>
+                            <tbody>
+                                @foreach (var req in _di)
+                                {
+                                    <tr class="@(req.Registered ? "" : "bob-devkit__row--missing")">
+                                        <td>@req.Component</td>
+                                        <td>@req.ServiceType.FullName</td>
+                                        <td>@(req.Registered ? "registered" : (req.Required ? "MISSING" : "missing (optional)"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <button type="button" class="bob-devkit__clear" @onclick="RefreshDi">Re-check</button>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+}
+
+@code {
+    private bool _enabled;
+    private bool _open;
+    private string _tab = "Errors";
+    private IReadOnlyList<BobError> _errors = [];
+    private IReadOnlyList<BobNetworkEntry> _network = [];
+    private IReadOnlyList<BobInteropEntry> _interop = [];
+    private IReadOnlyList<BobDiRequirement> _di = [];
+    private bool _unobservedHooked;
+
+    private IBobErrorHub? Hub;
+    private BobNetworkLog? NetworkLog;
+    private BobInteropLog? InteropLog;
+    private BobDiRegistry? DiRegistry;
+
+    /// <summary>True/false overrides the options; null (default) follows <c>BobOptions.DevKit.Enabled</c>, then "is Development".</summary>
+    [Parameter] public bool? Enabled { get; set; }
+
+    private string PositionName => BobOptions.DevKit.Position switch
+    {
+        BobDevKitPosition.BottomLeft => "bottom-left",
+        BobDevKitPosition.TopRight => "top-right",
+        BobDevKitPosition.TopLeft => "top-left",
+        _ => "bottom-right",
+    };
+
+    private IEnumerable<string> Tabs()
+    {
+        var dev = BobOptions.DevKit;
+        if (dev.ShowErrorsPanel) yield return "Errors";
+        if (dev.ShowNetworkPanel) yield return "Network";
+        if (dev.ShowInteropPanel) yield return "Interop";
+        if (dev.ShowDiPanel) yield return "DI";
+    }
+
+    protected override void OnParametersSet()
+    {
+        _enabled = Enabled ?? BobDevKitState.IsEnabled(BobOptions);
+        if (!_enabled || Hub is not null) return;
+
+        _open = BobOptions.DevKit.StartOpen;
+        Hub = OptionalService<IBobErrorHub>();
+        NetworkLog = OptionalService<BobNetworkLog>();
+        InteropLog = OptionalService<BobInteropLog>();
+        DiRegistry = OptionalService<BobDiRegistry>();
+
+        if (Hub is not null) { Hub.Changed += OnChanged; _errors = Hub.Errors; }
+        if (NetworkLog is not null) { NetworkLog.Changed += OnChanged; _network = NetworkLog.Items; }
+        if (InteropLog is not null) { InteropLog.Changed += OnChanged; _interop = InteropLog.Items; }
+        RefreshDi();
+
+        var first = Tabs().FirstOrDefault();
+        if (first is not null) _tab = first;
+
+        if (BobOptions.DevKit.CaptureUnobservedTaskExceptions)
+        {
+            TaskScheduler.UnobservedTaskException += OnUnobserved;
+            _unobservedHooked = true;
+        }
+    }
+
+    private void RefreshDi() => _di = DiRegistry?.Check() ?? [];
+
+    private void OnUnobserved(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        foreach (var ex in e.Exception.InnerExceptions) Hub?.Report(ex, "(unobserved task)");
+    }
+
+    private void OnChanged() => _ = InvokeAsync(() =>
+    {
+        _errors = Hub?.Errors ?? [];
+        _network = NetworkLog?.Items ?? [];
+        _interop = InteropLog?.Items ?? [];
+        StateHasChanged();
+    });
+
+    public void Dispose()
+    {
+        if (Hub is not null) Hub.Changed -= OnChanged;
+        if (NetworkLog is not null) NetworkLog.Changed -= OnChanged;
+        if (InteropLog is not null) InteropLog.Changed -= OnChanged;
+        if (_unobservedHooked) TaskScheduler.UnobservedTaskException -= OnUnobserved;
+    }
+}

@@ -1,0 +1,74 @@
+/* Global design tokens. Override any of them on :root (or any ancestor) in your own, unlayered CSS. */
+:root {
+    /* Color */
+    --bob-color-surface: #ffffff;
+    --bob-color-surface-alt: #f3f4f6;
+    --bob-color-border: #d1d5db;
+    --bob-color-text: #111827;
+    --bob-color-text-muted: #4b5563;
+    --bob-color-ground: #ffffff;
+    --bob-color-accent: #2563eb;
+    --bob-color-accent-text: #ffffff;
+    --bob-color-danger: #b91c1c;
+    --bob-color-danger-text: #ffffff;
+    --bob-color-success: #15803d;
+    --bob-color-info: #1d4ed8;
+    --bob-color-warning: #b45309;
+    --bob-color-focus: #2563eb;
+
+    /* Type */
+    --bob-font-family: inherit;
+    --bob-font-display: inherit;
+    --bob-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    /* Shape */
+    --bob-radius-sm: 0.4rem;
+    --bob-radius-md: 0.6rem;
+    --bob-radius-lg: 1rem;
+    --bob-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.2);
+
+    /* Layers */
+    --bob-z-toast: 1200;
+    --bob-z-modal: 1300;
+    --bob-z-devkit: 2000;
+
+    /* Motion */
+    --bob-duration: 150ms;
+}
+
+/* Dark: follows the system unless the page forces light with data-bob-theme="light" on <html> or any ancestor. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-bob-theme="light"]) {
+        --bob-color-surface: #1f2937;
+        --bob-color-surface-alt: #111827;
+        --bob-color-border: #4b5563;
+        --bob-color-text: #f9fafb;
+        --bob-color-text-muted: #9ca3af;
+        --bob-color-ground: #111827;
+        --bob-color-accent: #60a5fa;
+        --bob-color-accent-text: #0b1220;
+        --bob-color-danger: #f87171;
+        --bob-color-danger-text: #0b1220;
+        --bob-color-success: #4ade80;
+        --bob-color-info: #60a5fa;
+        --bob-color-warning: #fbbf24;
+        --bob-color-focus: #93c5fd;
+    }
+}
+
+[data-bob-theme="dark"] {
+    --bob-color-surface: #1f2937;
+    --bob-color-surface-alt: #111827;
+    --bob-color-border: #4b5563;
+    --bob-color-text: #f9fafb;
+    --bob-color-text-muted: #9ca3af;
+    --bob-color-ground: #111827;
+    --bob-color-accent: #60a5fa;
+    --bob-color-accent-text: #0b1220;
+    --bob-color-danger: #f87171;
+    --bob-color-danger-text: #0b1220;
+    --bob-color-success: #4ade80;
+    --bob-color-info: #60a5fa;
+    --bob-color-warning: #fbbf24;
+    --bob-color-focus: #93c5fd;
+}
