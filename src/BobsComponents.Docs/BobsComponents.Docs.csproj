@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!-- The docs engine: generators that read the library's own source (CSS, markup, XML docs, error catalog)
+       plus the page template and demo components. The Client app only hosts routes. Nothing here ships in the
+       BobsComponents package. -->
+  <PropertyGroup>
+    <TargetFramework>$(NetVersion)</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>BobsComponents.Docs</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <StaticWebAssetBasePath>_content/BobsComponents.Docs</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BobsComponents\BobsComponents.csproj" />
+  </ItemGroup>
+
+  <!-- Everything the generators read is embedded, so the browser build and the tests see the exact same text.
+       Logical names: src/wwwroot/<path>, src/components/<File>.razor, src/demos/<File>.razor, a11y/<slug>.md, docs/<File>. -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\BobsComponents\wwwroot\**\*.css" LogicalName="src/wwwroot/$([System.String]::Copy('%(RecursiveDir)').Replace('\','/'))%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\BobsComponents\Components\**\*.razor" LogicalName="src/components/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\BobsComponents\DevKit\**\*.razor" LogicalName="src/components/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Demos\**\*.razor" LogicalName="src/demos/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Content\accessibility\*.md" LogicalName="a11y/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\docs\CHANGELOG.md" LogicalName="docs/CHANGELOG.md" />
+  </ItemGroup>
+
+  <!-- The library's XML documentation file is the source for parameter descriptions. It is produced next to the
+       library's output, so find it from the project reference and embed it as src/BobsComponents.xml. -->
+  <Target Name="EmbedLibraryXmlDocs" BeforeTargets="AssignTargetPaths" DependsOnTargets="ResolveProjectReferences">
+    <ItemGroup>
+      <_BobLibDll Include="@(_ResolvedProjectReferencePaths)" Condition="'%(Filename)' == 'BobsComponents'" />
+      <EmbeddedResource Include="@(_BobLibDll->'%(RootDir)%(Directory)BobsComponents.xml')" LogicalName="src/BobsComponents.xml" />
+    </ItemGroup>
+  </Target>
+
+</Project>

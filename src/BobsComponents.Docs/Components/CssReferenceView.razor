@@ -1,0 +1,201 @@
+@implements IDisposable
+@* The CSS reference for one component: generated from its stylesheet, its markup and the rendered demo. *@
+<p>
+    Sheet: <code>_content/BobsComponents/@Css.SheetFile</code>. Everything is in cascade layer <code>bob</code>, so your own unlayered CSS wins
+    without <code>!important</code>. Set a custom property on <code>:root</code> or any ancestor; target a part with its class plus
+    <code>[data-bob-part]</code>.
+</p>
+
+<h3 class="bobdoc-h3" id="css-variables">Custom properties</h3>
+@if (Css.Variables.Count == 0)
+{
+    <p>This component reads no component-specific custom properties.</p>
+}
+else
+{
+    <div class="bobdoc-tablewrap">
+        <table class="bobdoc-table">
+            <caption class="bobdoc-visually-hidden">Custom properties of @Title</caption>
+            <thead><tr><th scope="col">Property</th><th scope="col">Default</th><th scope="col">Feeds</th><th scope="col">Copy</th></tr></thead>
+            <tbody>
+                @foreach (var v in Css.Variables)
+                {
+                    <tr id="@DocIds.Var(v.Name)">
+                        <th scope="row"><code>@v.Name</code></th>
+                        <td><code>@v.Default</code></td>
+                        <td>
+                            <ul class="bobdoc-list">
+                                @foreach (var use in v.Uses.Select(u => u.Effect).Distinct())
+                                {
+                                    <li>@use</li>
+                                }
+                                @if (v.Uses.Count == 0)
+                                {
+                                    <li class="bobdoc-muted">Set by variants only (see the rules below).</li>
+                                }
+                            </ul>
+                            @if (v.SetBy.Count > 0)
+                            {
+                                <p class="bobdoc-muted bobdoc-small">Variants set it: @string.Join("; ", v.SetBy)</p>
+                            }
+                        </td>
+                        <td><CopyButton Text="@CssSnippets.VariableLine(v)" Label="Copy" AriaLabel="@($"Copy {v.Name} declaration")" /></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (Css.Tokens.Count > 0)
+{
+    <h3 class="bobdoc-h3">Global tokens it falls back to</h3>
+    <p class="bobdoc-muted">Defined once in <code>css/tokens.css</code>; changing one changes every component that reads it.</p>
+    <div class="bobdoc-tablewrap">
+        <table class="bobdoc-table">
+            <caption class="bobdoc-visually-hidden">Global tokens used by @Title</caption>
+            <thead><tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+            <tbody>
+                @foreach (var t in Css.Tokens)
+                {
+                    <tr><th scope="row"><code>@t.Name</code></th><td><code>@t.Light</code></td><td><code>@(t.Dark ?? "same")</code></td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<h3 class="bobdoc-h3" id="css-parts">Parts</h3>
+<p class="bobdoc-muted">Every styleable element carries <code>data-bob-part</code>. "Sits in" is read from the live demo above.</p>
+<div class="bobdoc-tablewrap">
+    <table class="bobdoc-table">
+        <caption class="bobdoc-visually-hidden">Parts of @Title</caption>
+        <thead><tr><th scope="col"><code>data-bob-part</code></th><th scope="col">Element</th><th scope="col">Classes</th><th scope="col">Sits in</th><th scope="col">Variables</th><th scope="col">Copy</th></tr></thead>
+        <tbody>
+            @foreach (var part in Css.Parts)
+            {
+                <tr id="@DocIds.Part(part.Name)">
+                    <th scope="row"><code>@part.Name</code></th>
+                    <td><code>&lt;@part.Element&gt;</code></td>
+                    <td>
+                        @foreach (var c in part.Classes)
+                        {
+                            <code class="bobdoc-chip">.@c</code>
+                        }
+                        @foreach (var v in part.Variants)
+                        {
+                            <code class="bobdoc-chip bobdoc-chip--variant">.@v</code>
+                        }
+                    </td>
+                    <td>@Placement(part.Name)</td>
+                    <td>
+                        @if (part.Variables.Count == 0)
+                        {
+                            <span class="bobdoc-muted">none</span>
+                        }
+                        @foreach (var v in part.Variables)
+                        {
+                            <code class="bobdoc-chip">@v</code>
+                        }
+                    </td>
+                    <td><CopyButton Text="@CssSnippets.PartRule(part)" Label="Copy rule" AriaLabel="@($"Copy a CSS rule for the {part.Name} part")" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h3 class="bobdoc-h3" id="css-classes">Classes</h3>
+@if (Css.DynamicClassPatterns.Count > 0)
+{
+    <p class="bobdoc-muted">
+        Some classes are completed at run time:
+        @foreach (var p in Css.DynamicClassPatterns){<code class="bobdoc-chip">.@(p)*</code>}
+        (a variant, level or state name is appended).
+    </p>
+}
+<div class="bobdoc-tablewrap">
+    <table class="bobdoc-table">
+        <caption class="bobdoc-visually-hidden">Classes of @Title</caption>
+        <thead><tr><th scope="col">Class</th><th scope="col">Kind</th><th scope="col">On part</th><th scope="col">Defined in</th><th scope="col">Copy</th></tr></thead>
+        <tbody>
+            @foreach (var c in Css.Classes)
+            {
+                <tr id="@DocIds.Class(c.Name)">
+                    <th scope="row"><code>.@c.Name</code></th>
+                    <td>@c.Kind.ToString().ToLowerInvariant()</td>
+                    <td>@(c.Parts.Count == 0 ? "set from code" : string.Join(", ", c.Parts))</td>
+                    <td><code>@c.DefinedIn</code></td>
+                    <td><CopyButton Text="@("." + c.Name)" Label="Copy" AriaLabel="@($"Copy the class selector .{c.Name}")" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h3 class="bobdoc-h3" id="css-rules">States and what changes</h3>
+<p class="bobdoc-muted">Every rule in the sheet: which element it styles, the state that triggers it and the properties it sets.</p>
+<div class="bobdoc-tablewrap">
+    <table class="bobdoc-table">
+        <caption class="bobdoc-visually-hidden">Rules of @Title</caption>
+        <thead><tr><th scope="col">Selector</th><th scope="col">Styles</th><th scope="col">When</th><th scope="col">Properties</th></tr></thead>
+        <tbody>
+            @foreach (var r in Css.Rules)
+            {
+                <tr>
+                    <td><code>@r.Selector</code></td>
+                    <td>@r.Target</td>
+                    <td>@(r.State.Length == 0 ? "always" : r.State)</td>
+                    <td>@string.Join(", ", r.Properties.Concat(r.Declarations.Where(d => d.Property.StartsWith("--")).Select(d => d.Property)))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<h3 class="bobdoc-h3" id="css-snippets">Copy CSS</h3>
+<div class="bobdoc-snippets">
+    <div class="bobdoc-code">
+        <CopyButton Text="@VariableBlock" Label="Copy variables" AriaLabel="@($"Copy all {Title} variables with their defaults")" />
+        <pre><code>@VariableBlock</code></pre>
+    </div>
+    <div class="bobdoc-code">
+        <CopyButton Text="@PartBlock" Label="Copy part selectors" AriaLabel="@($"Copy a rule for every {Title} part")" />
+        <pre><code>@PartBlock</code></pre>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public CssReference Css { get; set; } = default!;
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+    /// <summary>The page's live demo state; when given, "Sits in" is read from the rendered demo and updates as it changes.</summary>
+    [Parameter] public DocPageState? State { get; set; }
+
+    private DocPageState? _subscribed;
+
+    protected override void OnParametersSet()
+    {
+        if (ReferenceEquals(_subscribed, State)) return;
+        if (_subscribed is not null) _subscribed.Changed -= OnChanged;
+        _subscribed = State;
+        if (_subscribed is not null) _subscribed.Changed += OnChanged;
+    }
+
+    private void OnChanged() => _ = InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        if (_subscribed is not null) _subscribed.Changed -= OnChanged;
+    }
+
+    private string VariableBlock => CssSnippets.VariableBlock(Title, Css);
+    private string PartBlock => CssSnippets.PartBlock(Title, Css);
+
+    private string Placement(string part)
+    {
+        var rows = State?.AllRows.ToList();
+        if (rows is null || rows.Count == 0) return "(open the demo)";
+        var where = DomMap.Placement(rows, part);
+        return where.Count == 0 ? "not in the demo right now" : string.Join(", ", where.Select(w => w == "(top level)" ? w : "in " + w));
+    }
+}

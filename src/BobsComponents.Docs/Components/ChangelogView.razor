@@ -1,0 +1,39 @@
+@* The changelog page body, generated from docs/CHANGELOG.md. Breaking changes are always first in each release. *@
+<div class="bobdoc-page">
+    <header class="bobdoc-header">
+        <p class="bobdoc-eyebrow"><a href="bob">Bob components</a></p>
+        <h1>Changelog</h1>
+        <p class="bobdoc-lead">What changed in each version. Names are public API, so anything that renames or removes a class, custom property, part, parameter or error code is listed under Breaking, first.</p>
+    </header>
+
+    @foreach (var release in _releases)
+    {
+        <section class="bobdoc-section" aria-labelledby="@("v-" + release.Version)">
+            <h2 id="@("v-" + release.Version)">@release.Version @if (release.Date is not null){<span class="bobdoc-muted"> @release.Date</span>}</h2>
+            @if (!release.HasBreaking)
+            {
+                <p class="bobdoc-nobreak">No breaking changes in this release.</p>
+            }
+            @foreach (var section in release.Sections.Where(s => s.Items.Count > 0))
+            {
+                <div class="@(section.IsBreaking ? "bobdoc-breaking" : "")">
+                    <h3 class="bobdoc-h3">@section.Title</h3>
+                    <ul>
+                        @foreach (var item in section.Items)
+                        {
+                            <li><DocText Text="@item" /></li>
+                        }
+                    </ul>
+                </div>
+            }
+        </section>
+    }
+</div>
+
+@code {
+    [Parameter] public IReadOnlyList<ChangelogRelease>? Releases { get; set; }
+
+    private IReadOnlyList<ChangelogRelease> _releases = [];
+
+    protected override void OnParametersSet() => _releases = Releases ?? ChangelogParser.Parse(DocSources.Changelog());
+}

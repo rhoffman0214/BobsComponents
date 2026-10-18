@@ -1,0 +1,29 @@
+@inject DocsJs Js
+
+<span class="bobdoc-copy">
+    <button type="button" class="bobdoc-copy__button" @onclick="CopyAsync" aria-label="@AriaLabel">@Label</button>
+    <span class="bobdoc-copy__status" role="status">@_status</span>
+</span>
+
+@code {
+    /// <summary>The text placed on the clipboard.</summary>
+    [Parameter, EditorRequired] public string Text { get; set; } = "";
+
+    /// <summary>Visible button text.</summary>
+    [Parameter] public string Label { get; set; } = "Copy";
+
+    /// <summary>Accessible name; say what is copied.</summary>
+    [Parameter] public string? AriaLabel { get; set; }
+
+    private string _status = "";
+
+    private async Task CopyAsync()
+    {
+        var ok = await Js.CopyAsync(Text);
+        _status = ok ? "Copied" : "Copy failed";
+        StateHasChanged();
+        await Task.Delay(1800);
+        _status = "";
+        StateHasChanged();
+    }
+}

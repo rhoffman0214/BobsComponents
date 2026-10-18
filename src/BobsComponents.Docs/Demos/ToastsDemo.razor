@@ -1,0 +1,15 @@
+@* Any component calls Show(...) on IBobToastService; the ToastHost renders and dismisses the toasts. In an app you mount
+   one ToastHost in the layout and inject the shared service. This demo owns a private service and host so the toasts
+   stay inside the page you are inspecting. *@
+<div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <button type="button" class="bob-button" @onclick='() => _toasts.Show("Saved", BobToastLevel.Success)'>Success</button>
+    <button type="button" class="bob-button" @onclick='() => _toasts.Show("Heads up", BobToastLevel.Info)'>Info</button>
+    <button type="button" class="bob-button" @onclick='() => _toasts.Show("Could not save", BobToastLevel.Error)'>Error</button>
+    <button type="button" class="bob-button" @onclick='() => _toasts.Show("Stays ten seconds", BobToastLevel.Info, TimeSpan.FromSeconds(10))'>Custom duration</button>
+</div>
+
+<ToastHost Service="_toasts" />
+
+@code {
+    private readonly BobToastService _toasts = new();
+}

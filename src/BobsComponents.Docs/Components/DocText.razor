@@ -1,0 +1,24 @@
+@* Plain text where `backtick` spans become code elements. Used for XML-doc summaries. *@
+@foreach (var segment in Segments())
+{
+    if (segment.Code)
+    {
+        <code>@segment.Text</code>
+    }
+    else
+    {
+        @segment.Text
+    }
+}
+
+@code {
+    [Parameter] public string? Text { get; set; }
+
+    private IEnumerable<(string Text, bool Code)> Segments()
+    {
+        if (string.IsNullOrEmpty(Text)) yield break;
+        var parts = Text.Split('`');
+        for (var i = 0; i < parts.Length; i++)
+            if (parts[i].Length > 0) yield return (parts[i], i % 2 == 1);
+    }
+}

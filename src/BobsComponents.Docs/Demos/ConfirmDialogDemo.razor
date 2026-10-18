@@ -1,0 +1,28 @@
+@inject IBobToastService Toasts
+
+@* Show and Busy are owned by your code. The confirm button shows a spinner while Busy is true. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="bob-button bob-button--danger" @onclick="() => _show = true">Delete workout</button>
+    </div>
+    <p role="status" style="margin: 0;">@_status</p>
+</div>
+
+<ConfirmDialog Show="_show" Title="Delete this workout?" Message="This cannot be undone."
+               ConfirmLabel="Delete" Busy="_busy" OnConfirm="Confirm" OnCancel="() => _show = false" />
+
+@code {
+    private bool _show;
+    private bool _busy;
+    private string _status = "Nothing deleted yet.";
+
+    private async Task Confirm()
+    {
+        _busy = true;
+        await Task.Delay(1500);
+        _busy = false;
+        _show = false;
+        _status = "Deleted.";
+        Toasts.Show("Workout deleted", BobToastLevel.Success);
+    }
+}

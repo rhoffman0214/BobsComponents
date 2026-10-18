@@ -1,0 +1,48 @@
+@* One search over everything the generators know. Example: "what changes the border" finds every border declaration and the variable behind it. *@
+<div class="bobdoc-page">
+    <header class="bobdoc-header">
+        <p class="bobdoc-eyebrow"><a href="bob">Bob components</a></p>
+        <h1>Search</h1>
+        <p class="bobdoc-lead">Components, parameters, parts, classes, custom properties, what each declaration changes, and error codes.</p>
+        <SearchBox Query="@Query" />
+    </header>
+
+    <section class="bobdoc-section" aria-live="polite">
+        @if (string.IsNullOrWhiteSpace(Query))
+        {
+            <p>Try <a href="bob/search?q=border">border</a>, <a href="bob/search?q=--bob-modal">--bob-modal</a>,
+               <a href="bob/search?q=focus%20trap">focus trap</a> or <a href="bob/search?q=BOB-PARAM">BOB-PARAM</a>.</p>
+        }
+        else if (_hits.Count == 0)
+        {
+            <p>Nothing matches <strong>@Query</strong>. Words like "what", "the" and "changes" are ignored; try the name of a part, a property such as <code>background</code>, or a variable.</p>
+        }
+        else
+        {
+            <p class="bobdoc-muted">@_hits.Count result@(_hits.Count == 1 ? "" : "s") for <strong>@Query</strong></p>
+            <ul class="bobdoc-results">
+                @foreach (var hit in _hits)
+                {
+                    <li class="bobdoc-result">
+                        <span class="bobdoc-kind bobdoc-kind--@hit.Entry.Kind.ToString().ToLowerInvariant()">@hit.Entry.Kind.ToString().ToLowerInvariant()</span>
+                        <a href="@hit.Entry.Href"><code>@hit.Entry.Title</code></a>
+                        @if (hit.Entry.Component.Length > 0 && hit.Entry.Kind != SearchKind.Component)
+                        {
+                            <span class="bobdoc-muted"> in @hit.Entry.Component</span>
+                        }
+                        <div class="bobdoc-muted bobdoc-small"><DocText Text="@hit.Entry.Detail" /></div>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+</div>
+
+@code {
+    [Parameter] public string? Query { get; set; }
+
+    private IReadOnlyList<SearchHit> _hits = [];
+
+    protected override void OnParametersSet() =>
+        _hits = string.IsNullOrWhiteSpace(Query) ? [] : DocSearch.Search(Query);
+}

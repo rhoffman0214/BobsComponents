@@ -1,0 +1,19 @@
+@inject NavigationManager Nav
+
+<form class="bobdoc-search" role="search" @onsubmit="Submit">
+    <label class="bobdoc-visually-hidden" for="@_id">Search the docs</label>
+    <input id="@_id" type="search" class="bobdoc-search__input" @bind="_query" @bind:event="oninput"
+           placeholder="Search components, parts, classes, variables, effects" autocomplete="off" />
+    <button type="submit" class="bobdoc-search__button">Search</button>
+</form>
+
+@code {
+    [Parameter] public string? Query { get; set; }
+
+    private readonly string _id = "bobdoc-search-" + Guid.NewGuid().ToString("N")[..6];
+    private string _query = "";
+
+    protected override void OnParametersSet() => _query = Query ?? _query;
+
+    private void Submit() => Nav.NavigateTo("bob/search?q=" + Uri.EscapeDataString(_query.Trim()));
+}

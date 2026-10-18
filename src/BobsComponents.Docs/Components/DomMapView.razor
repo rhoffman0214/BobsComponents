@@ -1,0 +1,65 @@
+@implements IDisposable
+@inject DocsJs Js
+
+@* The rendered markup of each demo as a tree, every part labelled with its classes and data-bob-part.
+   Hover or focus a row to outline the element in the live demo. *@
+@if (State.Frames.Count == 0)
+{
+    <p class="bobdoc-muted">The DOM map appears once the demo has rendered.</p>
+}
+@foreach (var frame in State.Frames)
+{
+    var title = Titles.GetValueOrDefault(frame.Key, frame.Key);
+    <h3 class="bobdoc-h3">@title</h3>
+    <div class="bobdoc-dom" role="tree" aria-label="@($"DOM map of {title}")">
+        @foreach (var row in frame.Value)
+        {
+            var key = frame.Key;
+            var index = row.Index;
+            <div class="bobdoc-dom__row @(row.IsBob ? "bobdoc-dom__row--bob" : "")" role="treeitem" aria-level="@(row.Depth + 1)" tabindex="0"
+                 style="padding-left: @(row.Depth * 1.1)rem"
+                 @onmouseenter="() => Highlight(key, index)" @onfocus="() => Highlight(key, index)"
+                 @onmouseleave="Clear" @onblur="Clear">
+                <code class="bobdoc-dom__tag">&lt;@row.Tag&gt;</code>
+                @if (row.Part is not null)
+                {
+                    <span class="bobdoc-dom__part">@row.Part</span>
+                }
+                @foreach (var c in row.BobClasses)
+                {
+                    <code class="bobdoc-chip">.@c</code>
+                }
+                @foreach (var c in row.OtherClasses)
+                {
+                    <code class="bobdoc-chip bobdoc-chip--other">.@c</code>
+                }
+                @foreach (var a in row.Attributes)
+                {
+                    <code class="bobdoc-dom__attr">@a</code>
+                }
+                @if (row.Text.Length > 0)
+                {
+                    <span class="bobdoc-dom__text">"@row.Text"</span>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public DocPageState State { get; set; } = default!;
+    [Parameter] public IReadOnlyDictionary<string, string> Titles { get; set; } = new Dictionary<string, string>();
+
+    protected override void OnInitialized() => State.Changed += OnChanged;
+
+    private void OnChanged() => _ = InvokeAsync(StateHasChanged);
+
+    private async Task Highlight(string key, int index)
+    {
+        try { await Js.HighlightAsync(key, index); } catch (JSException) { }
+    }
+
+    private async Task Clear() => await Js.ClearHighlightAsync();
+
+    public void Dispose() => State.Changed -= OnChanged;
+}

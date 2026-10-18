@@ -1,0 +1,64 @@
+@* The error catalog page body, generated from error-catalog.json. Every entry has id="CODE", which is where the runtime
+   error card's code link lands (BobOptions.Errors.CatalogBaseUrl + "#" + code). *@
+<div class="bobdoc-page">
+    <header class="bobdoc-header">
+        <p class="bobdoc-eyebrow"><a href="bob">Bob components</a></p>
+        <h1>Error catalog</h1>
+        <p class="bobdoc-lead">
+            Every code BobsComponents can raise: origin, message shape, cause and fix. The error card links straight to its entry here
+            when <code>BobOptions.Errors.CatalogBaseUrl</code> is set. Generated from <code>error-catalog.json</code>.
+        </p>
+        <label class="bobdoc-filter">
+            <span>Filter</span>
+            <input type="search" @bind="_filter" @bind:event="oninput" placeholder="code, title, component or message" />
+        </label>
+    </header>
+
+    @{ var shown = Catalog.All.Where(Matches).ToList(); }
+    @if (shown.Count == 0)
+    {
+        <p>No catalog entry matches <strong>@_filter</strong>.</p>
+    }
+    @foreach (var group in shown.GroupBy(e => e.Origin))
+    {
+        <section class="bobdoc-section" aria-labelledby="@($"origin-{group.Key}")">
+            <h2 id="@($"origin-{group.Key}")">@group.Key.Badge()</h2>
+            @foreach (var entry in group)
+            {
+                <article id="@entry.Code" class="bobdoc-entry">
+                    <h3><code>@entry.Code</code> @entry.Title</h3>
+                    <dl>
+                        <dt>Message</dt><dd><code>@entry.Message</code></dd>
+                        <dt>Cause</dt><dd>@entry.Cause</dd>
+                        <dt>Fix</dt><dd>@entry.Fix</dd>
+                        <dt>Raised by</dt>
+                        <dd>
+                            @{ var raisers = DocRegistry.RaisedBy(entry.Code); }
+                            @if (raisers.Count == 0)
+                            {
+                                <span>Any component, or the error core itself</span>
+                            }
+                            @foreach (var doc in raisers)
+                            {
+                                <a class="bobdoc-chip" href="@(doc.Href)#errors">@doc.Title</a>
+                            }
+                        </dd>
+                    </dl>
+                </article>
+            }
+        </section>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public BobErrorCatalog Catalog { get; set; } = default!;
+
+    private string _filter = "";
+
+    private bool Matches(BobErrorCatalogEntry e)
+    {
+        if (string.IsNullOrWhiteSpace(_filter)) return true;
+        var haystack = $"{e.Code} {e.Title} {e.Message} {e.Cause} {e.Fix} {e.Origin} {string.Join(' ', e.Components)}";
+        return _filter.Split(' ', StringSplitOptions.RemoveEmptyEntries).All(t => haystack.Contains(t, StringComparison.OrdinalIgnoreCase));
+    }
+}

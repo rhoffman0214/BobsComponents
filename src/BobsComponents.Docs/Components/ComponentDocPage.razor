@@ -1,0 +1,175 @@
+@* The one template every component page uses. The only inputs are a ComponentDoc (type, stylesheet, demos); everything on
+   the page is generated from the code, so it cannot drift:
+     summary           [Description] on the component
+     demo + code       the real Demos/*.razor file, compiled in and embedded as text
+     parameters        reflection over [Parameter] + XML doc comments
+     CSS reference     the stylesheet, the component markup and the rendered demo
+     DOM map           the rendered demo's markup, reported by the browser
+     accessibility     Content/accessibility/<slug>.md, each note naming the tests that prove it
+     errors            error-catalog.json entries that list this component *@
+<PageTitle>@Doc.Title - BobsComponents</PageTitle>
+
+<div class="bobdoc-page">
+    <header class="bobdoc-header">
+        <p class="bobdoc-eyebrow"><a href="bob">Bob components</a></p>
+        <h1>@Doc.Title</h1>
+        <p class="bobdoc-lead">
+            @if (string.IsNullOrEmpty(_model.Api.Summary))
+            {
+                <span class="bobdoc-missing">No [Description] on @Doc.Component.Name.</span>
+            }
+            else
+            {
+                <DocText Text="@_model.Api.Summary" />
+            }
+        </p>
+        <p class="bobdoc-meta">
+            <code>&lt;@(Doc.Component.Name) /&gt;</code> in <code>@Doc.Component.Namespace</code>
+            @if (_model.Composes.Count > 0)
+            {
+                <span>. Built on @foreach (var c in _model.Composes){<a href="@c.Href">@c.Title </a>}</span>
+            }
+        </p>
+        <SearchBox />
+        <nav class="bobdoc-toc" aria-label="On this page">
+            <a href="@(Doc.Href)#demo">Demo</a>
+            <a href="@(Doc.Href)#api">API</a>
+            <a href="@(Doc.Href)#css">CSS reference</a>
+            <a href="@(Doc.Href)#dom">DOM map</a>
+            <a href="@(Doc.Href)#accessibility">Accessibility</a>
+            <a href="@(Doc.Href)#errors">Errors</a>
+        </nav>
+    </header>
+
+    <CascadingValue Value="_state">
+        <section class="bobdoc-section" id="demo" aria-labelledby="demo-h">
+            <h2 id="demo-h">Demo</h2>
+            @foreach (var demo in _model.Demos)
+            {
+                <DemoFrame Demo="demo.Demo" Source="@demo.Source" Key="@KeyOf(demo.Demo)" InspectorJson="@_inspectorJson" />
+            }
+        </section>
+
+        <section class="bobdoc-section" id="api" aria-labelledby="api-h">
+            <h2 id="api-h">API</h2>
+            <ParameterTables Api="_model.Api" />
+            @foreach (var related in _model.Related)
+            {
+                <h3 class="bobdoc-h3" id="@("type-" + related.Name)"><code>@related.Name</code></h3>
+                <p><DocText Text="@related.Summary" /></p>
+                <div class="bobdoc-tablewrap">
+                    <table class="bobdoc-table">
+                        <caption class="bobdoc-visually-hidden">Members of @related.Name</caption>
+                        <thead><tr><th scope="col">Member</th><th scope="col">What it does</th></tr></thead>
+                        <tbody>
+                            @foreach (var m in related.Members)
+                            {
+                                <tr>
+                                    <th scope="row"><code>@m.Signature</code></th>
+                                    <td>
+                                        @if (string.IsNullOrEmpty(m.Summary))
+                                        {
+                                            <span class="bobdoc-missing">No XML doc comment.</span>
+                                        }
+                                        else
+                                        {
+                                            <DocText Text="@m.Summary" />
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </section>
+
+        <section class="bobdoc-section" id="css" aria-labelledby="css-h">
+            <h2 id="css-h">CSS reference</h2>
+            <CssReferenceView Css="_model.Css" Title="@Doc.Title" State="_state" />
+        </section>
+
+        <section class="bobdoc-section" id="dom" aria-labelledby="dom-h">
+            <h2 id="dom-h">DOM map</h2>
+            <p class="bobdoc-muted">The demo's current markup, updated as you use it. Open a sheet or trigger a toast and the new parts appear here.</p>
+            <DomMapView State="_state" Titles="_titles" />
+        </section>
+    </CascadingValue>
+
+    <section class="bobdoc-section" id="accessibility" aria-labelledby="a11y-h">
+        <h2 id="a11y-h">Accessibility</h2>
+        @if (_model.Accessibility is null)
+        {
+            <p class="bobdoc-missing">No accessibility notes for this component (Content/accessibility/@(Doc.Slug).md).</p>
+        }
+        else
+        {
+            <p class="bobdoc-muted">@_model.Accessibility.Source Each behavior names the test that proves it.</p>
+            <ul class="bobdoc-a11y">
+                @foreach (var note in _model.Accessibility.Notes)
+                {
+                    <li class="@(note.IsGap ? "bobdoc-a11y__gap" : "")">
+                        @if (note.IsGap)
+                        {
+                            <strong>Known gap. </strong>
+                        }
+                        <DocText Text="@note.Text" />
+                        @foreach (var test in note.Tests)
+                        {
+                            <code class="bobdoc-chip bobdoc-chip--test">@test</code>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section class="bobdoc-section" id="errors" aria-labelledby="errors-h">
+        <h2 id="errors-h">Errors this component can raise</h2>
+        @if (_model.Errors.Count == 0)
+        {
+            <p>None of its own beyond the general ones. See the <a href="bob/error-catalog">error catalog</a>.</p>
+        }
+        else
+        {
+            <ul class="bobdoc-errors">
+                @foreach (var e in _model.Errors)
+                {
+                    <li>
+                        <a href="bob/error-catalog#@e.Entry.Code"><code>@e.Entry.Code</code></a> @e.Entry.Title.
+                        <DocText Text="@e.Because" />
+                        @if (e.Via is not null)
+                        {
+                            <span class="bobdoc-muted"> Via <a href="bob/@(DocRegistry.Components.First(c => c.Title == e.Via).Slug)">@e.Via</a>.</span>
+                        }
+                        <span class="bobdoc-muted"> @e.Entry.Cause</span>
+                    </li>
+                }
+            </ul>
+        }
+        <p class="bobdoc-muted">Any component can also raise the general errors in the <a href="bob/error-catalog">catalog</a>, for example a missing service or a throwing callback.</p>
+    </section>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public ComponentDoc Doc { get; set; } = default!;
+
+    private ComponentDocModel _model = default!;
+    private DocPageState _state = new();
+    private string _inspectorJson = "{}";
+    private Dictionary<string, string> _titles = new();
+    private string? _slug;
+
+    protected override void OnParametersSet()
+    {
+        if (_slug == Doc.Slug) return;
+        _slug = Doc.Slug;
+        _state = new DocPageState();
+        _model = DocRegistry.Model(Doc);
+        var models = new[] { _model }.Concat(_model.Composes.Select(DocRegistry.Model));
+        _inspectorJson = InspectorIndex.BuildJson(models);
+        _titles = _model.Demos.ToDictionary(d => KeyOf(d.Demo), d => d.Demo.Title);
+    }
+
+    private string KeyOf(DemoDoc demo) => $"{Doc.Slug}:{demo.SourceName}";
+}

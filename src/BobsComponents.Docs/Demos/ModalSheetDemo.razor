@@ -1,0 +1,31 @@
+@* Show is owned by your code: set it true to open and clear it in OnClose. Close covers the close button, the
+   backdrop, Escape and the browser back button. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <button type="button" class="bob-button bob-button--primary" @onclick="() => _first = true">Open a sheet</button>
+    </div>
+    <p role="status" style="margin: 0;">@_status</p>
+</div>
+
+<ModalSheet Show="_first" Title="Edit item" ShowHandle="true" OnClose="CloseFirst">
+    <label for="demo-name">Name</label>
+    <input id="demo-name" autofocus value="Squat" style="min-height: 2.75rem;" />
+    <p>Tab and Shift+Tab stay inside. Escape, the backdrop, the close button and the browser back button all close it.</p>
+    <button type="button" class="bob-button" @onclick="() => _second = true">Open a second sheet on top</button>
+</ModalSheet>
+
+<ModalSheet Show="_second" Title="Layered sheet" OnClose="() => _second = false">
+    <p>Each open sheet keeps its own focus trap and returns focus to what opened it.</p>
+</ModalSheet>
+
+@code {
+    private bool _first;
+    private bool _second;
+    private string _status = "Closed.";
+
+    private void CloseFirst()
+    {
+        _first = false;
+        _status = "Closed; focus returned to the button that opened it.";
+    }
+}

@@ -1,0 +1,11 @@
+@* Every spinner announces its label as a polite status. Only the look changes with size and custom properties. *@
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+    <LoadingSpinner />
+    <LoadingSpinner Label="Saving your changes…" Size="28" />
+    <LoadingSpinner ShowLabel="false" Label="Hidden label, still announced" />
+
+    @* Recolored and slowed down with component custom properties, set on an ancestor. *@
+    <span style="--bob-spinner-color: var(--bob-color-danger); --bob-spinner-speed: 2s;">
+        <LoadingSpinner Label="Recolored and slowed with custom properties" />
+    </span>
+</div>

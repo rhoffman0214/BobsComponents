@@ -1,0 +1,32 @@
+@* Busy is owned by your code: the button disables itself and shows a spinner while it is true, so a double click cannot fire twice. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        <AsyncButton Variant="BobButtonVariant.Primary" Busy="_saving" BusyLabel="Saving…" OnClick="Save">Save</AsyncButton>
+        <AsyncButton Variant="BobButtonVariant.Danger" Busy="_deleting" BusyLabel="Deleting…" OnClick="Delete">Delete</AsyncButton>
+        <AsyncButton Variant="BobButtonVariant.Default" Disabled="true">Disabled</AsyncButton>
+        <AsyncButton Variant="BobButtonVariant.Primary" Busy="true" BusyLabel="Always busy">Busy</AsyncButton>
+    </div>
+    <p role="status" style="margin: 0;">@_message</p>
+</div>
+
+@code {
+    private bool _saving;
+    private bool _deleting;
+    private string _message = "Click a button. Busy is owned by your code; here each action takes two seconds.";
+
+    private async Task Save()
+    {
+        _saving = true;
+        await Task.Delay(2000);
+        _saving = false;
+        _message = "Saved.";
+    }
+
+    private async Task Delete()
+    {
+        _deleting = true;
+        await Task.Delay(2000);
+        _deleting = false;
+        _message = "Deleted.";
+    }
+}

@@ -1,0 +1,21 @@
+@* The real component fills the viewport (min-height: 100dvh). An inline style on the root, passed through as an extra
+   attribute, shrinks it to fit this box; the second button shows it at full size. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <div style="border: 1px solid var(--bob-color-border); border-radius: 0.5rem; overflow: hidden;">
+        <FullScreenLoader Message="Signing you in…" style="min-height: 12rem;" />
+    </div>
+    <div>
+        <button type="button" class="bob-button" @onclick="() => _full = true">Show it full screen</button>
+    </div>
+</div>
+
+@if (_full)
+{
+    <div style="position: fixed; inset: 0; background: var(--bob-color-ground); z-index: 1500;" @onclick="() => _full = false">
+        <FullScreenLoader Message="Click anywhere to close" />
+    </div>
+}
+
+@code {
+    private bool _full;
+}

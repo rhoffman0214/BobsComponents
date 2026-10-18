@@ -1,0 +1,63 @@
+@implements IAsyncDisposable
+@inject DocsJs Js
+
+<div class="bobdoc-frame">
+    <div class="bobdoc-frame__bar">
+        <strong>@Demo.Title</strong>
+        <label class="bobdoc-frame__inspect">
+            <input type="checkbox" checked="@_inspect" @onchange="ToggleInspect" /> Inspect parts on hover
+        </label>
+    </div>
+    @if (Demo.Description is { Length: > 0 })
+    {
+        <p class="bobdoc-frame__note">@Demo.Description</p>
+    }
+    <div class="bobdoc-frame__stage" @ref="_stage" data-demo-key="@Key">
+        <DynamicComponent Type="Demo.Type" />
+    </div>
+    <details class="bobdoc-frame__source">
+        <summary>Code: <code>Demos/@(Demo.SourceName).razor</code> (the file that renders above)</summary>
+        <div class="bobdoc-code">
+            <CopyButton Text="@Source" Label="Copy code" AriaLabel="@($"Copy the code of {Demo.Title}")" />
+            <pre><code>@Source</code></pre>
+        </div>
+    </details>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public DemoDoc Demo { get; set; } = default!;
+    [Parameter, EditorRequired] public string Source { get; set; } = "";
+    [Parameter, EditorRequired] public string Key { get; set; } = "";
+    [Parameter] public string InspectorJson { get; set; } = "{}";
+    [CascadingParameter] public DocPageState? State { get; set; }
+
+    private ElementReference _stage;
+    private DotNetObjectReference<DemoFrame>? _self;
+    private bool _inspect = true;
+    private bool _ready;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        _self = DotNetObjectReference.Create(this);
+        await Js.ObserveFrameAsync(Key, _stage, _self);
+        await Js.SetInspectorAsync(Key, _inspect, InspectorJson);
+        _ready = true;
+    }
+
+    private async Task ToggleInspect(ChangeEventArgs e)
+    {
+        _inspect = e.Value is true;
+        if (_ready) await Js.SetInspectorAsync(Key, _inspect, InspectorJson);
+    }
+
+    /// <summary>Called by bobdocs.js with the stage's markup whenever it changes.</summary>
+    [JSInvokable]
+    public void OnDomChanged(string html) => State?.SetFrameHtml(Key, html);
+
+    public async ValueTask DisposeAsync()
+    {
+        _self?.Dispose();
+        await Js.DisposeFrameAsync(Key);
+    }
+}
