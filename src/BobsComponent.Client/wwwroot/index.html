@@ -23,6 +23,31 @@
 
         <!-- Scoped CSS automatically injected by Blazor -->
         <link href="BobsComponent.Client.styles.css" rel="stylesheet" />
+        <!-- Keep the BobsComponents theme in step with the site theme, so the demos look right when the site is light but the OS is dark (or the reverse). -->
+        <script>
+            (function () {
+                function luminance(c) {
+                    var m = c.match(/\d+(\.\d+)?/g);
+                    if (!m) return 1;
+                    var v = m.slice(0, 3).map(function (n) { n = n / 255; return n <= 0.03928 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4); });
+                    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+                }
+                function sync() {
+                    var root = document.documentElement;
+                    var bg = getComputedStyle(root).getPropertyValue('--bg-primary').trim();
+                    if (!bg) return;
+                    var probe = document.createElement('span');
+                    probe.style.color = bg;
+                    document.body.appendChild(probe);
+                    var lum = luminance(getComputedStyle(probe).color);
+                    probe.remove();
+                    root.setAttribute('data-bob-theme', lum < 0.4 ? 'dark' : 'light');
+                }
+                new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+                document.addEventListener('DOMContentLoaded', sync);
+                window.addEventListener('load', sync);
+            })();
+        </script>
     </head>
 
     <body>

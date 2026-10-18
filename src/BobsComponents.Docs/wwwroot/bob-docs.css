@@ -1,5 +1,5 @@
 /* Styles for the docs site pages (not part of the BobsComponents package). Classes are prefixed bobdoc- so they never
-   collide with the library's bob- names. Colors come from the library tokens, so light and dark follow the demo. */
+   collide with the library's bob- names. Page chrome uses the site's theme variables (falling back to the library tokens); the demo stage and tooltip use the library tokens so components show as they would in an app. */
 
 .bobdoc-page {
     display: flex;
@@ -8,15 +8,15 @@
     max-width: 66rem;
     margin: 0 auto;
     padding: 1.5rem 1rem 3rem;
-    color: var(--bob-color-text);
+    color: var(--text-primary, var(--bob-color-text));
 }
 
 .bobdoc-header { display: flex; flex-direction: column; gap: 0.6rem; }
 .bobdoc-header h1 { margin: 0; }
 .bobdoc-eyebrow { margin: 0; font-size: 0.9rem; }
-.bobdoc-lead { margin: 0; font-size: 1.1rem; color: var(--bob-color-text-muted); max-width: 52rem; }
-.bobdoc-meta { margin: 0; color: var(--bob-color-text-muted); font-size: 0.9rem; }
-.bobdoc-muted { color: var(--bob-color-text-muted); }
+.bobdoc-lead { margin: 0; font-size: 1.1rem; color: var(--text-secondary, var(--bob-color-text-muted)); max-width: 52rem; }
+.bobdoc-meta { margin: 0; color: var(--text-secondary, var(--bob-color-text-muted)); font-size: 0.9rem; }
+.bobdoc-muted { color: var(--text-secondary, var(--bob-color-text-muted)); }
 .bobdoc-small { font-size: 0.85rem; margin: 0.25rem 0 0; }
 .bobdoc-missing { color: var(--bob-color-danger); font-weight: 600; }
 .bobdoc-required { margin-left: 0.4rem; color: var(--bob-color-danger); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
@@ -33,11 +33,11 @@
     border: 0;
 }
 
-.bobdoc-toc { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; padding-top: 0.25rem; border-top: 1px solid var(--bob-color-border); }
+.bobdoc-toc { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; padding-top: 0.25rem; border-top: 1px solid var(--border-color, var(--bob-color-border)); }
 .bobdoc-toc a { min-height: 2rem; display: inline-flex; align-items: center; }
 
 .bobdoc-section { display: flex; flex-direction: column; gap: 0.75rem; scroll-margin-top: 4rem; }
-.bobdoc-section > h2 { margin: 0; padding-bottom: 0.25rem; border-bottom: 1px solid var(--bob-color-border); }
+.bobdoc-section > h2 { margin: 0; padding-bottom: 0.25rem; border-bottom: 1px solid var(--border-color, var(--bob-color-border)); }
 .bobdoc-h3 { margin: 0.75rem 0 0; font-size: 1.05rem; scroll-margin-top: 4rem; }
 
 .bobdoc-search { display: flex; gap: 0.5rem; max-width: 40rem; }
@@ -45,19 +45,19 @@
     flex: 1;
     min-height: 2.5rem;
     padding: 0.4rem 0.75rem;
-    border: 1px solid var(--bob-color-border);
+    border: 1px solid var(--border-color, var(--bob-color-border));
     border-radius: var(--bob-radius-sm);
-    background: var(--bob-color-surface);
-    color: var(--bob-color-text);
+    background: var(--bg-secondary, var(--bob-color-surface));
+    color: var(--text-primary, var(--bob-color-text));
     font: inherit;
 }
 .bobdoc-search__button, .bobdoc-copy__button {
     min-height: 2.5rem;
     padding: 0.3rem 0.9rem;
-    border: 1px solid var(--bob-color-border);
+    border: 1px solid var(--border-color, var(--bob-color-border));
     border-radius: var(--bob-radius-sm);
-    background: var(--bob-color-surface-alt);
-    color: var(--bob-color-text);
+    background: var(--bg-tertiary, var(--bob-color-surface-alt));
+    color: var(--text-primary, var(--bob-color-text));
     font: inherit;
     cursor: pointer;
 }
@@ -69,8 +69,8 @@
 /* Demo frame */
 .bobdoc-frame { display: flex; flex-direction: column; gap: 0.5rem; }
 .bobdoc-frame__bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.bobdoc-frame__inspect { font-size: 0.9rem; color: var(--bob-color-text-muted); display: inline-flex; align-items: center; gap: 0.4rem; }
-.bobdoc-frame__note { margin: 0; color: var(--bob-color-text-muted); font-size: 0.9rem; }
+.bobdoc-frame__inspect { font-size: 0.9rem; color: var(--text-secondary, var(--bob-color-text-muted)); display: inline-flex; align-items: center; gap: 0.4rem; }
+.bobdoc-frame__note { margin: 0; color: var(--text-secondary, var(--bob-color-text-muted)); font-size: 0.9rem; }
 .bobdoc-frame__stage {
     position: relative;
     padding: 1rem;
@@ -87,8 +87,8 @@
     padding: 0.75rem 1rem;
     overflow-x: auto;
     border-radius: var(--bob-radius-md);
-    background: var(--bob-color-surface-alt);
-    color: var(--bob-color-text);
+    background: var(--bg-tertiary, var(--bob-color-surface-alt));
+    color: var(--text-primary, var(--bob-color-text));
     font-size: 0.85rem;
     line-height: 1.45;
 }
@@ -99,11 +99,11 @@
 .bobdoc-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 .bobdoc-table th, .bobdoc-table td {
     padding: 0.45rem 0.6rem;
-    border-bottom: 1px solid var(--bob-color-border);
+    border-bottom: 1px solid var(--border-color, var(--bob-color-border));
     text-align: left;
     vertical-align: top;
 }
-.bobdoc-table thead th { background: var(--bob-color-surface-alt); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.bobdoc-table thead th { background: var(--bg-tertiary, var(--bob-color-surface-alt)); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
 .bobdoc-table tbody th { font-weight: 600; white-space: nowrap; }
 .bobdoc-table tr:target { outline: 2px solid var(--bob-color-accent); outline-offset: -2px; }
 .bobdoc-list { margin: 0; padding-left: 1.1rem; }
@@ -112,9 +112,9 @@
     display: inline-block;
     margin: 0.1rem 0.25rem 0.1rem 0;
     padding: 0.05rem 0.4rem;
-    border: 1px solid var(--bob-color-border);
+    border: 1px solid var(--border-color, var(--bob-color-border));
     border-radius: 999px;
-    background: var(--bob-color-surface-alt);
+    background: var(--bg-tertiary, var(--bob-color-surface-alt));
     font-size: 0.8rem;
     white-space: nowrap;
     text-decoration: none;
@@ -128,9 +128,9 @@
     display: flex;
     flex-direction: column;
     padding: 0.5rem;
-    border: 1px solid var(--bob-color-border);
+    border: 1px solid var(--border-color, var(--bob-color-border));
     border-radius: var(--bob-radius-md);
-    background: var(--bob-color-surface-alt);
+    background: var(--bg-tertiary, var(--bob-color-surface-alt));
     font-size: 0.85rem;
     max-height: 28rem;
     overflow: auto;
@@ -140,8 +140,8 @@
 .bobdoc-dom__row:hover, .bobdoc-dom__row:focus-visible { background: color-mix(in srgb, var(--bob-color-accent) 18%, transparent); opacity: 1; }
 .bobdoc-dom__tag { font-weight: 700; }
 .bobdoc-dom__part { padding: 0 0.4rem; border-radius: 0.25rem; background: var(--bob-color-accent); color: var(--bob-color-accent-text); font-size: 0.75rem; font-weight: 700; }
-.bobdoc-dom__attr { color: var(--bob-color-text-muted); font-size: 0.78rem; }
-.bobdoc-dom__text { color: var(--bob-color-text-muted); font-style: italic; }
+.bobdoc-dom__attr { color: var(--text-secondary, var(--bob-color-text-muted)); font-size: 0.78rem; }
+.bobdoc-dom__text { color: var(--text-secondary, var(--bob-color-text-muted)); font-style: italic; }
 
 /* Part inspector tooltip and element highlight (created by bobdocs.js) */
 .bobdoc-tip {
@@ -186,7 +186,7 @@
     margin-right: 0.4rem;
     padding: 0 0.4rem;
     border-radius: 0.25rem;
-    background: var(--bob-color-surface-alt);
+    background: var(--bg-tertiary, var(--bob-color-surface-alt));
     font-size: 0.72rem;
     font-weight: 700;
     text-align: center;
@@ -194,7 +194,7 @@
 }
 .bobdoc-breaking { padding: 0.5rem 1rem; border-left: 4px solid var(--bob-color-danger); background: color-mix(in srgb, var(--bob-color-danger) 8%, transparent); }
 .bobdoc-nobreak { margin: 0; color: var(--bob-color-success); font-weight: 600; }
-.bobdoc-entry { padding: 0.75rem 1rem; border: 1px solid var(--bob-color-border); border-radius: var(--bob-radius-md); scroll-margin-top: 4rem; }
+.bobdoc-entry { padding: 0.75rem 1rem; border: 1px solid var(--border-color, var(--bob-color-border)); border-radius: var(--bob-radius-md); scroll-margin-top: 4rem; }
 .bobdoc-entry--target,
 .bobdoc-entry:target { border-color: var(--bob-color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bob-color-accent) 30%, transparent); }
 .bobdoc-entry h3 { margin: 0 0 0.4rem; font-size: 1.05rem; }

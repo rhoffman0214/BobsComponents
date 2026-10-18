@@ -2,7 +2,7 @@
 
 <form class="bobdoc-search" role="search" @onsubmit="Submit">
     <label class="bobdoc-visually-hidden" for="@_id">Search the docs</label>
-    <input id="@_id" type="search" class="bobdoc-search__input" @bind="_query" @bind:event="oninput"
+    <input id="@_id" name="q" type="search" class="bobdoc-search__input" @bind="_query" @bind:event="oninput"
            placeholder="Search components, parts, classes, variables, effects" autocomplete="off" />
     <button type="submit" class="bobdoc-search__button">Search</button>
 </form>

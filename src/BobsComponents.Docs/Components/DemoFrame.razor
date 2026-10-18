@@ -5,7 +5,7 @@
     <div class="bobdoc-frame__bar">
         <strong>@Demo.Title</strong>
         <label class="bobdoc-frame__inspect">
-            <input type="checkbox" checked="@_inspect" @onchange="ToggleInspect" /> Inspect parts on hover
+            <input type="checkbox" name="inspect-parts" checked="@_inspect" @onchange="ToggleInspect" /> Inspect parts on hover
         </label>
     </div>
     @if (Demo.Description is { Length: > 0 })
