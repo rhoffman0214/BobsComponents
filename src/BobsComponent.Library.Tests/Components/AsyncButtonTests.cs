@@ -94,24 +94,29 @@ public class AsyncButtonTests : TestContext
         var cut = RenderComponent<AsyncButton>(parameters => parameters
             .Add(p => p.OnClickAsync, ct => tcs.Task));
 
-        // Act
-        var button = cut.Find("button");
-        await button.ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+        // Act - ClickAsync completes only when the handler does, and the handler waits on tcs, so do not await it yet.
+        var click = cut.Find("button").ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
 
         // Assert - button should be disabled during loading
-        Assert.True(button.HasAttribute("disabled"));
-        Assert.Contains("state-loading", button.ClassName);
+        cut.WaitForAssertion(() =>
+        {
+            var loading = cut.Find("button");
+            Assert.True(loading.HasAttribute("disabled"));
+            Assert.Contains("state-loading", loading.ClassName);
+        });
 
         // Complete the task
         tcs.SetResult(true);
-        await Task.Delay(100); // Give time for state update
 
-        // Assert - button should be enabled again after completion
+        // Assert - success state shows once the operation completes
         cut.WaitForAssertion(() =>
         {
             var btn = cut.Find("button");
             Assert.Contains("state-success", btn.ClassName);
         });
+
+        // The click handler also waits out the auto-reset delay, so let it finish before the test ends.
+        await click;
     }
 
     [Fact]
@@ -127,7 +132,7 @@ public class AsyncButtonTests : TestContext
             }));
 
         // Act
-        await cut.Instance.TriggerClickAsync();
+        await cut.InvokeAsync(() => cut.Instance.TriggerClickAsync());
 
         // Assert
         Assert.True(wasClicked);
@@ -143,15 +148,17 @@ public class AsyncButtonTests : TestContext
             .Add(p => p.AutoResetDelay, 0)); // Disable auto reset
 
         // Act - click button to start loading
+        // ClickAsync completes only when the handler does, and the handler waits on tcs, so do not await it before completing tcs.
         var button = cut.Find("button");
-        await button.ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
+        var click = button.ClickAsync(new Microsoft.AspNetCore.Components.Web.MouseEventArgs());
 
         // Complete the task
         tcs.SetResult(true);
+        await click;
         await Task.Delay(100);
 
         // Reset the button
-        await cut.Instance.ResetAsync();
+        await cut.InvokeAsync(() => cut.Instance.ResetAsync());
 
         // Assert
         cut.WaitForAssertion(() =>
