@@ -11,7 +11,8 @@ A test (`ContractTests`) fails the build if CSS uses a name outside this contrac
 | --- | --- |
 | Razor class library | `src/BobsComponents` (package id `BobsComponents`, namespace `BobsComponents`) |
 | Tests (bUnit + xUnit) | `src/BobsComponents.Tests` |
-| Demo and docs pages | `src/BobsComponent.Client/Pages/Bob/` |
+| Docs engine (generators, page template, demos) | `src/BobsComponents.Docs` |
+| Docs site host (routes only) | `src/BobsComponent.Client/Pages/Bob/` |
 | Legacy library (pre-contract, not prefixed) | `src/BobsComponent.Library`, kept until its components are migrated |
 
 Namespaces: `BobsComponents.Components` (UI), `BobsComponents.Errors`, `BobsComponents.DevKit`,

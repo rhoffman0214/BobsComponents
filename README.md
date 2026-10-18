@@ -317,3 +317,27 @@ dotnet run --project BobsComponent.Client --urls http://localhost:5096   # demo 
 ```
 
 The contract (naming, variables, asset paths, error codes) is in [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md).
+
+### Docs site (generated)
+
+The pages under `/bob` are generated from the code, so they cannot drift. `src/BobsComponents.Docs` reads the library's own
+CSS, component markup, XML doc comments and `error-catalog.json` (all embedded at build) and produces, per component:
+parameter, event and slot tables; the CSS reference (custom properties with defaults, parts, classes, states, global tokens);
+a DOM map of the live demo; a hover part inspector; copy-ready CSS; accessibility notes with the tests that prove them; and
+the error codes it can raise. There is also one search (`/bob/search`), the error catalog (`/bob/error-catalog`, where the
+error card's code link lands) and the changelog (`/bob/changelog`, breaking changes first).
+
+**Add a component page:**
+
+1. Build the component with `@attribute [System.ComponentModel.Description("one sentence")]`, `/// <summary>` on every
+   `[Parameter]`, its sheet in `wwwroot/css/components/` and a `data-bob-part` on each styleable element.
+2. Add `src/BobsComponents.Docs/Demos/<Name>Demo.razor`: a real, compiled demo. The code shown on the page is this file.
+3. Add `src/BobsComponents.Docs/Content/accessibility/<slug>.md`: one bullet per behavior, each ending with
+   `[test: ClassName.Method]` naming a bUnit test (or starting with `gap:` for a known gap).
+4. Add one entry to `DocRegistry.Components` (slug, title, component type, `css/components/<name>.css`, demos).
+5. Add the entry to `docs/CHANGELOG.md` (Added) and refresh `docs/api-surface.txt`
+   (`$env:BOB_UPDATE_SURFACE=1; dotnet test BobsComponents.Tests --filter ApiSurface`).
+
+The nav menu, search, error catalog "raised by" links and the inspector pick the component up from the registry.
+`dotnet test BobsComponents.Tests` fails if a library component or stylesheet is missing from the registry, a parameter has no
+XML comment, a note names a test that does not exist, or a demo renders a class or part the generated reference does not know.
