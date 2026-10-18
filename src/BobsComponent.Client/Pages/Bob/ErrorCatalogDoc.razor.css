@@ -1,7 +1,0 @@
-.catalog-page { display: flex; flex-direction: column; gap: 1.5rem; max-width: 62rem; margin: 0 auto; padding: 1.5rem; }
-.lead { color: var(--text-secondary); font-size: 1.1rem; }
-.entry { padding: 0.75rem 0; border-bottom: 1px solid var(--border-color, #d1d5db); }
-.entry:target { background: var(--bg-tertiary, #f3f4f6); }
-.entry h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
-.entry dl { display: grid; grid-template-columns: 6rem 1fr; gap: 0.25rem 1rem; margin: 0; }
-.entry dd { margin: 0; }

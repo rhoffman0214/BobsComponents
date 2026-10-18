@@ -1,3 +1,7 @@
+@implements IDisposable
+@inject NavigationManager Nav
+@inject DocsJs Js
+
 @* The error catalog page body, generated from error-catalog.json. Every entry has id="CODE", which is where the runtime
    error card's code link lands (BobOptions.Errors.CatalogBaseUrl + "#" + code). *@
 <div class="bobdoc-page">
@@ -25,7 +29,7 @@
             <h2 id="@($"origin-{group.Key}")">@group.Key.Badge()</h2>
             @foreach (var entry in group)
             {
-                <article id="@entry.Code" class="bobdoc-entry">
+                <article id="@entry.Code" class="bobdoc-entry @(entry.Code == _target ? "bobdoc-entry--target" : "")">
                     <h3><code>@entry.Code</code> @entry.Title</h3>
                     <dl>
                         <dt>Message</dt><dd><code>@entry.Message</code></dd>
@@ -54,6 +58,37 @@
     [Parameter, EditorRequired] public BobErrorCatalog Catalog { get; set; } = default!;
 
     private string _filter = "";
+    private string? _target;
+
+    protected override void OnInitialized()
+    {
+        _target = FragmentOf(Nav.Uri);
+        Nav.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        _target = FragmentOf(e.Location);
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private static string? FragmentOf(string uri)
+    {
+        var hash = uri.IndexOf('#');
+        return hash < 0 ? null : Uri.UnescapeDataString(uri[(hash + 1)..]);
+    }
+
+    // Opening the page at /bob/error-catalog#BOB-X renders the entry after the browser has already looked for it,
+    // so scroll to it once the entries exist.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _target is { Length: > 0 })
+        {
+            try { await Js.ScrollToIdAsync(_target); } catch (JSException) { }
+        }
+    }
+
+    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
 
     private bool Matches(BobErrorCatalogEntry e)
     {

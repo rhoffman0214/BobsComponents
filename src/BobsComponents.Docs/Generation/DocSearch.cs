@@ -75,7 +75,7 @@ public static partial class DocSearch
                      .GroupBy(x => (x.Rule.Target, x.Property, x.Rule.State)))
         {
             var vars = group.SelectMany(x => x.Rule.Variables).Distinct().ToList();
-            var state = group.Key.State.Length == 0 ? "" : $" ({group.Key.State})";
+            var state = group.Key.State.Length == 0 ? "" : $" when {group.Key.State}";
             entries.Add(Make(SearchKind.Effect, $"{group.Key.Property} of {group.Key.Target}{state}",
                 vars.Count == 0 ? "Fixed in the stylesheet; override with a selector." : "Set with " + string.Join(", ", vars),
                 component, href + "#css", string.Join(' ', vars)));

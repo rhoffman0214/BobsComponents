@@ -146,17 +146,15 @@
     private bool docsExpanded = false;
     private bool bobExpanded = true;
 
+    // Component links come from the docs registry, so a new component page shows up here without editing this list.
     private static readonly (string Href, string Label)[] BobLinks =
     [
         ("bob/errors", "Error model"),
         ("bob/error-catalog", "Error catalog"),
         ("bob/dev-kit", "Dev kit"),
-        ("bob/async-button", "AsyncButton"),
-        ("bob/loading-spinner", "LoadingSpinner"),
-        ("bob/full-screen-loader", "FullScreenLoader"),
-        ("bob/modal-sheet", "ModalSheet"),
-        ("bob/confirm-dialog", "ConfirmDialog"),
-        ("bob/toasts", "Toasts"),
+        ("bob/search", "Search"),
+        ("bob/changelog", "Changelog"),
+        .. BobsComponents.Docs.Generation.DocRegistry.Components.Select(c => (c.Href, c.Title)),
     ];
     private bool inputExamplesExpanded = true; // Start expanded
     private bool asyncButtonExpanded = false;

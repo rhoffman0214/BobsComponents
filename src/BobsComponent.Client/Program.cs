@@ -7,6 +7,7 @@ using System;
 using BobsComponent.Client;
 using BobsComponent.Library.Services;
 using BobsComponents;
+using BobsComponents.Docs;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -43,6 +44,7 @@ builder.Services.AddBobComponents(o =>
 });
 builder.Services.AddHttpClient("bob-demo", c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)).AddBobNetworkLogging();
 builder.Services.AddBobInteropLogging();
+builder.Services.AddBobDocs();
 
 var host = builder.Build();
 

@@ -143,7 +143,7 @@ function showTip(target, index, event) {
     const states = new Map();
     for (const { info } of infos) {
         for (const [name, prop, state] of info.vars) {
-            const label = prop + (state ? " (" + state + ")" : "");
+            const label = prop + (state ? " when " + state : "");
             vars.set(name, (vars.get(name) ? vars.get(name) + ", " : "") + label);
         }
         for (const [state, props] of info.states) states.set(state, props);

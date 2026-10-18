@@ -196,6 +196,6 @@ else
         var rows = State?.AllRows.ToList();
         if (rows is null || rows.Count == 0) return "(open the demo)";
         var where = DomMap.Placement(rows, part);
-        return where.Count == 0 ? "not in the demo right now" : string.Join(", ", where.Select(w => w == "(top level)" ? w : "in " + w));
+        return where.Count == 0 ? "not rendered in the demo right now" : string.Join(", ", where.Select(w => w == "(top level)" ? w : "in " + w));
     }
 }

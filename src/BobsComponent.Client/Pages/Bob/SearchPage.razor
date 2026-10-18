@@ -1,0 +1,8 @@
+@page "/bob/search"
+
+<PageTitle>Search - BobsComponents</PageTitle>
+<DocSearchView Query="@Q" />
+
+@code {
+    [SupplyParameterFromQuery(Name = "q")] public string? Q { get; set; }
+}

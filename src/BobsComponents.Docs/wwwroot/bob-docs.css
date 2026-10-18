@@ -195,6 +195,7 @@
 .bobdoc-breaking { padding: 0.5rem 1rem; border-left: 4px solid var(--bob-color-danger); background: color-mix(in srgb, var(--bob-color-danger) 8%, transparent); }
 .bobdoc-nobreak { margin: 0; color: var(--bob-color-success); font-weight: 600; }
 .bobdoc-entry { padding: 0.75rem 1rem; border: 1px solid var(--bob-color-border); border-radius: var(--bob-radius-md); scroll-margin-top: 4rem; }
+.bobdoc-entry--target,
 .bobdoc-entry:target { border-color: var(--bob-color-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bob-color-accent) 30%, transparent); }
 .bobdoc-entry h3 { margin: 0 0 0.4rem; font-size: 1.05rem; }
 .bobdoc-entry dl { margin: 0; }

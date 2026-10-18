@@ -134,7 +134,7 @@ public class CssReferenceTests
 
         var radius = css.Variables.Single(v => v.Name == "--bob-modal-radius");
         Assert.Contains("1.25rem 1.25rem 0 0", radius.Default);
-        Assert.Contains("min-width: 640px", radius.Default);
+        Assert.Contains("at (min-width: 640px)", radius.Default);
         Assert.Equal("1.25rem 1.25rem 0 0", radius.FirstFallback);
     }
 

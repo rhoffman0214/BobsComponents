@@ -1,0 +1,26 @@
+@page "/bob/{Slug}"
+
+@* Every component page is this one route: the registry (BobsComponents.Docs/Generation/DocRegistry.cs) maps a slug
+   to a component, its stylesheet and its demos, and ComponentDocPage generates the rest. Literal routes such as
+   /bob/errors and /bob/search win over this parameter route. *@
+@if (_doc is null)
+{
+    <PageTitle>Not found - BobsComponents</PageTitle>
+    <div class="bobdoc-page">
+        <h1>No such component</h1>
+        <p role="alert">There is no documented component called <code>@Slug</code>. See the <a href="bob">list of Bob components</a>
+           or <a href="bob/search?q=@Uri.EscapeDataString(Slug)">search for it</a>.</p>
+    </div>
+}
+else
+{
+    <ComponentDocPage Doc="_doc" @key="_doc.Slug" />
+}
+
+@code {
+    [Parameter] public string Slug { get; set; } = "";
+
+    private ComponentDoc? _doc;
+
+    protected override void OnParametersSet() => _doc = DocRegistry.Find(Slug);
+}

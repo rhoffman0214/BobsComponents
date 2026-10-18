@@ -6,7 +6,7 @@ public enum ClassKind { Block, Element, Modifier, Utility }
 public sealed record VariableUse(string Property, string Selector, string Target, string? Part, string State)
 {
     /// <summary>Plain-language effect, e.g. "background of sheet" or "color of icon when inside .bob-toast--success".</summary>
-    public string Effect => State.Length == 0 ? $"{Property} of {Target}" : $"{Property} of {Target} ({State})";
+    public string Effect => State.Length == 0 ? $"{Property} of {Target}" : $"{Property} of {Target} when {State}";
 }
 
 public sealed record CssVariableDoc(string Name, string Default, IReadOnlyList<VariableUse> Uses, IReadOnlyList<string> SetBy, string? FirstFallback = null)
@@ -176,7 +176,7 @@ public sealed class CssReference
             .Select(n => varInfos[n])
             .Zip(order, (info, name) => new CssVariableDoc(
                 name,
-                info.Fallbacks.Count == 0 ? "(unset)" : string.Join("; ", info.Fallbacks.Select(f => f.Condition is null ? f.Value : $"{f.Value} ({f.Condition})")),
+                info.Fallbacks.Count == 0 ? "(unset)" : string.Join("; ", info.Fallbacks.Select(f => f.Condition is null ? f.Value : $"{f.Value} at {f.Condition}")),
                 info.Uses,
                 info.SetBy,
                 info.Fallbacks.Count == 0 ? null : info.Fallbacks[0].Value))

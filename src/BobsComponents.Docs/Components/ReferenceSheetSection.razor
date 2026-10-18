@@ -1,0 +1,18 @@
+@* The generated CSS reference for a stylesheet whose page is hand-written (error card, dev kit). *@
+<section class="bobdoc-section" id="css" aria-labelledby="css-ref-h">
+    <h2 id="css-ref-h">CSS reference: @_sheet.Title</h2>
+    <CssReferenceView Css="_css" Title="@_sheet.Title" />
+</section>
+
+@code {
+    [Parameter, EditorRequired] public string Slug { get; set; } = "";
+
+    private ReferenceSheet _sheet = default!;
+    private CssReference _css = default!;
+
+    protected override void OnParametersSet()
+    {
+        _sheet = DocRegistry.ReferenceSheets.First(s => s.Slug == Slug);
+        _css = DocRegistry.ReferenceFor(_sheet);
+    }
+}
