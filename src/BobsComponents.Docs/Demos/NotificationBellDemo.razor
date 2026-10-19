@@ -1,0 +1,31 @@
+@using BobsComponents.Services
+@* An in-memory source. Opening the panel lists the entries and marks them read, so the badge clears. *@
+<div style="display: flex; align-items: center; gap: 1rem; justify-content: flex-end;">
+    <NotificationBell Source="_source" OnNavigate="url => _last = url" />
+</div>
+<p>@(_last is null ? "No link followed yet." : $"Would navigate to {_last}")</p>
+
+@code {
+    private string? _last;
+    private readonly DemoSource _source = new();
+
+    private sealed class DemoSource : IBobNotificationSource
+    {
+        private int _unread = 2;
+        private static readonly DateTimeOffset Base = new(2026, 10, 18, 12, 0, 0, TimeSpan.Zero);
+
+        public Task<int> GetUnreadCountAsync() => Task.FromResult(_unread);
+
+        public Task<IReadOnlyList<BobNotification>> ListAsync() => Task.FromResult<IReadOnlyList<BobNotification>>(
+        [
+            new("Sam booked Thursday 9:00.", Base.AddHours(-1), "/bookings/42"),
+            new("Your plan was updated.", Base.AddDays(-2)),
+        ]);
+
+        public Task MarkAllReadAsync()
+        {
+            _unread = 0;
+            return Task.CompletedTask;
+        }
+    }
+}

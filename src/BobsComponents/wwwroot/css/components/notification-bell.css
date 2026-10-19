@@ -1,0 +1,101 @@
+/* NotificationBell. Variables: --bob-notification-bell-badge-bg, --bob-notification-bell-badge-text,
+   --bob-notification-bell-panel-width, --bob-notification-bell-z */
+.bob-notification-bell {
+    position: relative;
+    display: inline-flex;
+}
+
+.bob-notification-bell__button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.bob-notification-bell__button:focus-visible,
+.bob-notification-bell__link:focus-visible {
+    outline: 2px solid var(--bob-color-focus);
+    outline-offset: 2px;
+}
+
+.bob-notification-bell__badge {
+    position: absolute;
+    top: 0.15rem;
+    inset-inline-end: 0.15rem;
+    min-width: 1.1rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background: var(--bob-notification-bell-badge-bg, var(--bob-color-danger));
+    color: var(--bob-notification-bell-badge-text, var(--bob-color-accent-text));
+    font-size: 0.7rem;
+    line-height: 1.1rem;
+    text-align: center;
+}
+
+.bob-notification-bell__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: var(--bob-notification-bell-z, 10);
+}
+
+.bob-notification-bell__panel {
+    position: absolute;
+    top: 100%;
+    inset-inline-end: 0;
+    z-index: calc(var(--bob-notification-bell-z, 10) + 1);
+    width: var(--bob-notification-bell-panel-width, 20rem);
+    max-width: calc(100vw - 2rem);
+    max-height: 24rem;
+    overflow-y: auto;
+    border: 1px solid var(--bob-color-border);
+    border-radius: var(--bob-radius-sm, 4px);
+    background: var(--bob-color-surface);
+    color: var(--bob-color-text);
+}
+
+.bob-notification-bell__status {
+    margin: 0;
+    padding: 0.75rem;
+    color: var(--bob-color-text-muted);
+}
+
+.bob-notification-bell__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.bob-notification-bell__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--bob-color-border);
+}
+
+.bob-notification-bell__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+}
+
+.bob-notification-bell__time {
+    color: var(--bob-color-text-muted);
+    font-size: 0.75rem;
+}

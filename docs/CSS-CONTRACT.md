@@ -296,6 +296,18 @@ Parts: `root`, `loading`, `stats`, `stat`, `scroll`, `grid`, `week`, `cell`.
 | `--bob-activity-heatmap-level-2` | 65% accent mixed into surface-alt |
 | `--bob-activity-heatmap-level-3` | `var(--bob-color-accent)` |
 
+### NotificationBell (`css/components/notification-bell.css`)
+
+Classes: `bob-notification-bell`, `bob-notification-bell__button`, `bob-notification-bell__icon`, `bob-notification-bell__badge`, `bob-notification-bell__backdrop`, `bob-notification-bell__panel`, `bob-notification-bell__status`, `bob-notification-bell__list`, `bob-notification-bell__item`, `bob-notification-bell__link`, `bob-notification-bell__message`, `bob-notification-bell__time`.
+Parts: `root`, `button`, `icon`, `badge`, `backdrop`, `panel`, `status`, `list`, `item`, `link`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-notification-bell-badge-bg` | `var(--bob-color-danger)` |
+| `--bob-notification-bell-badge-text` | `var(--bob-color-accent-text)` |
+| `--bob-notification-bell-panel-width` | `20rem` |
+| `--bob-notification-bell-z` | `10` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

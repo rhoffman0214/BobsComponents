@@ -49,6 +49,9 @@ public static class DocRegistry
 
         new("activity-heatmap", "ActivityHeatmap", typeof(ActivityHeatmap), "css/components/activity-heatmap.css",
             [new("Streaks and weeks", typeof(ActivityHeatmapDemo))]),
+
+        new("notification-bell", "NotificationBell", typeof(NotificationBell), "css/components/notification-bell.css",
+            [new("In-memory source", typeof(NotificationBellDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>
