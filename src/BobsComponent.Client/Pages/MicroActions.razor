@@ -61,7 +61,7 @@
                 <span class="legend-label">Warning - Caution actions</span>
             </div>
             <div class="legend-item">
-                <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(ct => Task.CompletedTask)" />
+                <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="FailAfterDelay" />
                 <span class="legend-label">Error - Destructive actions</span>
             </div>
         </div>
@@ -81,7 +81,7 @@
         <div class="button-grid button-grid-3">
             <AsyncButton Text="Success Style" Style="ButtonStyle.Success" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             <AsyncButton Text="Warning Style" Style="ButtonStyle.Warning" OnClickAsync="@(ct => ApiService.MediumOperationAsync())" />
-            <AsyncButton Text="Error Style" Style="ButtonStyle.Error" OnClickAsync="@(ct => ApiService.SlowOperationAsync())" />
+            <AsyncButton Text="Error Style" Style="ButtonStyle.Error" OnClickAsync="FailAfterDelay" />
         </div>
     </div>
 
@@ -284,7 +284,7 @@
         <div class="button-grid button-grid-3">
             <AsyncButton Text="Primary" Style="ButtonStyle.Primary" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
             <AsyncButton Text="Success" Style="ButtonStyle.Success" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
-            <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="@(ct => ApiService.QuickOperationAsync())" />
+            <AsyncButton Text="Error" Style="ButtonStyle.Error" OnClickAsync="FailAfterDelay" />
         </div>
     </div>
 </div>

@@ -166,6 +166,13 @@ public partial class MicroActions : IDisposable
         isLoadingData = !isLoadingData;
     }
 
+    // Buttons styled as Error demonstrate the failure path, so they run briefly and then throw.
+    private static async Task FailAfterDelay(CancellationToken ct = default)
+    {
+        await Task.Delay(800, ct);
+        throw new InvalidOperationException("Demo failure: this button always fails.");
+    }
+
     // Loading overlay demo
     private async Task HandleOverlayAction(CancellationToken ct = default)
     {
