@@ -1,0 +1,77 @@
+@inherits BobComponentBase
+@attribute [System.ComponentModel.Description("Picks a rest length in seconds: a few common lengths as toggle chips plus a free Other number box. Bind with @bind-Value; a null value shows as the default.")]
+
+@* Null shows as DefaultValue, but ValueChanged only fires with what the user chose. *@
+<fieldset class="bob-rest-picker @CssClass" data-bob-part="root" disabled="@Disabled" @attributes="AdditionalAttributes">
+    <legend class="bob-rest-picker__legend" data-bob-part="legend">@Legend</legend>
+    <div class="bob-rest-picker__chips" data-bob-part="chips">
+        @foreach (var seconds in Choices)
+        {
+            <button type="button" data-bob-part="chip" aria-pressed="@(Current == seconds ? "true" : "false")"
+                    class="bob-rest-picker__chip @(Current == seconds ? "bob-rest-picker__chip--on" : "")"
+                    @onclick="() => Choose(seconds)">@(seconds)s</button>
+        }
+        <label class="bob-rest-picker__other" data-bob-part="other">
+            <span>@OtherLabel</span>
+            <input type="number" data-bob-part="input" min="@Min" max="@Max" inputmode="numeric"
+                   value="@(Value is { } v && !Choices.Contains(v) ? v : null)" @onchange="OnOther" />
+        </label>
+    </div>
+    <p class="bob-rest-picker__hint" data-bob-part="hint">@string.Format(HintFormat, Current)</p>
+</fieldset>
+
+@code {
+    /// <summary>The chosen rest in seconds, or null when nothing was chosen yet.</summary>
+    [Parameter] public int? Value { get; set; }
+
+    /// <summary>Raised with the chosen seconds, or null when the Other box is cleared or not a positive number.</summary>
+    [Parameter] public EventCallback<int?> ValueChanged { get; set; }
+
+    /// <summary>The chip lengths, in seconds.</summary>
+    [Parameter] public IReadOnlyList<int> Choices { get; set; } = [30, 45, 60, 90, 120];
+
+    /// <summary>What a null <see cref="Value"/> counts as, in seconds.</summary>
+    [Parameter] public int DefaultValue { get; set; } = 90;
+
+    /// <summary>Smallest value the Other box accepts; typed numbers are clamped into Min..Max.</summary>
+    [Parameter] public int Min { get; set; } = 15;
+
+    /// <summary>Largest value the Other box accepts.</summary>
+    [Parameter] public int Max { get; set; } = 1800;
+
+    /// <summary>Group legend.</summary>
+    [Parameter] public string Legend { get; set; } = "Rest between sets";
+
+    /// <summary>Label of the free number box.</summary>
+    [Parameter] public string OtherLabel { get; set; } = "Other (s)";
+
+    /// <summary>Hint under the chips; {0} is the current seconds.</summary>
+    [Parameter] public string HintFormat { get; set; } = "{0}s between sets.";
+
+    /// <summary>Disables every chip and the number box.</summary>
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Extra classes on the root fieldset.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root fieldset.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private int Current => Value ?? DefaultValue;
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Choices), Choices, "a list of rest lengths in seconds");
+        check.Must(nameof(Min), Min >= 1 && Min <= Max, Min, "a value of at least 1 and no more than Max");
+        check.Must(nameof(DefaultValue), DefaultValue >= 1, DefaultValue, "a positive number of seconds");
+        check.Required(nameof(HintFormat), HintFormat, "a format string such as {0}s between sets.");
+    }
+
+    private Task Choose(int seconds) => InvokeCallbackAsync(nameof(ValueChanged), ValueChanged, (int?)seconds);
+
+    private Task OnOther(ChangeEventArgs e)
+    {
+        int? value = int.TryParse(e.Value?.ToString(), out var n) && n > 0 ? Math.Clamp(n, Min, Max) : null;
+        return InvokeCallbackAsync(nameof(ValueChanged), ValueChanged, value);
+    }
+}

@@ -234,6 +234,20 @@ Parts: `root`.
 | `--bob-elapsed-clock-font` | `var(--bob-font-mono)` |
 | `--bob-elapsed-clock-size` | `inherit` |
 
+### RestPicker (`css/components/rest-picker.css`)
+
+Classes: `bob-rest-picker`, `bob-rest-picker__legend`, `bob-rest-picker__chips`, `bob-rest-picker__chip`, `bob-rest-picker__chip--on`, `bob-rest-picker__other`, `bob-rest-picker__hint`.
+Parts: `root`, `legend`, `chips`, `chip`, `other`, `input`, `hint`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-rest-picker-gap` | `0.5rem` |
+| `--bob-rest-picker-radius` | `999px` |
+| `--bob-rest-picker-chip-bg` | `var(--bob-color-surface)` |
+| `--bob-rest-picker-chip-fg` | `var(--bob-color-text)` |
+| `--bob-rest-picker-chip-on-bg` | `var(--bob-color-accent)` |
+| `--bob-rest-picker-chip-on-fg` | `var(--bob-color-accent-text)` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

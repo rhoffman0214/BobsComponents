@@ -1,0 +1,12 @@
+@* Bind with @bind-Value. Null means nothing chosen yet, which the picker shows as the 90s default. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <RestPicker @bind-Value="_rest" />
+    <p role="status" style="margin: 0;">Stored value: @(_rest?.ToString() ?? "none (default applies)")</p>
+    <RestPicker @bind-Value="_short" Choices="@(new[] { 10, 20, 30 })" DefaultValue="20" Min="5" Max="120"
+                Legend="Rest between rounds" HintFormat="{0}s between rounds." />
+</div>
+
+@code {
+    private int? _rest;
+    private int? _short;
+}

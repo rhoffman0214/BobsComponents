@@ -194,9 +194,10 @@ public class DemoRenderTests : TestContext
         AssertKnown(doc, cut.Markup);
 
         // Open whatever the demo hides behind its first buttons (sheets, dialogs, toasts) and check again.
-        foreach (var button in cut.FindAll("button").Take(3))
+        var buttonCount = Math.Min(3, cut.FindAll("button").Count);
+        for (var i = 0; i < buttonCount; i++)
         {
-            button.Click();
+            cut.FindAll("button")[i].Click();
             AssertKnown(doc, cut.Markup);
         }
     }

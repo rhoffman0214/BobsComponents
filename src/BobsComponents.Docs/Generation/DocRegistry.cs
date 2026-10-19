@@ -34,6 +34,9 @@ public static class DocRegistry
 
         new("elapsed-clock", "ElapsedClock", typeof(ElapsedClock), "css/components/elapsed-clock.css",
             [new("Running, paused and long-running", typeof(ElapsedClockDemo))]),
+
+        new("rest-picker", "RestPicker", typeof(RestPicker), "css/components/rest-picker.css",
+            [new("Chips, other box and custom choices", typeof(RestPickerDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>
