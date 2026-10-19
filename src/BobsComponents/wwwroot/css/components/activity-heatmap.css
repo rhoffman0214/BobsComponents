@@ -1,0 +1,69 @@
+/* ActivityHeatmap. Variables: --bob-activity-heatmap-cell-size, --bob-activity-heatmap-gap,
+   --bob-activity-heatmap-level-0..3 */
+.bob-activity-heatmap__stats {
+    display: flex;
+    gap: 1.5rem;
+    margin: 0 0 0.75rem;
+}
+
+.bob-activity-heatmap__stat {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+}
+
+.bob-activity-heatmap__value {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.bob-activity-heatmap__label {
+    color: var(--bob-color-text-muted);
+    font-size: 0.75rem;
+}
+
+.bob-activity-heatmap__loading {
+    margin: 0;
+    color: var(--bob-color-text-muted);
+}
+
+.bob-activity-heatmap__scroll {
+    overflow-x: auto;
+}
+
+.bob-activity-heatmap__grid {
+    display: flex;
+    gap: var(--bob-activity-heatmap-gap, 3px);
+    width: max-content;
+}
+
+.bob-activity-heatmap__week {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bob-activity-heatmap-gap, 3px);
+}
+
+.bob-activity-heatmap__cell {
+    display: block;
+    width: var(--bob-activity-heatmap-cell-size, 0.75rem);
+    height: var(--bob-activity-heatmap-cell-size, 0.75rem);
+    border-radius: var(--bob-radius-sm, 2px);
+    background: var(--bob-activity-heatmap-level-0, var(--bob-color-surface-alt));
+}
+
+.bob-activity-heatmap__cell--level-1 {
+    background: var(--bob-activity-heatmap-level-1, color-mix(in srgb, var(--bob-color-accent) 35%, var(--bob-color-surface-alt)));
+}
+
+.bob-activity-heatmap__cell--level-2 {
+    background: var(--bob-activity-heatmap-level-2, color-mix(in srgb, var(--bob-color-accent) 65%, var(--bob-color-surface-alt)));
+}
+
+.bob-activity-heatmap__cell--level-3 {
+    background: var(--bob-activity-heatmap-level-3, var(--bob-color-accent));
+}
+
+.bob-activity-heatmap__cell--empty {
+    background: transparent;
+}

@@ -46,6 +46,9 @@ public static class DocRegistry
 
         new("progress-chart", "ProgressChart", typeof(ProgressChart), "css/components/progress-chart.css",
             [new("Series over time and the empty state", typeof(ProgressChartDemo))]),
+
+        new("activity-heatmap", "ActivityHeatmap", typeof(ActivityHeatmap), "css/components/activity-heatmap.css",
+            [new("Streaks and weeks", typeof(ActivityHeatmapDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>

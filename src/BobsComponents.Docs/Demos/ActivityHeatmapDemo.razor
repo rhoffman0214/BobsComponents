@@ -1,0 +1,14 @@
+@* Two states: a run of recent days, and still loading (null timestamps). *@
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+    <ActivityHeatmap Timestamps="_days" Today="_today" />
+    <ActivityHeatmap Timestamps="null" />
+</div>
+
+@code {
+    private static readonly DateOnly _today = new(2026, 10, 18);
+
+    private readonly DateTimeOffset[] _days = Enumerable.Range(0, 60)
+        .Where(i => i % 7 != 3)
+        .Select(i => new DateTimeOffset(_today.AddDays(-i).ToDateTime(new TimeOnly(9, 0)), TimeSpan.Zero))
+        .ToArray();
+}

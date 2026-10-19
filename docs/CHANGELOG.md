@@ -21,3 +21,4 @@ and fails when a documented name disappears without an entry in the Breaking sec
 - Second-wave component `SegmentPicker`: preset chips, custom areas and a keyboard-reorderable list bound as newline-separated text (no pointer drag).
 - Second-wave component DraftSaver: hot-saves unsaved form state (string payload) through IBobDraftStore, restores it once on load and announces the restore.
 - Second-wave component ProgressChart: dependency-free SVG line chart placed by date, with text axes and a hidden data table; no JS.
+- ActivityHeatmap: streak stats plus a multi-week activity heatmap; presentational, takes timestamps as a parameter.

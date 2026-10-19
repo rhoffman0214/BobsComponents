@@ -1,0 +1,124 @@
+@inherits BobComponentBase
+@using System.Globalization
+@attribute [System.ComponentModel.Description("Current and longest streak of active days plus a GitHub-style heatmap of the last weeks. Presentational: it takes the activity timestamps as a parameter and knows nothing about where they come from.")]
+
+@* Days are bucketed in the timestamp's own offset. Null Timestamps means still loading. *@
+<div class="bob-activity-heatmap @CssClass" data-bob-part="root" @attributes="AdditionalAttributes">
+    @if (Timestamps is null)
+    {
+        <p class="bob-activity-heatmap__loading" data-bob-part="loading" role="status">@LoadingText</p>
+    }
+    else
+    {
+        <dl class="bob-activity-heatmap__stats" data-bob-part="stats">
+            <div class="bob-activity-heatmap__stat" data-bob-part="stat">
+                <dt class="bob-activity-heatmap__label">@CurrentLabel</dt>
+                <dd class="bob-activity-heatmap__value">@_current</dd>
+            </div>
+            <div class="bob-activity-heatmap__stat" data-bob-part="stat">
+                <dt class="bob-activity-heatmap__label">@LongestLabel</dt>
+                <dd class="bob-activity-heatmap__value">@_longest</dd>
+            </div>
+            <div class="bob-activity-heatmap__stat" data-bob-part="stat">
+                <dt class="bob-activity-heatmap__label">@ActiveLabel</dt>
+                <dd class="bob-activity-heatmap__value">@_counts.Count</dd>
+            </div>
+        </dl>
+        <div class="bob-activity-heatmap__scroll" data-bob-part="scroll">
+            <div class="bob-activity-heatmap__grid" data-bob-part="grid" role="img" aria-label="@Summary">
+                @foreach (var week in _weeks)
+                {
+                    <div class="bob-activity-heatmap__week" data-bob-part="week">
+                        @foreach (var day in week)
+                        {
+                            var count = day is null ? 0 : _counts.GetValueOrDefault(day.Value);
+                            <span class="bob-activity-heatmap__cell @(day is null ? "bob-activity-heatmap__cell--empty" : $"bob-activity-heatmap__cell--level-{Level(count)}")"
+                                  data-bob-part="cell" data-level="@(day is null ? "" : Level(count).ToString())"
+                                  title="@(day is null ? null : $"{day.Value.ToString("MMM d, yyyy", CultureInfo.CurrentCulture)}: {count}")"></span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    /// <summary>One entry per activity. Null means still loading.</summary>
+    [Parameter] public IReadOnlyList<DateTimeOffset>? Timestamps { get; set; }
+
+    /// <summary>How many weeks the heatmap covers, ending with the current week.</summary>
+    [Parameter] public int Weeks { get; set; } = 18;
+
+    /// <summary>The day treated as today. Defaults to the viewer's current local date.</summary>
+    [Parameter] public DateOnly? Today { get; set; }
+
+    /// <summary>Shown while <see cref="Timestamps"/> is null.</summary>
+    [Parameter] public string LoadingText { get; set; } = "Loading activity...";
+
+    /// <summary>Label of the current streak.</summary>
+    [Parameter] public string CurrentLabel { get; set; } = "Day streak";
+
+    /// <summary>Label of the longest streak.</summary>
+    [Parameter] public string LongestLabel { get; set; } = "Longest streak";
+
+    /// <summary>Label of the active-day count.</summary>
+    [Parameter] public string ActiveLabel { get; set; } = "Active days";
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private readonly Dictionary<DateOnly, int> _counts = [];
+    private List<List<DateOnly?>> _weeks = [];
+    private int _current;
+    private int _longest;
+    private string Summary => $"{_counts.Values.Sum()} in the last {Weeks} weeks on {_counts.Count} days. {CurrentLabel}: {_current}. {LongestLabel}: {_longest}.";
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Must(nameof(Weeks), Weeks >= 1, Weeks, "at least 1");
+    }
+
+    protected override void OnParametersSet()
+    {
+        _counts.Clear();
+        _weeks = [];
+        _current = _longest = 0;
+        if (Timestamps is null || Weeks < 1) return;
+
+        foreach (var ts in Timestamps)
+        {
+            var d = DateOnly.FromDateTime(ts.DateTime);
+            _counts[d] = _counts.GetValueOrDefault(d) + 1;
+        }
+
+        var today = Today ?? DateOnly.FromDateTime(DateTime.Now);
+        var days = _counts.Keys.OrderBy(d => d).ToList();
+        if (days.Count > 0)
+        {
+            _longest = 1;
+            var run = 1;
+            for (var i = 1; i < days.Count; i++)
+            {
+                run = days[i] == days[i - 1].AddDays(1) ? run + 1 : 1;
+                _longest = Math.Max(_longest, run);
+            }
+            var cursor = _counts.ContainsKey(today) ? today : today.AddDays(-1);
+            while (_counts.ContainsKey(cursor)) { _current++; cursor = cursor.AddDays(-1); }
+        }
+
+        var endOfWeek = today.AddDays(6 - (int)today.DayOfWeek);
+        var day = endOfWeek.AddDays(-(Weeks * 7 - 1));
+        for (var w = 0; w < Weeks; w++)
+        {
+            var week = new List<DateOnly?>();
+            for (var d = 0; d < 7; d++) { week.Add(day > today ? null : day); day = day.AddDays(1); }
+            _weeks.Add(week);
+        }
+    }
+
+    private static int Level(int count) => Math.Min(count, 3);
+}

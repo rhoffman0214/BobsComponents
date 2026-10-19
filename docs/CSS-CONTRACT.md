@@ -282,6 +282,20 @@ Parts: `root`, `empty`, `grid`, `row`, `yaxis`, `plot`, `line`, `point`, `xaxis`
 | `--bob-progress-chart-axis-color` | `var(--bob-color-text-muted)` |
 | `--bob-progress-chart-axis-gutter` | `2.5rem` |
 
+### ActivityHeatmap (`css/components/activity-heatmap.css`)
+
+Classes: `bob-activity-heatmap`, `bob-activity-heatmap__stats`, `bob-activity-heatmap__stat`, `bob-activity-heatmap__value`, `bob-activity-heatmap__label`, `bob-activity-heatmap__loading`, `bob-activity-heatmap__scroll`, `bob-activity-heatmap__grid`, `bob-activity-heatmap__week`, `bob-activity-heatmap__cell`, `bob-activity-heatmap__cell--level-1`, `bob-activity-heatmap__cell--level-2`, `bob-activity-heatmap__cell--level-3`, `bob-activity-heatmap__cell--empty`.
+Parts: `root`, `loading`, `stats`, `stat`, `scroll`, `grid`, `week`, `cell`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-activity-heatmap-cell-size` | `0.75rem` |
+| `--bob-activity-heatmap-gap` | `3px` |
+| `--bob-activity-heatmap-level-0` | `var(--bob-color-surface-alt)` |
+| `--bob-activity-heatmap-level-1` | 35% accent mixed into surface-alt |
+| `--bob-activity-heatmap-level-2` | 65% accent mixed into surface-alt |
+| `--bob-activity-heatmap-level-3` | `var(--bob-color-accent)` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception
