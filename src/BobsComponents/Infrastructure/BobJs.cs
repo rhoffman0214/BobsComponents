@@ -14,6 +14,7 @@ public static class BobJs
 
     public const string FocusTrap = AssetBase + "js/focusTrap.js";
     public const string ModalHistory = AssetBase + "js/modalHistory.js";
+    public const string DevKit = AssetBase + "js/devkit.js";
 
     public static async ValueTask<IJSObjectReference> ImportAsync(IJSRuntime js, string component, string path)
     {

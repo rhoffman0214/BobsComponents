@@ -7,6 +7,7 @@ and fails when a documented name disappears without an entry in the Breaking sec
 ## 0.2.0 - 2026-10-18
 
 ### Added
+- Dev kit: a Storage tab (localStorage and sessionStorage key names and sizes, never values, with a Remove button; hide it with `DevKit.ShowStoragePanel = false`) and a Copy report button that puts a plain-text snapshot of every panel on the clipboard.
 - Second-wave component `ElapsedClock`: a self-ticking `mm:ss` / `h:mm:ss` readout (`role="timer"`) that re-renders only itself and can be paused.
 - Second-wave component `RestPicker`: rest length chips (`aria-pressed`) plus a free number box in one `fieldset`, bound with `@bind-Value`.
 - Second-wave component `SegmentPicker`: preset chips, custom areas and a keyboard-reorderable list bound as newline-separated text (no pointer drag).

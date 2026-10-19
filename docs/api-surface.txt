@@ -261,12 +261,14 @@ part ActivityHeatmap/stats
 part ActivityHeatmap/week
 part AsyncButton/root
 part BobDevKit/body
+part BobDevKit/copy-report
 part BobDevKit/count
 part BobDevKit/di-table
 part BobDevKit/empty
 part BobDevKit/entry
 part BobDevKit/panel
 part BobDevKit/root
+part BobDevKit/storage-table
 part BobDevKit/tab
 part BobDevKit/tabs
 part BobDevKit/toggle

@@ -6,6 +6,7 @@
 @attribute [BobRequiresService(typeof(BobNetworkLog))]
 @attribute [BobRequiresService(typeof(BobInteropLog))]
 @attribute [BobRequiresService(typeof(BobDiRegistry))]
+@inject IJSRuntime JS
 @attribute [System.ComponentModel.Description("A floating panel with errors, network, interop and DI checks for the page it sits on. Off outside Development unless enabled.")]
 
 @* Drop one <BobDevKit /> in the layout. Off unless Development (or Enabled=true). Shows what happened, with the exact messages. *@
@@ -31,11 +32,14 @@
                         <button type="button" role="tab" class="bob-devkit__tab" data-bob-part="tab"
                                 aria-selected="@(_tab == tab ? "true" : "false")"
                                 aria-controls="bob-devkit-tabpanel"
-                                @onclick="() => _tab = tab">@tab</button>
+                                @onclick="() => SelectTabAsync(tab)">@tab</button>
                     }
                 </div>
 
                 <div id="bob-devkit-tabpanel" class="bob-devkit__body" role="tabpanel" data-bob-part="body">
+                    <div class="bob-devkit__toolbar">
+                        <button type="button" class="bob-devkit__clear" data-bob-part="copy-report" @onclick="CopyReportAsync">@(_copied ?? "Copy report")</button>
+                    </div>
                     @if (_tab == "Errors")
                     {
                         <div class="bob-devkit__toolbar">
@@ -128,6 +132,40 @@
                         </table>
                         <button type="button" class="bob-devkit__clear" @onclick="RefreshDi">Re-check</button>
                     }
+                    else if (_tab == "Storage")
+                    {
+                        <div class="bob-devkit__toolbar">
+                            <button type="button" class="bob-devkit__clear" @onclick="LoadStorageAsync">Refresh</button>
+                        </div>
+                        @foreach (var (kind, rows) in new[] { ("local", _local), ("session", _session) })
+                        {
+                            <h4>@(kind)Storage (@rows.Count)</h4>
+                            @if (rows.Count == 0)
+                            {
+                                <p class="bob-devkit__empty" data-bob-part="empty">Empty.</p>
+                            }
+                            else
+                            {
+                                <table class="bob-devkit__table" data-bob-part="storage-table">
+                                    <thead><tr><th>Key</th><th>Characters</th><th></th></tr></thead>
+                                    <tbody>
+                                        @foreach (var row in rows)
+                                        {
+                                            <tr>
+                                                <td>@row.Key</td>
+                                                <td>@row.Chars</td>
+                                                <td><button type="button" class="bob-devkit__clear" @onclick="() => RemoveStorageKeyAsync(kind, row.Key)">Remove</button></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        }
+                        @if (_storageNote is not null)
+                        {
+                            <p class="bob-devkit__message">@_storageNote</p>
+                        }
+                    }
                 </div>
             </section>
         }
@@ -143,6 +181,14 @@
     private IReadOnlyList<BobInteropEntry> _interop = [];
     private IReadOnlyList<BobDiRequirement> _di = [];
     private bool _unobservedHooked;
+    private IReadOnlyList<StorageRow> _local = [];
+    private IReadOnlyList<StorageRow> _session = [];
+    private string? _storageNote;
+    private string? _copied;
+    private IJSObjectReference? _module;
+
+    internal sealed record StorageRow(string Key, int Chars);
+    internal sealed record StorageSnapshot(List<StorageRow> Local, List<StorageRow> Session);
 
     private IBobErrorHub? Hub;
     private BobNetworkLog? NetworkLog;
@@ -167,6 +213,7 @@
         if (dev.ShowNetworkPanel) yield return "Network";
         if (dev.ShowInteropPanel) yield return "Interop";
         if (dev.ShowDiPanel) yield return "DI";
+        if (dev.ShowStoragePanel) yield return "Storage";
     }
 
     protected override void OnParametersSet()
@@ -195,6 +242,60 @@
         }
     }
 
+    private async Task<IJSObjectReference> ModuleAsync() =>
+        _module ??= await BobJs.ImportAsync(JS, nameof(BobDevKit), BobJs.DevKit);
+
+    private async Task SelectTabAsync(string tab)
+    {
+        _tab = tab;
+        if (tab == "Storage") await LoadStorageAsync();
+    }
+
+    private async Task LoadStorageAsync()
+    {
+        _storageNote = null;
+        try
+        {
+            var module = await ModuleAsync();
+            var snap = await module.InvokeAsync<StorageSnapshot>("storage");
+            _local = snap.Local;
+            _session = snap.Session;
+        }
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException or ObjectDisposedException or BobMissingDependencyException)
+        {
+            _storageNote = ex.Message;
+        }
+    }
+
+    private async Task RemoveStorageKeyAsync(string kind, string key)
+    {
+        try
+        {
+            var module = await ModuleAsync();
+            await module.InvokeVoidAsync("removeKey", kind, key);
+        }
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException or ObjectDisposedException or BobMissingDependencyException)
+        {
+            _storageNote = ex.Message;
+            return;
+        }
+        await LoadStorageAsync();
+    }
+
+    private async Task CopyReportAsync()
+    {
+        var text = BobDevKitReport.Build(_errors, _network, _interop, _di);
+        try
+        {
+            var module = await ModuleAsync();
+            _copied = await module.InvokeAsync<bool>("copyText", text) ? "Copied" : "Copy failed";
+        }
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException or ObjectDisposedException or BobMissingDependencyException)
+        {
+            _copied = "Copy failed";
+        }
+    }
+
     private void RefreshDi() => _di = DiRegistry?.Check() ?? [];
 
     private void OnUnobserved(object? sender, UnobservedTaskExceptionEventArgs e)
@@ -212,6 +313,7 @@
 
     public void Dispose()
     {
+        _ = _module?.DisposeAsync();
         if (Hub is not null) Hub.Changed -= OnChanged;
         if (NetworkLog is not null) NetworkLog.Changed -= OnChanged;
         if (InteropLog is not null) InteropLog.Changed -= OnChanged;

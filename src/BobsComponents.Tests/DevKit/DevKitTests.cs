@@ -188,6 +188,7 @@ public class DevKitTests : TestContext
             o.DevKit.ShowNetworkPanel = false;
             o.DevKit.ShowInteropPanel = false;
             o.DevKit.ShowDiPanel = false;
+            o.DevKit.ShowStoragePanel = false;
             o.DevKit.StartOpen = true;
         });
         var cut = RenderComponent<BobDevKit>();

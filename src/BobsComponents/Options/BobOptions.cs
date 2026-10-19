@@ -58,6 +58,8 @@ public sealed class BobDevKitOptions
     public bool ShowNetworkPanel { get; set; } = true;
     public bool ShowInteropPanel { get; set; } = true;
     public bool ShowDiPanel { get; set; } = true;
+    /// <summary>Show the Storage tab (localStorage and sessionStorage key names and sizes, never values). Default true.</summary>
+    public bool ShowStoragePanel { get; set; } = true;
     /// <summary>Entries kept per panel before the oldest is dropped. Default 200.</summary>
     public int MaxEntries { get; set; } = 200;
     /// <summary>Characters of a request/response body kept. Default 4096.</summary>

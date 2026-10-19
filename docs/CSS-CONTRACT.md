@@ -213,7 +213,7 @@ The root also carries `data-bob-origin` and `data-bob-code`.
 Classes: `bob-devkit`, `bob-devkit--{bottom-right|bottom-left|top-right|top-left}`, `bob-devkit__toggle`, `__count`,
 `__panel`, `__tabs`, `__tab`, `__body`, `__toolbar`, `__empty`, `__clear`, `__entry`, `__entry--failed`, `__method`,
 `__url`, `__time`, `__message`, `__table`, `__row--missing`.
-Parts: `root`, `toggle`, `count`, `panel`, `tabs`, `tab`, `body`, `empty`, `entry`, `di-table`.
+Parts: `root`, `toggle`, `count`, `panel`, `tabs`, `tab`, `body`, `empty`, `entry`, `di-table`, `copy-report`, `storage-table`.
 
 | Property | Default |
 | --- | --- |
