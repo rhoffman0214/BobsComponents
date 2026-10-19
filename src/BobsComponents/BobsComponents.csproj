@@ -8,8 +8,8 @@
     <PackageId>BobsComponents</PackageId>
     <Title>BobsComponents</Title>
     <Description>Bob's Blazor component library: prefixed, layered CSS; an error system that always shows the exact cause; a drop-in dev kit.</Description>
-    <Version>0.1.0</Version>
-    <PackageVersion>0.1.0</PackageVersion>
+    <Version>0.2.0</Version>
+    <PackageVersion>0.2.0</PackageVersion>
     <!-- Private package for now: nothing is published anywhere. -->
     <IsPackable>true</IsPackable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
