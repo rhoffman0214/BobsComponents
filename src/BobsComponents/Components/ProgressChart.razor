@@ -1,0 +1,106 @@
+@inherits BobComponentBase
+@using System.Globalization
+@attribute [System.ComponentModel.Description("A small dependency-free SVG line chart for a series over time, such as weight or the best set per session. Needs at least two points; the data is also available to assistive technology as a table.")]
+
+@* Hand-rolled SVG, no charting library. Axis labels are HTML next to the SVG so the plot can stretch without
+   distorting text. Points are placed by date, so uneven gaps look uneven. *@
+<div class="bob-progress-chart @CssClass" data-bob-part="root" @attributes="AdditionalAttributes">
+    @if (Points.Count < 2)
+    {
+        <p class="bob-progress-chart__empty" data-bob-part="empty">@EmptyText</p>
+    }
+    else
+    {
+        <div class="bob-progress-chart__grid" data-bob-part="grid">
+            <div class="bob-progress-chart__row" data-bob-part="row">
+            <div class="bob-progress-chart__yaxis" data-bob-part="yaxis">
+                <span>@Format(_max)</span>
+                <span>@Format(_min)</span>
+            </div>
+            <svg class="bob-progress-chart__svg" data-bob-part="plot" viewBox="0 0 @ViewWidth @ViewHeight"
+                 preserveAspectRatio="none" role="img" aria-label="@Label">
+                <polyline class="bob-progress-chart__line" data-bob-part="line" points="@_polyline" fill="none" stroke-width="2" vector-effect="non-scaling-stroke" />
+                @foreach (var (x, y) in _coords)
+                {
+                    <circle class="bob-progress-chart__point" data-bob-part="point" cx="@F(x)" cy="@F(y)" r="3" vector-effect="non-scaling-stroke" />
+                }
+            </svg>
+            </div>
+            <div class="bob-progress-chart__xaxis" data-bob-part="xaxis">
+                <span>@_sorted[0].At.ToString(DateFormat, CultureInfo.CurrentCulture)</span>
+                <span>@_sorted[^1].At.ToString(DateFormat, CultureInfo.CurrentCulture)</span>
+            </div>
+        </div>
+        <table class="bob-visually-hidden" data-bob-part="table">
+            <caption>@Label</caption>
+            <thead><tr><th scope="col">Date</th><th scope="col">Value</th></tr></thead>
+            <tbody>
+                @foreach (var p in _sorted)
+                {
+                    <tr><td>@p.At.ToString(DateFormat, CultureInfo.CurrentCulture)</td><td>@Format(p.Value)</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private const double ViewWidth = 300;
+    private const double ViewHeight = 120;
+
+    /// <summary>The series. Order does not matter; points are sorted by date.</summary>
+    [Parameter, EditorRequired] public IReadOnlyList<BobChartPoint> Points { get; set; } = [];
+
+    /// <summary>Accessible name of the chart, also the caption of the data table.</summary>
+    [Parameter] public string Label { get; set; } = "Progress chart";
+
+    /// <summary>Shown instead of the chart when there are fewer than two points.</summary>
+    [Parameter] public string EmptyText { get; set; } = "Not enough data yet.";
+
+    /// <summary>Format string for the dates on the x axis and in the table.</summary>
+    [Parameter] public string DateFormat { get; set; } = "MMM d";
+
+    /// <summary>Format string for values.</summary>
+    [Parameter] public string ValueFormat { get; set; } = "0.##";
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private List<BobChartPoint> _sorted = [];
+    private List<(double X, double Y)> _coords = [];
+    private string _polyline = "";
+    private double _min;
+    private double _max;
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Points), Points, "a list of BobChartPoint (it may be empty)");
+    }
+
+    protected override void OnParametersSet()
+    {
+        _sorted = Points.OrderBy(p => p.At).ToList();
+        _coords = [];
+        _polyline = "";
+        if (_sorted.Count < 2) return;
+
+        _min = _sorted.Min(p => p.Value);
+        _max = _sorted.Max(p => p.Value);
+        var span = _max - _min;
+        var first = _sorted[0].At.UtcTicks;
+        var total = (double)(_sorted[^1].At.UtcTicks - first);
+        foreach (var p in _sorted)
+        {
+            var x = total <= 0 ? 0 : (p.At.UtcTicks - first) / total * ViewWidth;
+            var y = span <= 0 ? ViewHeight / 2 : ViewHeight - (p.Value - _min) / span * ViewHeight;
+            _coords.Add((x, y));
+        }
+        _polyline = string.Join(' ', _coords.Select(c => $"{F(c.X)},{F(c.Y)}"));
+    }
+
+    private string Format(double v) => v.ToString(ValueFormat, CultureInfo.CurrentCulture);
+    private static string F(double v) => v.ToString("0.##", CultureInfo.InvariantCulture);
+}

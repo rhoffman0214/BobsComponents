@@ -269,6 +269,19 @@ Parts: `status`.
 
 DraftSaver has no custom properties; its only element is a visually hidden status line.
 
+### ProgressChart (`css/components/progress-chart.css`)
+
+Classes: `bob-progress-chart`, `bob-progress-chart__grid`, `bob-progress-chart__row`, `bob-progress-chart__yaxis`, `bob-progress-chart__svg`, `bob-progress-chart__line`, `bob-progress-chart__point`, `bob-progress-chart__xaxis`, `bob-progress-chart__empty`.
+Parts: `root`, `empty`, `grid`, `row`, `yaxis`, `plot`, `line`, `point`, `xaxis`, `table`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-progress-chart-height` | `8rem` |
+| `--bob-progress-chart-line` | `var(--bob-color-accent)` |
+| `--bob-progress-chart-point` | `var(--bob-color-accent)` |
+| `--bob-progress-chart-axis-color` | `var(--bob-color-text-muted)` |
+| `--bob-progress-chart-axis-gutter` | `2.5rem` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

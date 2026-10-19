@@ -1,0 +1,51 @@
+/* ProgressChart. Variables: --bob-progress-chart-height, --bob-progress-chart-line, --bob-progress-chart-point,
+   --bob-progress-chart-axis-color, --bob-progress-chart-axis-gutter */
+.bob-progress-chart__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.bob-progress-chart__row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.bob-progress-chart__yaxis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: var(--bob-progress-chart-axis-color, var(--bob-color-text-muted));
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.bob-progress-chart__svg {
+    flex: 1;
+    min-width: 0;
+    height: var(--bob-progress-chart-height, 8rem);
+    overflow: visible;
+    border-left: 1px solid var(--bob-color-border);
+    border-bottom: 1px solid var(--bob-color-border);
+}
+
+.bob-progress-chart__line {
+    stroke: var(--bob-progress-chart-line, var(--bob-color-accent));
+}
+
+.bob-progress-chart__point {
+    fill: var(--bob-progress-chart-point, var(--bob-color-accent));
+}
+
+.bob-progress-chart__xaxis {
+    display: flex;
+    padding-inline-start: var(--bob-progress-chart-axis-gutter, 2.5rem);
+    justify-content: space-between;
+    color: var(--bob-progress-chart-axis-color, var(--bob-color-text-muted));
+    font-size: 0.75rem;
+}
+
+.bob-progress-chart__empty {
+    margin: 0;
+    color: var(--bob-color-text-muted);
+}

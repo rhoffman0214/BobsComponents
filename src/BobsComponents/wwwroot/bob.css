@@ -22,3 +22,4 @@
 @import url("css/components/rest-picker.css") layer(bob.components);
 @import url("css/components/segment-picker.css") layer(bob.components);
 @import url("css/components/draft-saver.css") layer(bob.components);
+@import url("css/components/progress-chart.css") layer(bob.components);
