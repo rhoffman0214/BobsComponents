@@ -9,7 +9,7 @@
     @foreach (var release in _releases)
     {
         <section class="bobdoc-section" aria-labelledby="@("v-" + release.Version)">
-            <h2 id="@("v-" + release.Version)">@release.Version @if (release.Date is not null){<span class="bobdoc-muted"> @release.Date</span>}</h2>
+            <h2 id="@("v-" + release.Version)">@release.Version@if (release.Date is not null){<span class="bobdoc-muted">@(" " + release.Date)</span>}</h2>
             @if (!release.HasBreaking)
             {
                 <p class="bobdoc-nobreak">No breaking changes in this release.</p>
