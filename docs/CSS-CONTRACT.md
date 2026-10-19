@@ -223,6 +223,17 @@ Parts: `root`, `toggle`, `count`, `panel`, `tabs`, `tab`, `body`, `empty`, `entr
 | `--bob-devkit-width` | `34rem` |
 | `--bob-devkit-height` | `24rem` |
 
+### ElapsedClock (`css/components/elapsed-clock.css`)
+
+Classes: `bob-elapsed-clock`.
+Parts: `root`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-elapsed-clock-color` | `inherit` |
+| `--bob-elapsed-clock-font` | `var(--bob-font-mono)` |
+| `--bob-elapsed-clock-size` | `inherit` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

@@ -1,0 +1,54 @@
+@inherits BobComponentBase
+@implements IDisposable
+@attribute [System.ComponentModel.Description("A running elapsed-time readout (mm:ss, or h:mm:ss after an hour) that ticks on its own, so only this one element re-renders each second.")]
+
+@* The tick re-renders only this component, never the page around it. role="timer" with aria-live="off" keeps screen
+   readers quiet; a per-second announcement would be noise. *@
+<span class="bob-elapsed-clock @CssClass" role="timer" aria-live="off" data-bob-part="root" @attributes="AdditionalAttributes">@Format(_elapsed)</span>
+
+@code {
+    /// <summary>The moment the clock counts from.</summary>
+    [Parameter, EditorRequired] public DateTimeOffset Since { get; set; }
+
+    /// <summary>Freezes the readout while true. Move <see cref="Since"/> forward by the paused time when you resume.</summary>
+    [Parameter] public bool Paused { get; set; }
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private TimeProvider Clock => OptionalService<TimeProvider>() ?? TimeProvider.System;
+    private ITimer? _timer;
+    private TimeSpan _elapsed;
+    private bool _disposed;
+
+    protected override void OnParametersSet()
+    {
+        if (!Paused) _elapsed = Clamp(Clock.GetUtcNow() - Since);
+    }
+
+    protected override void OnInitialized()
+    {
+        _timer = Clock.CreateTimer(_ => _ = InvokeAsync(Tick), null, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+    }
+
+    private void Tick()
+    {
+        if (_disposed || Paused) return;
+        _elapsed = Clamp(Clock.GetUtcNow() - Since);
+        StateHasChanged();
+    }
+
+    private static TimeSpan Clamp(TimeSpan value) => value < TimeSpan.Zero ? TimeSpan.Zero : value;
+
+    private static string Format(TimeSpan ts) =>
+        ts.TotalHours >= 1 ? $"{(int)ts.TotalHours}:{ts.Minutes:00}:{ts.Seconds:00}" : $"{ts.Minutes:00}:{ts.Seconds:00}";
+
+    public void Dispose()
+    {
+        _disposed = true;
+        _timer?.Dispose();
+    }
+}

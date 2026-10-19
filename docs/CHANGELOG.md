@@ -16,3 +16,4 @@ and fails when a documented name disappears without an entry in the Breaking sec
 - Docs site: component pages generated from the code (parameters from `[Parameter]` and XML docs, CSS reference from the
   stylesheets, DOM map from the rendered demo, accessibility notes with the tests that prove them), a part inspector,
   one search over components, parts, classes, variables and effects, copy-ready CSS snippets, the error catalog and this changelog.
+- Second-wave component `ElapsedClock`: a self-ticking `mm:ss` / `h:mm:ss` readout (`role="timer"`) that re-renders only itself and can be paused.

@@ -1,0 +1,7 @@
+/* ElapsedClock. Variables: --bob-elapsed-clock-color, --bob-elapsed-clock-font, --bob-elapsed-clock-size */
+.bob-elapsed-clock {
+    font-family: var(--bob-elapsed-clock-font, var(--bob-font-mono));
+    font-size: var(--bob-elapsed-clock-size, inherit);
+    color: var(--bob-elapsed-clock-color, inherit);
+    font-variant-numeric: tabular-nums;
+}

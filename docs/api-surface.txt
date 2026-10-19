@@ -32,6 +32,7 @@ class bob-devkit__time
 class bob-devkit__toggle
 class bob-devkit__toolbar
 class bob-devkit__url
+class bob-elapsed-clock
 class bob-error-card
 class bob-error-card--origin-callback
 class bob-error-card--origin-data-shape
@@ -76,6 +77,7 @@ component AsyncButton
 component BobDevKit
 component BobErrorCard
 component ConfirmDialog
+component ElapsedClock
 component FullScreenLoader
 component LoadingSpinner
 component ModalSheet
@@ -115,6 +117,10 @@ param ConfirmDialog.OnCancel
 param ConfirmDialog.OnConfirm
 param ConfirmDialog.Show
 param ConfirmDialog.Title
+param ElapsedClock.AdditionalAttributes
+param ElapsedClock.CssClass
+param ElapsedClock.Paused
+param ElapsedClock.Since
 param FullScreenLoader.AdditionalAttributes
 param FullScreenLoader.Message
 param LoadingSpinner.AdditionalAttributes
@@ -162,6 +168,7 @@ part ConfirmDialog/cancel
 part ConfirmDialog/confirm
 part ConfirmDialog/message
 part ConfirmDialog/root
+part ElapsedClock/root
 part FullScreenLoader/root
 part FullScreenLoader/text
 part LoadingSpinner/icon
@@ -192,6 +199,9 @@ var --bob-devkit-fg
 var --bob-devkit-height
 var --bob-devkit-width
 var --bob-devkit-z
+var --bob-elapsed-clock-color
+var --bob-elapsed-clock-font
+var --bob-elapsed-clock-size
 var --bob-error-card-accent
 var --bob-error-card-bg
 var --bob-error-card-border

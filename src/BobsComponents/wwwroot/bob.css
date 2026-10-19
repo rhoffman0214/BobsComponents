@@ -18,3 +18,4 @@
 @import url("css/components/toast.css") layer(bob.components);
 @import url("css/components/error-card.css") layer(bob.components);
 @import url("css/components/devkit.css") layer(bob.components);
+@import url("css/components/elapsed-clock.css") layer(bob.components);

@@ -31,6 +31,9 @@ public static class DocRegistry
         new("toasts", "Toasts", typeof(ToastHost), "css/components/toast.css",
             [new("Levels and durations", typeof(ToastsDemo))],
             Related: [typeof(IBobToastService)]),
+
+        new("elapsed-clock", "ElapsedClock", typeof(ElapsedClock), "css/components/elapsed-clock.css",
+            [new("Running, paused and long-running", typeof(ElapsedClockDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>

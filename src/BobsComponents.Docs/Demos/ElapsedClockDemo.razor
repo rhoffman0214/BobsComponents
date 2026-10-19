@@ -1,0 +1,22 @@
+@* Since is the start moment. Pausing freezes the readout; on resume move Since forward by the paused time. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <p style="margin: 0;">Elapsed: <ElapsedClock Since="_since" Paused="_paused" /></p>
+    <p style="margin: 0;">Started 75 minutes ago: <ElapsedClock Since="_longAgo" /></p>
+    <div>
+        <button type="button" class="bob-button" @onclick="Toggle">@(_paused ? "Resume" : "Pause")</button>
+    </div>
+</div>
+
+@code {
+    private DateTimeOffset _since = DateTimeOffset.UtcNow;
+    private readonly DateTimeOffset _longAgo = DateTimeOffset.UtcNow.AddMinutes(-75);
+    private bool _paused;
+    private DateTimeOffset _pausedAt;
+
+    private void Toggle()
+    {
+        if (!_paused) _pausedAt = DateTimeOffset.UtcNow;
+        else _since += DateTimeOffset.UtcNow - _pausedAt;
+        _paused = !_paused;
+    }
+}
