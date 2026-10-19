@@ -244,3 +244,24 @@
         display: block;
     }
 }
+
+/* The bootstrap toggler icon disappears on the light theme: draw it with currentColor. */
+.navbar-toggler {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border-radius: 10px;
+    color: var(--text-primary);
+}
+
+.navbar-toggler-icon {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: currentColor;
+    background-image: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M4 6h16M4 12h16M4 18h16'/%3E%3C/svg%3E") center / contain no-repeat;
+}

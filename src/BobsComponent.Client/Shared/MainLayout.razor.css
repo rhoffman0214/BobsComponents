@@ -92,3 +92,17 @@ main {
         padding-right: 0.5rem !important;
     }
 }
+
+/* Blazor's FocusOnNavigate focuses the page h1 for screen readers; it should not draw a ring. */
+.content ::deep h1:focus,
+.content ::deep h1:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Keep the floating Dev kit button from covering the last row of a page. */
+.content {
+    padding-bottom: 5.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
