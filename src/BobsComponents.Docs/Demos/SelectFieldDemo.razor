@@ -1,0 +1,27 @@
+@* Bind the chosen value with @bind-Value. The Label is visible and also names the select for screen readers. *@
+<div style="display: flex; flex-direction: column; gap: 1rem; max-width: 20rem;">
+    <SelectField Label="Size" Options="_sizes" Placeholder="Choose a size" @bind-Value="_size" />
+    <p style="margin: 0;">Chosen: <strong>@(_size ?? "nothing yet")</strong></p>
+
+    <SelectField Label="Plan" Options="_sizes" Value="m" Disabled="true" />
+    <SelectField Label="Country" Options="_countries" Required="true" Placeholder="Select a country" />
+</div>
+
+@code {
+    private string? _size;
+
+    private readonly IReadOnlyList<SelectField.SelectOption> _sizes =
+    [
+        new("s", "Small"),
+        new("m", "Medium"),
+        new("l", "Large"),
+        new("xl", "Extra large (sold out)", Disabled: true),
+    ];
+
+    private readonly IReadOnlyList<SelectField.SelectOption> _countries =
+    [
+        new("us", "United States"),
+        new("ca", "Canada"),
+        new("mx", "Mexico"),
+    ];
+}

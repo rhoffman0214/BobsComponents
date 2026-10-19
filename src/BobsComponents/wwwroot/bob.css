@@ -25,3 +25,6 @@
 @import url("css/components/progress-chart.css") layer(bob.components);
 @import url("css/components/activity-heatmap.css") layer(bob.components);
 @import url("css/components/notification-bell.css") layer(bob.components);
+@import url("css/components/progress.css") layer(bob.components);
+@import url("css/components/skeleton.css") layer(bob.components);
+@import url("css/components/select.css") layer(bob.components);

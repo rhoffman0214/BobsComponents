@@ -15,6 +15,9 @@ and fails when a documented name disappears without an entry in the Breaking sec
 - Second-wave component ProgressChart: dependency-free SVG line chart placed by date, with text axes and a hidden data table; no JS.
 - ActivityHeatmap: streak stats plus a multi-week activity heatmap; presentational, takes timestamps as a parameter.
 - NotificationBell: bell button with unread badge and a notification panel, fed by IBobNotificationSource.
+- Migrated from the legacy library: ProgressBar (determinate or indeterminate `role="progressbar"`, clamped, with variants).
+- Migrated from the legacy library: SkeletonLoader (one `role="status"` group of aria-hidden shapes, sanitized sizes).
+- Migrated from the legacy library: SelectField (native select inside a visible label, typed options, `@bind-Value`).
 
 ## 0.1.0 - 2026-10-18
 

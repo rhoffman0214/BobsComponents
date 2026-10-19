@@ -1,0 +1,45 @@
+@inherits BobComponentBase
+@attribute [System.ComponentModel.Description("A determinate progress bar (0 to 100) with a name for screen readers, or an indeterminate one when no value is given.")]
+
+@* role="progressbar" carries the name and the value; the percent text is decoration, so it is hidden from assistive tech.
+   A null Value drops aria-valuenow, which is how an indeterminate bar is announced. *@
+<div class="bob-progress bob-progress--@Variant.ToString().ToLowerInvariant() @(Value is null ? "bob-progress--indeterminate" : "") @CssClass"
+     role="progressbar" aria-label="@Label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="@Now"
+     data-bob-part="root" @attributes="AdditionalAttributes">
+    <div class="bob-progress__fill" data-bob-part="fill" style="@FillStyle"></div>
+    @if (ShowValue && Value is not null)
+    {
+        <span class="bob-progress__value" data-bob-part="value" aria-hidden="true">@Now%</span>
+    }
+</div>
+
+@code {
+    /// <summary>Progress from 0 to 100; values outside the range are clamped. Null shows an indeterminate bar.</summary>
+    [Parameter] public double? Value { get; set; }
+
+    /// <summary>The name screen readers announce, such as "Upload progress".</summary>
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+
+    /// <summary>Show the percentage as text on the bar. Ignored while indeterminate.</summary>
+    [Parameter] public bool ShowValue { get; set; } = true;
+
+    /// <summary>The fill color.</summary>
+    [Parameter] public BobProgressVariant Variant { get; set; } = BobProgressVariant.Default;
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private int? Now => Value is { } v ? (int)Math.Round(Math.Clamp(v, 0, 100)) : null;
+
+    private string? FillStyle => Now is { } n ? $"width: {n}%" : null;
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Label), Label, "a name for the bar so it is announced");
+        check.Defined(nameof(Variant), Variant);
+        check.Must(nameof(Value), Value is null || !double.IsNaN(Value.Value), Value, "a number from 0 to 100, or null for indeterminate");
+    }
+}

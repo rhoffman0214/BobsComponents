@@ -1,0 +1,64 @@
+@inherits BobComponentBase
+@attribute [System.ComponentModel.Description("Grey placeholder shapes shown while content loads. The group is one polite status, so a screen reader hears a single loading message instead of the shapes.")]
+
+@* The shapes are decoration (aria-hidden); the group's visually hidden label is the one thing announced.
+   Width, Height and Radius reach CSS only after Sanitize, as custom properties rather than raw style text. *@
+<div class="bob-skeleton-group @CssClass" role="status" aria-busy="true" data-bob-part="root" @attributes="AdditionalAttributes">
+    <span class="bob-visually-hidden" data-bob-part="label">@Label</span>
+    @for (var i = 0; i < Count; i++)
+    {
+        <div class="bob-skeleton bob-skeleton--@Shape.ToString().ToLowerInvariant()" data-bob-part="shape" aria-hidden="true" style="@ShapeStyle"></div>
+    }
+</div>
+
+@code {
+    /// <summary>The kind of shape: a block, a circle (avatar) or a line of text.</summary>
+    [Parameter] public BobSkeletonShape Shape { get; set; } = BobSkeletonShape.Rectangle;
+
+    /// <summary>A CSS length such as <c>100%</c> or <c>12rem</c>. Anything but letters, digits, <c>%</c>, <c>.</c> and <c>-</c> is removed.</summary>
+    [Parameter] public string Width { get; set; } = "100%";
+
+    /// <summary>A CSS length such as <c>1.25rem</c>. Sanitized like <see cref="Width"/>.</summary>
+    [Parameter] public string Height { get; set; } = "1.25rem";
+
+    /// <summary>A CSS length for rounded corners on rectangles. Sanitized like <see cref="Width"/>. Null uses the stylesheet default.</summary>
+    [Parameter] public string? Radius { get; set; }
+
+    /// <summary>How many shapes to render (1 to 100).</summary>
+    [Parameter] public int Count { get; set; } = 1;
+
+    /// <summary>Text announced while loading, hidden from view.</summary>
+    [Parameter] public string Label { get; set; } = "Loading…";
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string ShapeStyle
+    {
+        get
+        {
+            var style = $"--bob-skeleton-width: {Sanitize(Width, "100%")}; --bob-skeleton-height: {Sanitize(Height, "1.25rem")};";
+            if (Radius is { Length: > 0 } && Shape == BobSkeletonShape.Rectangle)
+                style += $" --bob-skeleton-radius: {Sanitize(Radius, "0")};";
+            return style;
+        }
+    }
+
+    /// <summary>Keeps only characters a CSS length needs, so a parameter can never inject extra declarations.</summary>
+    internal static string Sanitize(string? value, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return fallback;
+        var clean = new string(value.Where(c => char.IsAsciiLetterOrDigit(c) || c is '%' or '.' or '-').ToArray());
+        return clean.Length == 0 ? fallback : clean;
+    }
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Range(nameof(Count), Count, 1, 100);
+        check.Defined(nameof(Shape), Shape);
+        check.Required(nameof(Label), Label, "non-empty text so the wait is announced");
+    }
+}

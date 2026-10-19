@@ -1,0 +1,43 @@
+/* ProgressBar. Variables: --bob-progress-height, --bob-progress-track, --bob-progress-fill, --bob-progress-radius,
+   --bob-progress-value-fg, --bob-progress-speed */
+.bob-progress {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--bob-progress-height, 1.25rem);
+    overflow: hidden;
+    border-radius: var(--bob-progress-radius, 999px);
+    background: var(--bob-progress-track, var(--bob-color-surface-alt));
+    border: 1px solid var(--bob-color-border);
+}
+
+.bob-progress__fill {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    background: var(--bob-progress-fill, var(--bob-color-accent));
+    transition: width var(--bob-duration) ease;
+}
+
+.bob-progress__value {
+    position: relative;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bob-progress-value-fg, var(--bob-color-text));
+    font-variant-numeric: tabular-nums;
+}
+
+.bob-progress--success { --bob-progress-fill: var(--bob-color-success); }
+.bob-progress--warning { --bob-progress-fill: var(--bob-color-warning); }
+.bob-progress--danger { --bob-progress-fill: var(--bob-color-danger); }
+
+.bob-progress--indeterminate .bob-progress__fill {
+    width: 40%;
+    animation: bob-progress-slide var(--bob-progress-speed, 1.4s) ease-in-out infinite;
+}
+
+@keyframes bob-progress-slide {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(250%); }
+}

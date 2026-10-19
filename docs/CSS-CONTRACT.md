@@ -308,6 +308,50 @@ Parts: `root`, `button`, `icon`, `badge`, `backdrop`, `panel`, `status`, `list`,
 | `--bob-notification-bell-panel-width` | `20rem` |
 | `--bob-notification-bell-z` | `10` |
 
+### ProgressBar (`css/components/progress.css`)
+
+Classes: `bob-progress`, `bob-progress--success`, `bob-progress--warning`, `bob-progress--danger`, `bob-progress--indeterminate`, `bob-progress__fill`, `bob-progress__value`.
+Parts: `root`, `fill`, `value`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-progress-height` | `1.25rem` |
+| `--bob-progress-radius` | `999px` |
+| `--bob-progress-track` | `var(--bob-color-surface-alt)` |
+| `--bob-progress-fill` | `var(--bob-color-accent)` |
+| `--bob-progress-value-fg` | `var(--bob-color-text)` |
+| `--bob-progress-speed` | `1.4s` |
+
+### SkeletonLoader (`css/components/skeleton.css`)
+
+Classes: `bob-skeleton-group`, `bob-skeleton`, `bob-skeleton--circle`, `bob-skeleton--text`, `bob-skeleton--rectangle`.
+Parts: `root`, `label`, `shape`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-skeleton-gap` | `0.5rem` |
+| `--bob-skeleton-width` | `100%` |
+| `--bob-skeleton-height` | `1.25rem` |
+| `--bob-skeleton-radius` | `var(--bob-radius-sm)` |
+| `--bob-skeleton-bg` | `var(--bob-color-surface-alt)` |
+| `--bob-skeleton-highlight` | `var(--bob-color-border)` |
+| `--bob-skeleton-speed` | `1.5s` |
+
+### SelectField (`css/components/select.css`)
+
+Classes: `bob-select`, `bob-select--disabled`, `bob-select__label`, `bob-select__control`.
+Parts: `root`, `label`, `control`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-select-gap` | `0.35rem` |
+| `--bob-select-label-fg` | `var(--bob-color-text)` |
+| `--bob-select-min-height` | `2.75rem` |
+| `--bob-select-border` | `var(--bob-color-border)` |
+| `--bob-select-radius` | `var(--bob-radius-md)` |
+| `--bob-select-bg` | `var(--bob-color-surface)` |
+| `--bob-select-fg` | `var(--bob-color-text)` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

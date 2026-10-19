@@ -1,0 +1,32 @@
+/* SelectField. Variables: --bob-select-gap, --bob-select-bg, --bob-select-fg, --bob-select-border, --bob-select-radius,
+   --bob-select-min-height, --bob-select-label-fg */
+.bob-select {
+    display: flex;
+    flex-direction: column;
+    gap: var(--bob-select-gap, 0.35rem);
+}
+
+.bob-select__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--bob-select-label-fg, var(--bob-color-text));
+}
+
+.bob-select__control {
+    min-height: var(--bob-select-min-height, 2.75rem);
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--bob-select-border, var(--bob-color-border));
+    border-radius: var(--bob-select-radius, var(--bob-radius-md));
+    background: var(--bob-select-bg, var(--bob-color-surface));
+    color: var(--bob-select-fg, var(--bob-color-text));
+    font: inherit;
+}
+
+.bob-select--disabled .bob-select__label {
+    color: var(--bob-color-text-muted);
+}
+
+.bob-select__control:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

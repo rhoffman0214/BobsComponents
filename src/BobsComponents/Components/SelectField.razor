@@ -1,0 +1,67 @@
+@inherits BobComponentBase
+@attribute [System.ComponentModel.Description("A labelled native select. Pick one option from a list; bind with @bind-Value. The browser supplies the keyboard behavior, the picker and the mobile UI.")]
+
+@* A real <select> inside a <label>, so the name, the keyboard and the touch picker all come from the browser.
+   The placeholder is a disabled-looking first option with an empty value, shown only while nothing is chosen. *@
+<label class="bob-select @(Disabled ? "bob-select--disabled" : "") @CssClass" data-bob-part="root">
+    <span class="bob-select__label" data-bob-part="label">@Label</span>
+    <select class="bob-select__control" data-bob-part="control" disabled="@Disabled" required="@Required"
+            @onchange="OnChange" @attributes="AdditionalAttributes">
+        @if (!string.IsNullOrEmpty(Placeholder))
+        {
+            <option value="" selected="@string.IsNullOrEmpty(Value)">@Placeholder</option>
+        }
+        @foreach (var option in Options)
+        {
+            <option value="@option.Value" disabled="@option.Disabled" selected="@(option.Value == Value)">@option.Text</option>
+        }
+    </select>
+</label>
+
+@code {
+    /// <summary>One choice in the list.</summary>
+    /// <param name="Value">The value bound and raised when the option is chosen.</param>
+    /// <param name="Text">What the person sees.</param>
+    /// <param name="Disabled">Show the option but make it unchoosable.</param>
+    public sealed record SelectOption(string Value, string Text, bool Disabled = false);
+
+    /// <summary>The visible label. It also names the select for screen readers.</summary>
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+
+    /// <summary>The choices, in order.</summary>
+    [Parameter, EditorRequired] public IReadOnlyList<SelectOption> Options { get; set; } = [];
+
+    /// <summary>The chosen option's value, or empty when nothing is chosen.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Raised with the chosen value.</summary>
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    /// <summary>First option shown while nothing is chosen, such as "Choose a size". Leave empty for no placeholder.</summary>
+    [Parameter] public string? Placeholder { get; set; }
+
+    /// <summary>Disables the select.</summary>
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Marks the select as required for the browser and assistive tech.</summary>
+    [Parameter] public bool Required { get; set; }
+
+    /// <summary>Extra classes on the root label.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the select element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Label), Label, "a visible label that names the select");
+        check.Required(nameof(Options), Options, "a list of options");
+        check.Must(nameof(Options), Options.Select(o => o.Value).Distinct().Count() == Options.Count, "duplicate values", "option values that are all different");
+    }
+
+    private Task OnChange(ChangeEventArgs e)
+    {
+        var chosen = e.Value?.ToString();
+        return InvokeCallbackAsync(nameof(ValueChanged), ValueChanged, string.IsNullOrEmpty(chosen) ? null : chosen);
+    }
+}

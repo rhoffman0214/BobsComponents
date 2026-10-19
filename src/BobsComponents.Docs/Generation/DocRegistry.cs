@@ -52,6 +52,13 @@ public static class DocRegistry
 
         new("notification-bell", "NotificationBell", typeof(NotificationBell), "css/components/notification-bell.css",
             [new("In-memory source", typeof(NotificationBellDemo))]),
+
+        new("progress-bar", "ProgressBar", typeof(ProgressBar), "css/components/progress.css",
+            [new("Variants and indeterminate", typeof(ProgressBarDemo))]),
+        new("skeleton-loader", "SkeletonLoader", typeof(SkeletonLoader), "css/components/skeleton.css",
+            [new("Shapes and groups", typeof(SkeletonLoaderDemo))]),
+        new("select-field", "SelectField", typeof(SelectField), "css/components/select.css",
+            [new("Bound select", typeof(SelectFieldDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>

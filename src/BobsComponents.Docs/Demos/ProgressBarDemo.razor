@@ -1,0 +1,22 @@
+@* A determinate bar needs a Value and a Label; leave Value out for an indeterminate wait. Variant picks the color. *@
+<div style="display: flex; flex-direction: column; gap: 1rem;">
+    <ProgressBar Label="Upload progress" Value="_value" />
+    <ProgressBar Label="Storage used" Value="92" Variant="BobProgressVariant.Danger" />
+    <ProgressBar Label="Import finished" Value="100" Variant="BobProgressVariant.Success" />
+    <ProgressBar Label="Waiting for the server" />
+
+    @* Slimmer and recolored with component custom properties, set on an ancestor. *@
+    <div style="--bob-progress-height: 0.5rem; --bob-progress-fill: var(--bob-color-warning);">
+        <ProgressBar Label="Slim bar" Value="40" ShowValue="false" />
+    </div>
+
+    <div>
+        <button type="button" class="bob-button" @onclick="Advance">Advance upload</button>
+    </div>
+</div>
+
+@code {
+    private double _value = 35;
+
+    private void Advance() => _value = _value >= 100 ? 0 : Math.Min(100, _value + 20);
+}
