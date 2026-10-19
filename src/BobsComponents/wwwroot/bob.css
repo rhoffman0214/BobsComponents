@@ -20,3 +20,4 @@
 @import url("css/components/devkit.css") layer(bob.components);
 @import url("css/components/elapsed-clock.css") layer(bob.components);
 @import url("css/components/rest-picker.css") layer(bob.components);
+@import url("css/components/segment-picker.css") layer(bob.components);

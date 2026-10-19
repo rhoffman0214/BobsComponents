@@ -1,0 +1,10 @@
+@* Value is newline-separated text, so it binds straight to a string. Reorder with the keyboard: Space on the grip, arrows, Space again. *@
+<div style="display: flex; flex-direction: column; gap: 0.75rem;">
+    <SegmentPicker @bind-Value="_value" Title="Foam rolling areas" Presets="_presets" />
+    <p role="status" style="margin: 0;">Value: @(string.IsNullOrEmpty(_value) ? "(empty)" : _value.Replace("\n", " | "))</p>
+</div>
+
+@code {
+    private static readonly string[] _presets = ["Back", "Quads", "Calves", "Hamstrings", "Glutes"];
+    private string? _value = "Back\nQuads";
+}

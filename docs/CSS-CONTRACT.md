@@ -248,6 +248,20 @@ Parts: `root`, `legend`, `chips`, `chip`, `other`, `input`, `hint`.
 | `--bob-rest-picker-chip-on-bg` | `var(--bob-color-accent)` |
 | `--bob-rest-picker-chip-on-fg` | `var(--bob-color-accent-text)` |
 
+### SegmentPicker (`css/components/segment-picker.css`)
+
+Classes: `bob-segment-picker`, `bob-segment-picker__title`, `bob-segment-picker__presets`, `bob-segment-picker__chip`, `bob-segment-picker__chip--on`, `bob-segment-picker__add`, `bob-segment-picker__add-button`, `bob-segment-picker__list`, `bob-segment-picker__item`, `bob-segment-picker__item--lifted`, `bob-segment-picker__handle`, `bob-segment-picker__name`, `bob-segment-picker__remove`, `bob-segment-picker__hint`.
+Parts: `root`, `title`, `presets`, `chip`, `add`, `input`, `add-button`, `list`, `item`, `handle`, `name`, `remove`, `hint`, `status`.
+
+| Property | Default |
+| --- | --- |
+| `--bob-segment-picker-gap` | `0.5rem` |
+| `--bob-segment-picker-chip-bg` | `var(--bob-color-surface)` |
+| `--bob-segment-picker-chip-fg` | `var(--bob-color-text)` |
+| `--bob-segment-picker-chip-on-bg` | `var(--bob-color-accent)` |
+| `--bob-segment-picker-chip-on-fg` | `var(--bob-color-accent-text)` |
+| `--bob-segment-picker-lifted-bg` | `var(--bob-color-surface)` |
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

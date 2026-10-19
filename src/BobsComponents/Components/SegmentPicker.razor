@@ -1,0 +1,171 @@
+@inherits BobComponentBase
+@attribute [System.ComponentModel.Description("Picks and orders the areas of a multi-area exercise: tap suggested chips, type your own, then reorder with the keyboard. Value is newline-separated text, so callers just bind it.")]
+
+@* Reordering is keyboard only (pick up, arrows, drop). Pointer drag is not part of this component. *@
+<div class="bob-segment-picker @CssClass" data-bob-part="root" @attributes="AdditionalAttributes">
+    <p class="bob-segment-picker__title" id="@_labelId" data-bob-part="title">@Title</p>
+
+    @if (Presets.Count > 0)
+    {
+        <div class="bob-segment-picker__presets" role="group" aria-labelledby="@_labelId" data-bob-part="presets">
+            @foreach (var preset in Presets)
+            {
+                var on = Has(preset);
+                <button type="button" data-bob-part="chip" aria-pressed="@(on ? "true" : "false")" disabled="@Disabled"
+                        class="bob-segment-picker__chip @(on ? "bob-segment-picker__chip--on" : "")"
+                        @onclick="() => Toggle(preset)">@preset</button>
+            }
+        </div>
+    }
+
+    <div class="bob-segment-picker__add" data-bob-part="add">
+        <input type="text" data-bob-part="input" placeholder="@AddPlaceholder" aria-label="@AddPlaceholder" maxlength="60"
+               disabled="@Disabled" value="@_custom" @oninput="e => _custom = e.Value?.ToString() ?? string.Empty"
+               @onkeydown="OnCustomKeyDown" />
+        <button type="button" data-bob-part="add-button" class="bob-segment-picker__add-button"
+                disabled="@(Disabled || string.IsNullOrWhiteSpace(_custom))" @onclick="AddCustom">Add</button>
+    </div>
+
+    <ol class="bob-segment-picker__list" aria-label="@ListLabel" data-bob-part="list">
+        @for (var i = 0; i < _areas.Count; i++)
+        {
+            var index = i;
+            var area = _areas[i];
+            <li @key="area" data-bob-part="item" class="bob-segment-picker__item @(_grabbed == area ? "bob-segment-picker__item--lifted" : "")">
+                <button type="button" data-bob-part="handle" class="bob-segment-picker__handle" disabled="@Disabled"
+                        aria-pressed="@(_grabbed == area ? "true" : "false")"
+                        aria-label="@($"Reorder {area}. Press to pick up, then use the arrow keys to move it, then press again to drop.")"
+                        @onclick="() => ToggleGrabbed(area)" @onkeydown="e => OnHandleKeyDown(e, index)"><span aria-hidden="true">&#8801;</span></button>
+                <span class="bob-segment-picker__name" data-bob-part="name">@area</span>
+                <button type="button" data-bob-part="remove" class="bob-segment-picker__remove" disabled="@Disabled"
+                        aria-label="@($"Remove {area}")" @onclick="() => Remove(index)"><span aria-hidden="true">&#215;</span></button>
+            </li>
+        }
+    </ol>
+
+    <p class="bob-segment-picker__hint" data-bob-part="hint">@(_areas.Count > 0 ? HintWithAreas : HintEmpty)</p>
+
+    @* Reorder and remove change the list silently; this says what just happened. *@
+    <p class="bob-visually-hidden" role="status" data-bob-part="status">@_announcement</p>
+</div>
+
+@code {
+    /// <summary>The chosen areas as newline-separated text, in order.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Raised with the new newline-separated text after every change.</summary>
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    /// <summary>Suggested areas shown as toggle chips.</summary>
+    [Parameter] public IReadOnlyList<string> Presets { get; set; } = [];
+
+    /// <summary>Heading above the chips.</summary>
+    [Parameter] public string Title { get; set; } = "Areas";
+
+    /// <summary>Placeholder and accessible name of the custom-area box.</summary>
+    [Parameter] public string AddPlaceholder { get; set; } = "Add another area";
+
+    /// <summary>Accessible name of the chosen list.</summary>
+    [Parameter] public string ListLabel { get; set; } = "Chosen areas, in order";
+
+    /// <summary>Hint shown while at least one area is chosen.</summary>
+    [Parameter] public string HintWithAreas { get; set; } = "Pick up the grip with Space or Enter, move with the arrow keys. Areas are worked in this order.";
+
+    /// <summary>Hint shown while nothing is chosen.</summary>
+    [Parameter] public string HintEmpty { get; set; } = "Pick the areas you want to work through.";
+
+    /// <summary>Disables every control.</summary>
+    [Parameter] public bool Disabled { get; set; }
+
+    /// <summary>Extra classes on the root element.</summary>
+    [Parameter] public string? CssClass { get; set; }
+
+    /// <summary>Any other attribute is placed on the root element.</summary>
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private readonly string _labelId = $"bob-segment-picker-{Guid.NewGuid():N}";
+    private List<string> _areas = [];
+    private string _custom = "";
+    private string? _lastValue;
+    private string _announcement = "";
+    private string? _grabbed;
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Presets), Presets, "a list of suggested areas (it may be empty)");
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Re-read only when the parent changed the value (a restored draft, say), not when our own
+        // ValueChanged echoes back, so mid-edit order and typing are never clobbered.
+        if (Value == _lastValue) return;
+        _areas = Split(Value);
+        _lastValue = Value;
+    }
+
+    private static List<string> Split(string? text)
+    {
+        var result = new List<string>();
+        foreach (var part in (text ?? "").Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            if (!result.Any(a => string.Equals(a, part, StringComparison.OrdinalIgnoreCase))) result.Add(part);
+        return result;
+    }
+
+    private bool Has(string area) => _areas.Any(a => string.Equals(a, area, StringComparison.OrdinalIgnoreCase));
+
+    private Task Toggle(string area)
+    {
+        var existing = _areas.FindIndex(a => string.Equals(a, area, StringComparison.OrdinalIgnoreCase));
+        if (existing >= 0) _areas.RemoveAt(existing); else _areas.Add(area);
+        _announcement = existing >= 0 ? $"{area} removed." : $"{area} added.";
+        return Publish();
+    }
+
+    private Task AddCustom()
+    {
+        var text = _custom.Trim();
+        _custom = "";
+        if (text.Length == 0 || Has(text)) return Task.CompletedTask;
+        _areas.Add(text);
+        _announcement = $"{text} added.";
+        return Publish();
+    }
+
+    private Task OnCustomKeyDown(KeyboardEventArgs e) => e.Key == "Enter" ? AddCustom() : Task.CompletedTask;
+
+    private void ToggleGrabbed(string area) => _grabbed = _grabbed == area ? null : area;
+
+    // Space or Enter on the grip picks the area up, arrows move it, Escape drops it.
+    private Task OnHandleKeyDown(KeyboardEventArgs e, int index)
+    {
+        if (_grabbed is null || _areas[index] != _grabbed) return Task.CompletedTask;
+        if (e.Key == "ArrowUp") return Move(index, -1);
+        if (e.Key == "ArrowDown") return Move(index, 1);
+        if (e.Key == "Escape") _grabbed = null;
+        return Task.CompletedTask;
+    }
+
+    private Task Move(int index, int delta)
+    {
+        var target = index + delta;
+        if (target < 0 || target >= _areas.Count) return Task.CompletedTask;
+        (_areas[index], _areas[target]) = (_areas[target], _areas[index]);
+        _announcement = $"{_areas[target]} moved to position {target + 1} of {_areas.Count}.";
+        return Publish();
+    }
+
+    private Task Remove(int index)
+    {
+        _announcement = $"{_areas[index]} removed.";
+        if (_grabbed == _areas[index]) _grabbed = null;
+        _areas.RemoveAt(index);
+        return Publish();
+    }
+
+    private Task Publish()
+    {
+        _lastValue = string.Join('\n', _areas);
+        return InvokeCallbackAsync(nameof(ValueChanged), ValueChanged, (string?)_lastValue);
+    }
+}

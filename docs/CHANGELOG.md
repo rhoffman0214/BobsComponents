@@ -18,3 +18,4 @@ and fails when a documented name disappears without an entry in the Breaking sec
   one search over components, parts, classes, variables and effects, copy-ready CSS snippets, the error catalog and this changelog.
 - Second-wave component `ElapsedClock`: a self-ticking `mm:ss` / `h:mm:ss` readout (`role="timer"`) that re-renders only itself and can be paused.
 - Second-wave component `RestPicker`: rest length chips (`aria-pressed`) plus a free number box in one `fieldset`, bound with `@bind-Value`.
+- Second-wave component `SegmentPicker`: preset chips, custom areas and a keyboard-reorderable list bound as newline-separated text (no pointer drag).

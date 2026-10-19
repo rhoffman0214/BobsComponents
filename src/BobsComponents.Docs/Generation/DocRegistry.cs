@@ -37,6 +37,9 @@ public static class DocRegistry
 
         new("rest-picker", "RestPicker", typeof(RestPicker), "css/components/rest-picker.css",
             [new("Chips, other box and custom choices", typeof(RestPickerDemo))]),
+
+        new("segment-picker", "SegmentPicker", typeof(SegmentPicker), "css/components/segment-picker.css",
+            [new("Presets, custom areas and keyboard reorder", typeof(SegmentPickerDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>
