@@ -1,0 +1,30 @@
+@* Type something, then press Reload form: the saved text comes back through OnRestore. Clearing the box deletes the draft. *@
+<div style="display: flex; flex-direction: column; gap: 0.5rem;">
+    @if (_show)
+    {
+        <label>
+            Notes
+            <textarea rows="3" value="@_text" @oninput="e => _text = e.Value?.ToString() ?? string.Empty"></textarea>
+        </label>
+        <DraftSaver Name="docs.draft-saver.demo" Value="@(string.IsNullOrEmpty(_text) ? null : _text)" OnRestore="Restore" />
+    }
+    <div>
+        <button type="button" class="bob-button" @onclick="Reload">Reload form</button>
+    </div>
+</div>
+
+@code {
+    private bool _show = true;
+    private string _text = "";
+
+    private void Restore(string saved) => _text = saved;
+
+    private async Task Reload()
+    {
+        _show = false;
+        StateHasChanged();
+        await Task.Yield();
+        _text = "";
+        _show = true;
+    }
+}

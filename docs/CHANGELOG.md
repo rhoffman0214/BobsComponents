@@ -19,3 +19,4 @@ and fails when a documented name disappears without an entry in the Breaking sec
 - Second-wave component `ElapsedClock`: a self-ticking `mm:ss` / `h:mm:ss` readout (`role="timer"`) that re-renders only itself and can be paused.
 - Second-wave component `RestPicker`: rest length chips (`aria-pressed`) plus a free number box in one `fieldset`, bound with `@bind-Value`.
 - Second-wave component `SegmentPicker`: preset chips, custom areas and a keyboard-reorderable list bound as newline-separated text (no pointer drag).
+- Second-wave component DraftSaver: hot-saves unsaved form state (string payload) through IBobDraftStore, restores it once on load and announces the restore.

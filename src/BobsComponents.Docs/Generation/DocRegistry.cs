@@ -40,6 +40,9 @@ public static class DocRegistry
 
         new("segment-picker", "SegmentPicker", typeof(SegmentPicker), "css/components/segment-picker.css",
             [new("Presets, custom areas and keyboard reorder", typeof(SegmentPickerDemo))]),
+
+        new("draft-saver", "DraftSaver", typeof(DraftSaver), "css/components/draft-saver.css",
+            [new("Hot-saving a text area", typeof(DraftSaverDemo))]),
     ];
 
     /// <summary>Stylesheets that belong to components documented on hand-written pages; they still feed the CSS reference and search.</summary>

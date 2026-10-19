@@ -262,6 +262,13 @@ Parts: `root`, `title`, `presets`, `chip`, `add`, `input`, `add-button`, `list`,
 | `--bob-segment-picker-chip-on-fg` | `var(--bob-color-accent-text)` |
 | `--bob-segment-picker-lifted-bg` | `var(--bob-color-surface)` |
 
+### DraftSaver (`css/components/draft-saver.css`)
+
+Classes: `bob-draft-saver`.
+Parts: `status`.
+
+DraftSaver has no custom properties; its only element is a visually hidden status line.
+
 ## Error model
 
 Every exception is classified once into a `BobError` with one of six origins. Classification looks at exception

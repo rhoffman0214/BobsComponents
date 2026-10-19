@@ -26,6 +26,7 @@ public static class BobServiceCollectionExtensions
         services.TryAddSingleton(_ => BobErrorCatalog.CreateDefault());
         services.TryAddSingleton<IBobErrorHub, BobErrorHub>();
         services.TryAddScoped<IBobToastService, BobToastService>();
+        services.TryAddSingleton<IBobDraftStore, BobMemoryDraftStore>();
         services.TryAddSingleton<BobNetworkLog>();
         services.TryAddSingleton<BobInteropLog>();
         services.TryAddSingleton<BobDiRegistry>();

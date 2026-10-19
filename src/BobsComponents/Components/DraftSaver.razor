@@ -1,0 +1,66 @@
+@inherits BobComponentBase
+@attribute [BobRequiresService(typeof(IBobDraftStore))]
+@attribute [System.ComponentModel.Description("Hot-saves a form's unsaved state. Pass a unique Name and the current state as a string (null when there is nothing worth keeping); OnRestore fires once on load with the saved state.")]
+
+@* Drop one next to a form. Value null destroys the stored draft (pristine, just saved, cancelled). It writes only when the
+   content really changed, and never before the saved draft has been loaded, so an empty form cannot wipe a draft that
+   is about to be restored. The only markup is a visually hidden status line that says when a draft came back. *@
+<span class="bob-draft-saver" role="status" data-bob-part="status">@_message</span>
+
+@code {
+    /// <summary>A unique draft key, for example template-header.42.</summary>
+    [Parameter, EditorRequired] public string Name { get; set; } = "";
+
+    /// <summary>The form's current state as text, or null when there is nothing worth keeping.</summary>
+    [Parameter] public string? Value { get; set; }
+
+    /// <summary>Raised once on load with the saved state, if there is one. Set the form's fields from it.</summary>
+    [Parameter] public EventCallback<string> OnRestore { get; set; }
+
+    /// <summary>Announced in the status line when a draft is restored.</summary>
+    [Parameter] public string RestoredMessage { get; set; } = "Restored your unsaved changes.";
+
+    private bool _loaded;
+    private string? _lastWritten;
+    private string? _lastSeen;
+    private string _message = "";
+
+    protected override void ValidateParameters(BobParameterValidator check)
+    {
+        check.Required(nameof(Name), Name, "a unique, non-empty draft key");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var store = RequireService<IBobDraftStore>();
+        try
+        {
+            if (firstRender)
+            {
+                var saved = await store.LoadAsync(Name);
+                _loaded = true;
+                _lastWritten = saved;
+                _lastSeen = Value;
+                if (saved is not null)
+                {
+                    await InvokeCallbackAsync(nameof(OnRestore), OnRestore, saved);
+                    _message = RestoredMessage;
+                    StateHasChanged();
+                }
+                return;
+            }
+
+            // Only act when the parent changed Value; our own re-render after a restore must not clear the draft.
+            if (!_loaded || Value == _lastSeen) return;
+            _lastSeen = Value;
+            if (Value == _lastWritten) return;
+            if (Value is null) await store.ClearAsync(Name);
+            else await store.SaveAsync(Name, Value);
+            _lastWritten = Value;
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            ReportError(ex);
+        }
+    }
+}
