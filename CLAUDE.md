@@ -2,7 +2,7 @@
 
 This file provides AI assistant instructions for working with code in this repository.
 
-**For human developers:** See [README.md](README.md) for getting started, commands, and architecture.
+**For human developers:** See [README.md](README.md) for usage, commands, the component list and the docs map.
 **For code examples:** See [docs/EXAMPLES.md](docs/EXAMPLES.md) for detailed code examples and patterns.
 
 ---
@@ -496,7 +496,7 @@ For detailed git examples and commands, see [docs/EXAMPLES.md - Git Workflow Exa
 
 **Remember:** Never push broken code to the remote repository. Local testing is mandatory before every push.
 
-For common commands, see [README.md - Common Commands](README.md#common-commands).
+For common commands, see [README.md - Common Commands](README.md#test).
 
 ### CI/CD Pipeline Changes
 
@@ -544,8 +544,8 @@ For CI/CD examples and build commands, see [docs/EXAMPLES.md - CI/CD Configurati
 
 ## Quick Reference Links
 
-**For Commands:** [README.md - Common Commands](README.md#common-commands)
+**For Commands:** [README.md - Common Commands](README.md#test)
 **For Examples:** [docs/EXAMPLES.md](docs/EXAMPLES.md)
-**For Project Info:** [README.md - Project Overview](README.md#project-overview)
+**For Project Info:** [README.md - Project Overview](README.md#what-is-in-it)
 **For Security Examples:** [docs/EXAMPLES.md - Security Examples](docs/EXAMPLES.md#security-examples)
 **For Git Examples:** [docs/EXAMPLES.md - Git Workflow Examples](docs/EXAMPLES.md#git-workflow-examples)

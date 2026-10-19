@@ -34,10 +34,10 @@
         <nav class="bobdoc-toc" aria-label="On this page">
             <a href="@(Doc.Href)#demo">Demo</a>
             <a href="@(Doc.Href)#api">API</a>
-            <a href="@(Doc.Href)#css">CSS reference</a>
-            <a href="@(Doc.Href)#dom">DOM map</a>
             <a href="@(Doc.Href)#accessibility">Accessibility</a>
             <a href="@(Doc.Href)#errors">Errors</a>
+            <a href="@(Doc.Href)#css">CSS reference</a>
+            <a href="@(Doc.Href)#dom">DOM map</a>
         </nav>
     </header>
 
@@ -84,6 +84,60 @@
             }
         </section>
 
+        <section class="bobdoc-section" id="accessibility" aria-labelledby="a11y-h">
+            <h2 id="a11y-h">Accessibility</h2>
+            @if (_model.Accessibility is null)
+            {
+                <p class="bobdoc-missing">No accessibility notes for this component (Content/accessibility/@(Doc.Slug).md).</p>
+            }
+            else
+            {
+                <p class="bobdoc-muted">@_model.Accessibility.Source Each behavior names the test that proves it.</p>
+                <ul class="bobdoc-a11y">
+                    @foreach (var note in _model.Accessibility.Notes)
+                    {
+                        <li class="@(note.IsGap ? "bobdoc-a11y__gap" : "")">
+                            @if (note.IsGap)
+                            {
+                                <strong>Known gap. </strong>
+                            }
+                            <DocText Text="@note.Text" />
+                            @foreach (var test in note.Tests)
+                            {
+                                <code class="bobdoc-chip bobdoc-chip--test">@test</code>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+
+        <section class="bobdoc-section" id="errors" aria-labelledby="errors-h">
+            <h2 id="errors-h">Errors this component can raise</h2>
+            @if (_model.Errors.Count == 0)
+            {
+                <p>None of its own beyond the general ones. See the <a href="bob/error-catalog">error catalog</a>.</p>
+            }
+            else
+            {
+                <ul class="bobdoc-errors">
+                    @foreach (var e in _model.Errors)
+                    {
+                        <li>
+                            <a href="bob/error-catalog#@e.Entry.Code"><code>@e.Entry.Code</code></a> @e.Entry.Title.
+                            <DocText Text="@e.Because" />
+                            @if (e.Via is not null)
+                            {
+                                <span class="bobdoc-muted"> Via <a href="bob/@(DocRegistry.Components.First(c => c.Title == e.Via).Slug)">@e.Via</a>.</span>
+                            }
+                            <span class="bobdoc-muted"> @e.Entry.Cause</span>
+                        </li>
+                    }
+                </ul>
+            }
+            <p class="bobdoc-muted">Any component can also raise the general errors in the <a href="bob/error-catalog">catalog</a>, for example a missing service or a throwing callback.</p>
+        </section>
+
         <section class="bobdoc-section" id="css" aria-labelledby="css-h">
             <h2 id="css-h">CSS reference</h2>
             <CssReferenceView Css="_model.Css" Title="@Doc.Title" State="_state" />
@@ -95,60 +149,6 @@
             <DomMapView State="_state" Titles="_titles" />
         </section>
     </CascadingValue>
-
-    <section class="bobdoc-section" id="accessibility" aria-labelledby="a11y-h">
-        <h2 id="a11y-h">Accessibility</h2>
-        @if (_model.Accessibility is null)
-        {
-            <p class="bobdoc-missing">No accessibility notes for this component (Content/accessibility/@(Doc.Slug).md).</p>
-        }
-        else
-        {
-            <p class="bobdoc-muted">@_model.Accessibility.Source Each behavior names the test that proves it.</p>
-            <ul class="bobdoc-a11y">
-                @foreach (var note in _model.Accessibility.Notes)
-                {
-                    <li class="@(note.IsGap ? "bobdoc-a11y__gap" : "")">
-                        @if (note.IsGap)
-                        {
-                            <strong>Known gap. </strong>
-                        }
-                        <DocText Text="@note.Text" />
-                        @foreach (var test in note.Tests)
-                        {
-                            <code class="bobdoc-chip bobdoc-chip--test">@test</code>
-                        }
-                    </li>
-                }
-            </ul>
-        }
-    </section>
-
-    <section class="bobdoc-section" id="errors" aria-labelledby="errors-h">
-        <h2 id="errors-h">Errors this component can raise</h2>
-        @if (_model.Errors.Count == 0)
-        {
-            <p>None of its own beyond the general ones. See the <a href="bob/error-catalog">error catalog</a>.</p>
-        }
-        else
-        {
-            <ul class="bobdoc-errors">
-                @foreach (var e in _model.Errors)
-                {
-                    <li>
-                        <a href="bob/error-catalog#@e.Entry.Code"><code>@e.Entry.Code</code></a> @e.Entry.Title.
-                        <DocText Text="@e.Because" />
-                        @if (e.Via is not null)
-                        {
-                            <span class="bobdoc-muted"> Via <a href="bob/@(DocRegistry.Components.First(c => c.Title == e.Via).Slug)">@e.Via</a>.</span>
-                        }
-                        <span class="bobdoc-muted"> @e.Entry.Cause</span>
-                    </li>
-                }
-            </ul>
-        }
-        <p class="bobdoc-muted">Any component can also raise the general errors in the <a href="bob/error-catalog">catalog</a>, for example a missing service or a throwing callback.</p>
-    </section>
 </div>
 
 @code {

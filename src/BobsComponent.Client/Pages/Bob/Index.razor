@@ -13,14 +13,16 @@
         <SearchBox />
     </header>
 
-    <section class="bobdoc-section" aria-labelledby="core-h">
-        <h2 id="core-h">Core</h2>
+    <section class="bobdoc-section" aria-labelledby="start-h">
+        <h2 id="start-h">Get started</h2>
+        <p>Register the services, link one stylesheet, and wrap your app in the error boundary. No CSS framework is needed.</p>
+        <pre class="bobdoc-code"><code>builder.Services.AddBobComponents(o => o.EnvironmentName = builder.HostEnvironment.Environment);
+
+&lt;link rel="stylesheet" href="_content/BobsComponents/bob.css" /&gt;</code></pre>
         <ul>
             <li><a href="bob/errors">Error model</a> - six origins, one card</li>
             <li><a href="bob/error-catalog">Error catalog</a> - every code, cause and fix</li>
             <li><a href="bob/dev-kit">Dev kit</a> - errors, network, interop and DI panels</li>
-            <li><a href="bob/changelog">Changelog</a> - breaking changes first</li>
-            <li><a href="bob/search">Search</a> - components, parts, classes, variables and effects</li>
         </ul>
     </section>
 
@@ -31,6 +33,14 @@
             {
                 <li><a href="@doc.Href">@doc.Title</a> - <DocText Text="@DocRegistry.Model(doc).Api.Summary" /></li>
             }
+        </ul>
+    </section>
+
+    <section class="bobdoc-section" aria-labelledby="ref-h">
+        <h2 id="ref-h">Reference</h2>
+        <ul>
+            <li><a href="bob/search">Search</a> - components, parts, classes, variables and effects</li>
+            <li><a href="bob/changelog">Changelog</a> - breaking changes first</li>
         </ul>
     </section>
 </div>

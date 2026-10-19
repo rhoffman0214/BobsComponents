@@ -1,343 +1,127 @@
-# BobsBlazingComponents
+# BobsComponents
 
-> A modern Blazor WebAssembly component library emphasizing real-world patterns, theming flexibility, and developer education.
+A Blazor component library with a stable, documented contract: every CSS class, custom property and part attribute starts
+with `bob-`, the CSS is plain and lives in `@layer bob`, and every failure becomes an error card that shows the exact cause.
+The docs site is generated from the code, so parameters, CSS and the DOM map cannot drift from what ships.
 
-## Project Goal
-
-Create reusable, themeable components that are open to user customization while providing base themes and functionality.
-
-**Key Objectives:**
-- Provide "amazing" examples of real-world usage, especially combining popular packages
-- Demonstrate practical integration patterns that developers can learn from and adapt
-- Focus on components that solve real problems, not just basic examples
+- **Package:** `src/BobsComponents` (id and namespace `BobsComponents`). .NET 10, Blazor WebAssembly, no CSS framework needed.
+- **Docs and demos:** run the site (below) and open `/bob`.
+- **Contract:** [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md) lists every public name. [docs/CHANGELOG.md](docs/CHANGELOG.md) lists breaking changes first.
 
 ---
 
-## Quick Start
+## Use it
 
-### Prerequisites
-
-- .NET 10.0 SDK
-- Visual Studio Code (recommended) or your preferred IDE
-- Docker Desktop (optional, for dev container)
-
-### Running the Application
-
-```bash
-cd src/BobsComponent.Client
-dotnet watch run
+```csharp
+// Program.cs
+builder.Services.AddBobComponents(o => o.EnvironmentName = builder.HostEnvironment.Environment);
 ```
 
-The application will be available at:
-- **HTTPS:** https://localhost:7017
-- **HTTP:** http://localhost:5096
-
-### Using Dev Container (Optional)
-
-1. Install Remote Containers VS Code Extension
-2. Install Docker Desktop
-3. Open workspace in VS Code
-4. Select "Reopen in Container"
-
-The container includes .NET 10.0, Node.js LTS, and the C# extension.
-
----
-
-## Project Overview
-
-### Architecture
-
-BobsBlazingComponents uses a two-project architecture:
-
-- **BobsComponent.Library**: Razor component library (SDK: Microsoft.NET.Sdk.Razor) that houses reusable Blazor components
-- **BobsComponent.Client**: Blazor WebAssembly client application for testing/showcasing the component library
-
-Both projects reference BobsComponent.Library - the Client uses both a PackageReference and a ProjectReference to the Library.
-
-### Application Sections
-
-The client application is organized into three distinct sections:
-
-1. **Documentation Area**: Comprehensive documentation for components, APIs, and usage patterns
-2. **Sandbox**: Interactive playground for experimenting with components in real-time
-3. **Learning Section**: Structured progression-based learning path for users to master the component library
-
-### User Sessions
-
-The application includes user session management:
-- Email-based validation (no password authentication)
-- No PII (Personally Identifiable Information) stored
-- No security-sensitive data - session tracking is purely for progression data
-
----
-
-## Development Setup
-
-### .NET Version & Requirements
-
-This project targets **.NET 10.0** (LTS release, supported until November 2028) with **C# 14** language features.
-
-**C# 14 Features in Use:**
-- **Collection expressions**: `[]` syntax for cleaner collection initialization
-- **Field-backed properties**: Using `field` keyword in custom accessors (planned for future components)
-
-When contributing, prefer modern C# 14 patterns over legacy syntax.
-
-### Required Workloads
-
-For Blazor WebAssembly development, install the wasm-tools workload:
-
-```bash
-dotnet workload install wasm-tools
+```html
+<!-- index.html (or App.razor <HeadContent>) -->
+<link rel="stylesheet" href="_content/BobsComponents/bob.css" />
 ```
 
-### Build Configuration
+```razor
+@using BobsComponents.Components
 
-The solution uses centralized build configuration via `src/Directory.Build.props`:
-- Target framework: net10.0 (configurable via `$(NetVersion)`)
-- AOT compilation is enabled (`RunAOTCompilation: true`)
-
----
-
-## Common Commands
-
-### Running the Application
-
-```bash
-cd src/BobsComponent.Client
-dotnet watch run
+<BobErrorBoundary>
+    <ProgressBar Label="Upload" Value="42" />
+    <SelectField Label="Size" Options="_sizes" @bind-Value="_size" Placeholder="Choose a size" />
+</BobErrorBoundary>
+<BobDevKit />   @* shown only in Development, or when BobOptions.DevKit.Enabled is true *@
 ```
 
-### Building
+Restyle by setting custom properties on any ancestor; components read them with a fallback and never declare them:
 
-```bash
-# Build solution
-cd src
-dotnet build BobsComponents.sln
-
-# Debug build (default)
-dotnet build
-
-# Release build with AOT
-dotnet build -c Release
+```css
+.checkout { --bob-progress-fill: var(--bob-color-success); --bob-select-radius: 0; }
 ```
 
-### Testing
-
-**IMPORTANT:** Always run tests BEFORE starting `dotnet watch` to catch issues that would cause hot reload errors.
-
-```bash
-# Run all tests
-cd src
-dotnet test
-
-# Run tests with detailed output
-dotnet test --verbosity detailed
-
-# Run tests for specific project
-cd src/BobsComponent.Library.Tests
-dotnet test
-
-# Run tests in watch mode (auto-run on file changes)
-dotnet watch test
-```
-
-**Test Structure:**
-- `BobsComponent.Library.Tests` - xUnit + bUnit tests for component library
-- Tests are organized by component in `Components/` folder
-- See [docs/EXAMPLES.md](docs/EXAMPLES.md#testing-patterns) for test code examples
-
-### Hot Reload Limitations
-
-Some code changes cannot be hot-reloaded and require a manual restart (Ctrl+C then `dotnet watch run`):
-
-- Adding/removing `@ref` attributes or `[Parameter]` attributes
-- Changing component reference types or parameter types
-- Adding new public methods to components
-- Significant changes to `RenderFragment` or `ChildContent`
-
-**Safe for hot reload:** CSS changes, markup changes in `.razor` files, private method implementations
-
-See [CLAUDE.md - Hot Reload Limitations](CLAUDE.md#hot-reload-limitations) for complete details.
-
----
-
-## Architecture Details
-
-### Component Library Structure
-
-The Library project (BobsComponent.Library):
-- Uses `_Imports.razor` for shared namespace imports
-- Contains a `wwwroot` folder with assets and JavaScript interop files
-- Provides themeable, customizable components
-
-### Import Structure
-
-The Client project's `_Imports.razor` establishes global namespace access:
-- Standard Blazor namespaces (Components.Forms, Components.Routing, etc.)
-- BobsComponent.Client and BobsComponent.Client.Shared
-- **BobsComponent.Library** - making library components available throughout the client
-
-New components in the Library are automatically available in Client pages without additional imports.
-
-### Theming Approach
-
-The project emphasizes user-toggleable theming:
-- `themes.css`: Semantic color variables and z-index system
-- `app.css`: Main application styles
-- `jc-reset.css`: CSS reset
-- Bootstrap integration
-- Open Iconic icon library
-
-**CSS Organization:**
-- Component-specific styles use scoped CSS (`.razor.css` files)
-- Global theme variables in `wwwroot/css/themes.css`
-- See [CLAUDE.md - CSS Organization](CLAUDE.md#critical-css-organization-for-component-library) for complete CSS rules
-
----
-
-## Component Development
-
-### Development Philosophy
-
-When creating new components for this library:
-
-- **Real-world examples**: Components should showcase practical, production-ready usage patterns
-- **Package integration**: Demonstrate how to combine popular NuGet packages effectively (e.g., FluentValidation, AutoMapper, charting libraries, state management)
-- **Educational value**: Code should serve as a learning resource, showing best practices and integration patterns
-- **Practical over trivial**: Focus on components that solve real problems developers face
-
-### Security-First Principles
-
-This project follows security-first development:
-- XSS protection in JavaScript interop and rendering
-- Information disclosure prevention
-- Input validation for all component parameters
-- Secure secrets management
-
-See [CLAUDE.md - Security Best Practices](CLAUDE.md#security-best-practices) for complete security rules and [docs/EXAMPLES.md - Security Examples](docs/EXAMPLES.md#security-examples) for code examples.
-
-### Refactoring Policy
-
-**Do NOT rename existing files, functions, classes, or components without explicit approval.**
-
-- Never rename existing code elements unless explicitly requested
-- Always ask before refactoring that involves renaming or moving code
-- This prevents breaking changes and maintains git history
-
-See [CLAUDE.md - Refactoring Policy](CLAUDE.md#refactoring-policy) for details.
-
----
-
-## Contributing
-
-### Git Workflow
-
-**Before pushing to remote:**
-
-1. **Sync with master:**
-   ```bash
-   git pull origin master
-   git checkout your-branch
-   git merge master
-   ```
-
-2. **Resolve conflicts locally** (if any)
-
-3. **Run tests:**
-   ```bash
-   dotnet test
-   ```
-
-4. **Test locally:**
-   ```bash
-   cd src/BobsComponent.Client
-   dotnet watch run
-   ```
-
-5. **Verify in browser**, then push
-
-**CRITICAL:** Never push broken code. Local testing is mandatory before every push.
-
-See [CLAUDE.md - Git Workflow](CLAUDE.md#git-workflow) for complete git policies and [docs/EXAMPLES.md - Git Workflow Examples](docs/EXAMPLES.md#git-workflow-examples) for detailed examples.
-
-### Pre-Push Testing
-
-Always verify your changes before pushing:
-1. Run the application locally and test affected functionality
-2. Run all tests with `dotnet test`
-3. Check for console errors or warnings
-4. Ask user to verify changes if needed
-
----
-
-## Documentation
-
-### For Developers
-
-- **[README.md](README.md)** (this file) - Getting started, commands, architecture
-- **[docs/EXAMPLES.md](docs/EXAMPLES.md)** - Detailed code examples and patterns
-- Component API references (coming soon)
-
-### For AI Assistants
-
-- **[CLAUDE.md](CLAUDE.md)** - AI assistant instructions and coding rules
-  - CSS organization rules
-  - Security policies
-  - Git workflow rules
-  - Refactoring policies
-  - Windows development requirements
-
----
-
-## Tech Stack
-
-- **.NET 10.0** (LTS until November 2028)
-- **C# 14** language features
-- **Blazor WebAssembly** (client-side rendering)
-- **bUnit + xUnit** for component testing
-- **Bootstrap** for base styling
-- **Open Iconic** for icons
-
----
-
-**For AI Assistants:** See [CLAUDE.md](CLAUDE.md) for detailed coding rules and policies.
-
-## BobsComponents (prefixed library)
-
-`src/BobsComponents` is the new Razor class library: every class, custom property and part attribute starts with `bob-`,
-CSS is plain and lives in `@layer bob`, and every failure becomes an error card that shows the exact cause.
-It includes an error system (`BobErrorBoundary`, `BobError`), a drop-in `<BobDevKit />`, and the first components
-(AsyncButton, LoadingSpinner, FullScreenLoader, ModalSheet, ConfirmDialog, ToastHost).
+## Run the demo and docs
 
 ```powershell
 cd src
-dotnet test BobsComponents.Tests
-dotnet run --project BobsComponent.Client --urls http://localhost:5096   # demo and docs at /bob
+dotnet run --project BobsComponent.Client --urls http://localhost:5096   # then open /bob
 ```
 
-The contract (naming, variables, asset paths, error codes) is in [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md).
+## Test
 
-### Docs site (generated)
+```powershell
+cd src
+dotnet test BobsComponents.Tests      # new library + docs engine
+dotnet build BobsComponent.Client     # demo and docs site
+dotnet test                           # everything, legacy tests included
+```
 
-The pages under `/bob` are generated from the code, so they cannot drift. `src/BobsComponents.Docs` reads the library's own
-CSS, component markup, XML doc comments and `error-catalog.json` (all embedded at build) and produces, per component:
-parameter, event and slot tables; the CSS reference (custom properties with defaults, parts, classes, states, global tokens);
-a DOM map of the live demo; a hover part inspector; copy-ready CSS; accessibility notes with the tests that prove them; and
-the error codes it can raise. There is also one search (`/bob/search`), the error catalog (`/bob/error-catalog`, where the
-error card's code link lands) and the changelog (`/bob/changelog`, breaking changes first).
+Tests fail the build when code, docs and contract drift apart (`ContractTests`, `DocsDriftTests`, `ApiSurfaceTests`).
 
-**Add a component page:**
+---
 
-1. Build the component with `@attribute [System.ComponentModel.Description("one sentence")]`, `/// <summary>` on every
-   `[Parameter]`, its sheet in `wwwroot/css/components/` and a `data-bob-part` on each styleable element.
-2. Add `src/BobsComponents.Docs/Demos/<Name>Demo.razor`: a real, compiled demo. The code shown on the page is this file.
-3. Add `src/BobsComponents.Docs/Content/accessibility/<slug>.md`: one bullet per behavior, each ending with
-   `[test: ClassName.Method]` naming a bUnit test (or starting with `gap:` for a known gap).
-4. Add one entry to `DocRegistry.Components` (slug, title, component type, `css/components/<name>.css`, demos).
-5. Add the entry to `docs/CHANGELOG.md` (Added) and refresh `docs/api-surface.txt`
-   (`$env:BOB_UPDATE_SURFACE=1; dotnet test BobsComponents.Tests --filter ApiSurface`).
+## What is in it
 
-The nav menu, search, error catalog "raised by" links and the inspector pick the component up from the registry.
-`dotnet test BobsComponents.Tests` fails if a library component or stylesheet is missing from the registry, a parameter has no
-XML comment, a note names a test that does not exist, or a demo renders a class or part the generated reference does not know.
+| Area | Components and tools |
+| --- | --- |
+| Loading and progress | `LoadingSpinner`, `FullScreenLoader`, `ProgressBar`, `SkeletonLoader`, `AsyncButton` |
+| Dialogs and feedback | `ModalSheet`, `ConfirmDialog`, `Toasts` (`IBobToastService`), `NotificationBell` |
+| Form inputs | `SelectField`, `RestPicker`, `SegmentPicker`, `DraftSaver` |
+| Data display | `ProgressChart`, `ActivityHeatmap`, `ElapsedClock` |
+| Errors | `BobErrorBoundary`, `BobErrorCard`, `IBobErrorHub`; six origins, one card, [error catalog](src/BobsComponents/Errors/error-catalog.json) |
+| Dev kit | `<BobDevKit />`: errors, network, interop, DI and storage panels, plus Copy report |
+
+Each component has a generated page with a live demo, parameter tables, errors it can raise, accessibility notes with the
+tests that prove them, the CSS reference and a DOM map with a part inspector. There is one search (`/bob/search`).
+
+## Docs map
+
+| You want to | Read |
+| --- | --- |
+| Use a component | the page at `/bob/<slug>` (demo, API, errors, accessibility, then CSS) |
+| Know what is safe to rely on | [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md) |
+| See what changed | [docs/CHANGELOG.md](docs/CHANGELOG.md) (`/bob/changelog`) |
+| Understand an error code | `/bob/error-catalog` |
+| Copy a pattern | [docs/EXAMPLES.md](docs/EXAMPLES.md) |
+| Test a deployment | [docs/DEPLOYMENT-TESTING.md](docs/DEPLOYMENT-TESTING.md) |
+| Work as an AI assistant | [CLAUDE.md](CLAUDE.md) |
+
+---
+
+## Contribute a component
+
+1. Build the component: `@attribute [System.ComponentModel.Description("one sentence")]`, `/// <summary>` on every
+   `[Parameter]`, a `data-bob-part` on each styleable element, inheriting `BobComponentBase`.
+2. Add its sheet in `wwwroot/css/components/<name>.css` and one `@import` line in `wwwroot/bob.css`.
+3. Add its classes, parts and variables (with defaults) to [docs/CSS-CONTRACT.md](docs/CSS-CONTRACT.md).
+4. Add bUnit tests, and `src/BobsComponents.Docs/Demos/<Name>Demo.razor` (a real, compiled demo; the code shown is this file).
+5. Add `src/BobsComponents.Docs/Content/accessibility/<slug>.md`: one bullet per behavior, each ending with
+   `[test: ClassName.Method]` naming a real test, or starting with `gap:` for a known gap.
+6. Add one entry to `DocRegistry.Components` (slug, title, type, stylesheet, demos).
+7. Add an Added line to `docs/CHANGELOG.md` and refresh the snapshot:
+   `$env:BOB_UPDATE_SURFACE=1; dotnet test BobsComponents.Tests --filter ApiSurface`.
+
+The nav menu, search and error catalog pick the component up from the registry. Names are public API: renaming one is a
+breaking change and goes under `### Breaking` in the newest changelog release.
+
+### Git
+
+Sync with master before any push, run `dotnet test`, check the demo in a browser, then push. See [CLAUDE.md](CLAUDE.md) for the full rules.
+
+---
+
+## Legacy library and demo app
+
+`src/BobsComponent.Library` is the original unprefixed library (scoped CSS, `--color-*` variables, Bootstrap-era). It stays
+until its components are migrated one by one; do not add to it, fix bugs only. `src/BobsComponent.Client` is the Blazor
+WebAssembly app that hosts the legacy showcase pages and the `/bob` docs site.
+
+```powershell
+cd src/BobsComponent.Client
+dotnet watch run     # http://localhost:5096, https://localhost:7017
+```
+
+- Requires the .NET 10 SDK; publishing with AOT needs `dotnet workload install wasm-tools`. Build and test do not.
+- Legacy CSS rules (scoped `.razor.css`, `--color-*` and `--z-*` variables, flexbox first) are in [CLAUDE.md](CLAUDE.md).
+- Optional dev container: open the workspace in VS Code and choose "Reopen in Container" (.NET 10, Node LTS).
+- Some changes cannot hot reload (new `[Parameter]`s, `@ref`, render fragments); restart `dotnet watch run` after those.
+
+**Tech stack:** .NET 10, C# 14, Blazor WebAssembly, bUnit + xUnit.
