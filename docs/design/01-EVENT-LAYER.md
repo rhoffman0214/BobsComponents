@@ -133,8 +133,8 @@ same spec/pipeline, so apps get the same guarantees for their own elements (repl
   value wins; the pipeline is never entered with a backlog (latest-wins queue per spec, configurable to `Queue`).
 - **Pipeline cost when nobody listens**: if a behavior has no interceptors and no overrides, the pipeline short-circuits
   to the default with no allocations (`BobEvent` is pooled for the no-interceptor case).
-- **Server safety**: the effective default for `input` is `OnChange`; `Debounce` defaults are higher when
-  `BobOptions.Hosting == Server`.
+- **Server safety (deferred)**: Blazor Server is a separate, later target (doc 00 D8). The `BobOptions.Hosting` switch
+  with higher debounce defaults is designed but not built now; the spec model keeps it possible.
 
 ## 6. Errors (new codes, all in `error-catalog.json`)
 

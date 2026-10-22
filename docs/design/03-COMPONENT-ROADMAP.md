@@ -3,7 +3,7 @@
 Status: draft. Ordered by what unblocks the most apps first, and by dependency. "Have" means shipped in 0.2.0.
 The comparison is against the common set across Telerik UI for Blazor, MudBlazor and Blazorise.
 
-Naming rule: own names (doc 00 D7), with a migration table in each docs page. Every component follows the existing
+Naming rule: own names (doc 00 D7), short and branded in the `Bob<Thing>Box` style (`BobTextBox`, `BobNumberBox<T>`), with a migration table in each docs page. Every component follows the existing
 checklist (CSS contract, parts, `[Description]`, bUnit tests, accessibility doc, generated docs).
 
 ## Tier 0: Spine (blocks everything)
@@ -18,10 +18,10 @@ checklist (CSS contract, parts, `[Description]`, bUnit tests, accessibility doc,
 | Component | Have | Notes |
 | --- | --- | --- |
 | Button, IconButton, ButtonGroup, ToggleButton | partial (`AsyncButton`) | Base `BobButton`; AsyncButton builds on it |
-| Text, TextArea, Password, Search | - | Doc 02 |
-| Number (int/decimal/double), Slider | - | Converter-based |
-| Checkbox, Switch, Radio group | - | |
-| Select (native) | yes (`SelectField`) | Migrates to field base |
+| `BobTextBox`, `BobTextArea`, `BobPasswordBox`, `BobSearchBox` | - | Doc 02 |
+| `BobNumberBox<T>` (int/decimal/double), Slider | - | Converter-based |
+| `BobCheckBox`, `BobSwitch`, `BobRadioGroup<T>` | - | |
+| `BobSelectBox<T>` (native) | yes (`SelectField`, deprecated later) | New component on the field base; `SelectField` keeps its name |
 | Form, FormSummary, validation | - | |
 | Label, Badge, Chip, Avatar, Divider, Icon | - | Display-only, static-SSR safe |
 | Alert, Progress, Skeleton, Spinner | yes | |
@@ -55,11 +55,14 @@ checklist (CSS contract, parts, `[Description]`, bUnit tests, accessibility doc,
 | TreeView (virtualized, lazy, checkable, drag) | After `BobCollection<T>` and virtualizer |
 | List / ListView, Timeline | |
 
-## Tier 5: Data (the grid, deliberately last of the big ones)
+## Tier 5: Data (V1 scope is everything possible, built in staged slices)
+The grid is in V1 with the full feature list (Bob's decision). It is staged so each slice ships and is tested on its own;
+see [05-GRID.md](05-GRID.md).
+
 | Component | Notes |
 | --- | --- |
-| DataTable (simple) | Static table with sort. Ships earlier as the stepping stone |
-| **DataGrid** | Server/client data source abstraction, sort, filter (typed per column), page, selection, inline edit, templates, virtualization, column resize/reorder/hide, grouping, aggregates, export (CSV first), state persistence, keyboard navigation |
+| `BobDataTable` (simple) | Static table with sort. Slice S1, the stepping stone |
+| **`BobDataGrid`** | Server/client data source abstraction, sort, filter (typed per column), page, selection, inline edit, templates, virtualization, column resize/reorder/hide, grouping, aggregates, export (CSV first), state persistence, keyboard navigation (slices S2 to S10) |
 | PivotGrid, TreeList | Only if demand; built on the grid core |
 | Sortable / drag and drop | Pointer-event driven; needed by TreeView, grid, Kanban |
 | Kanban board | After drag and drop |
@@ -80,10 +83,16 @@ editor, Diagram, Map, PDF viewer, Spreadsheet, Barcode/QR, Signature. Each gets 
 - 0.3: Tier 0 + Tier 1 (the "basic inputs" milestone)
 - 0.4: Tier 2 + core of Tier 3 (combobox, date pickers)
 - 0.5: Tier 4
-- 0.6: DataTable + DataGrid first cut (sort, filter, page, select, virtualization)
-- 0.7+: grid depth, Tier 3 remainder, then Tier 6 by demand
+- Grid work starts in wave 2 of the parallel plan (lane F, doc 04) as soon as the primitives and `BobCollection<T>` land,
+  so it overlaps Tiers 2 to 4 rather than waiting for them:
+  - 0.4: grid S1 to S3 (table, data source, sort, page, typed filters)
+  - 0.5: grid S4 to S6 (selection, keyboard, virtualization, inline edit)
+  - 0.6: grid S7 to S10 (grouping, aggregates, column resize/reorder/hide, export, state persistence)
+- 0.7+: Tier 3 remainder, then Tier 6 by demand
 - 1.0 when the grid and the docs/migration guide are solid and the trimmed build is verified
 
 ## Honest sizing note
 Tier 0 and Tier 1 are weeks of focused work with the parallel plan in doc 04. The date pickers, combobox and grid
-are each larger than all of Tier 1 combined; "all popular components" is a multi-month series of releases, not one.
+are each larger than all of Tier 1 combined. Putting the whole grid in V1 is the biggest single scope decision here: it
+is staged (05-GRID.md) so a stalled slice never blocks a release, but "all popular components" is still a multi-month
+series of releases, not one.

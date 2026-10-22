@@ -1,13 +1,14 @@
 # Design 00: Architecture overview and decisions
 
-Status: draft for Bob's review. Nothing here is built yet. Read this first; 01 to 04 hold the detail.
+Status: approved in direction by Bob (open questions answered, section 6). Nothing here is built yet. Read this first; 01 to 04 hold the detail.
 
 | Doc | Subject |
 | --- | --- |
 | [01-EVENT-LAYER.md](01-EVENT-LAYER.md) | First-class events: DOM/JS events, interception, overriding, built-in behaviors as named events |
 | [02-INPUTS-AND-FORMS.md](02-INPUTS-AND-FORMS.md) | Field foundation, basic inputs, forms and validation, and how errors surface |
 | [03-COMPONENT-ROADMAP.md](03-COMPONENT-ROADMAP.md) | Prioritized catalogue of the popular components (Telerik, MudBlazor, Blazorise class) |
-| [04-PARALLEL-WORK-PLAN.md](04-PARALLEL-WORK-PLAN.md) | Phase 0 spine, five worktree lanes, file ownership, merge order |
+| [04-PARALLEL-WORK-PLAN.md](04-PARALLEL-WORK-PLAN.md) | Phase 0 spine, five worktree lanes (plus the grid lane in wave 2), file ownership, merge order |
+| [05-GRID.md](05-GRID.md) | DataGrid V1 scope and staged slices |
 
 ## 1. What we are building and why
 
@@ -34,7 +35,7 @@ three differentiators that the existing code already points at:
  │                            Virtualizer, Collection<T> model                  │
  │ L1  Spine                  BobComponentBase, Event layer, Value layer (parse/ │
  │                            validate), Error system, Options, Dev kit hooks   │
- │ L0  Platform               Blazor (WASM and Server), one JS runtime module,   │
+ │ L0  Platform               Blazor WASM (Server later), one JS runtime module,   │
  │                            @layer bob CSS, tokens                            │
  └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -103,7 +104,7 @@ Each decision names what was rejected, because the rejected options are what the
    bundles). Verify with a trimmed publish in CI (currently unverified, tracked in the roadmap).
 7. One JS runtime module (`bob.core.js`), lazily imported once per page, with small feature modules loaded on demand.
 
-### D7. Compatibility stance with Telerik / MudBlazor / Blazorise
+### D7. Compatibility stance with Telerik / MudBlazor / Blazorise (confirmed by Bob)
 - **Chosen:** our own naming (consistent with the existing `bob-` contract), plus a **migration table per component**
   in its docs page (their parameter/event name -> ours). No shim packages in 1.0.
 - **Why:** shims lock the API to someone else's mistakes and freeze naming we want to improve. A mapping table gives the
@@ -112,8 +113,12 @@ Each decision names what was rejected, because the rejected options are what the
   changing the core.
 
 ### D8. Hosting model
-- Primary target: Blazor WebAssembly (BobFit and the demo are WASM). Blazor Server and Auto are supported; anything that
-  cannot work on Server (synchronous JS interop) is marked in the component docs and avoided in core paths.
+- **WASM first (decided by Bob).** Every design and default targets Blazor WebAssembly. Blazor Server is its own,
+  separate target, built later; it is not a constraint on this release. We keep it cheap to add by not baking
+  WASM-only assumptions into public contracts (the event spec model already separates policy from delivery), but we do
+  not design, test or document Server behavior now.
+- A per-app playground component (live editing of a component's parameters and CSS variables inside each app) is
+  wanted, but is later work and not part of this design.
 - Rendering stays static-SSR-safe where cheap (display-only components must not require interactivity).
 
 ## 4. What exists vs what is new
@@ -133,10 +138,9 @@ Each decision names what was rejected, because the rejected options are what the
 - A rich-text editor and a scheduler are scoped in the roadmap but deliberately last; each is a product on its own.
 - Theme designer UI (phase 8 "style playground" is separate and stays undesigned).
 
-## 6. Open questions for Bob
-1. D7: own naming + migration tables (recommended) vs. later compat shims. Confirm.
-2. Is Blazor Server a real target for BobFit, or WASM only? Changes the default for input bind timing (D6.4).
-3. Grid scope: which of paging, sorting, filtering, grouping, editing, export, column resize/reorder are must-have for
-   v1? (Roadmap assumes sort, filter, page, select, inline edit, virtualization first.)
-4. Is cultural/translation support needed beyond English for the first release, or only the *capability*
-   (provider interface) now and translations later? Plan assumes capability now.
+## 6. Decisions (Bob's answers)
+1. **Naming:** own names, short and branded, e.g. `BobTextBox`; migration tables instead of shims (D7). Input names are in doc 02.
+2. **Hosting:** WASM is the first target. Server is a separate target later (D8). Input bind-timing defaults follow WASM (D6.4).
+3. **Grid:** everything possible goes into V1. Doc 03 Tier 5 and the new [05-GRID.md](05-GRID.md) stage it; the grid gets
+   its own lane (doc 04).
+4. **Translations:** capability only now (provider seam), translations later, never blocking (doc 02 s7.3).

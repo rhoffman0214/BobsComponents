@@ -1,12 +1,16 @@
 # Design 04: Parallel work plan (up to 5 worktree agents)
 
-Status: draft. Agents do not start until Bob approves docs 00 to 03.
+Status: draft. Bob has answered the open questions (doc 00 s6). Agents do not start until Bob gives the go-ahead for Phase 0.
+Everything targets Blazor WASM; Server is a separate, later target.
 
 ## 1. Principle
 Parallel agents collide on shared files, not on features. So: (1) a short **Phase 0** on one branch freezes the shared
-contracts (interfaces, option shapes, catalog codes, file layout); (2) five lanes then build behind those contracts,
+contracts (interfaces, option shapes, catalog codes, file layout); (2) lanes then build behind those contracts,
 each owning a disjoint set of files; (3) the few unavoidably shared files are edited only by the lead, or via append-only
 rules below.
+
+There are six lanes but never more than **five active at once**. Lanes A to E start together (wave 1). Lane F (the data
+grid) is wave 2: it takes the first free slot once lane C's primitives and `BobCollection<T>` have merged.
 
 ## 2. Phase 0: freeze the contracts (1 agent, this worktree lineage, small)
 Deliverables, interfaces and stubs only, no behavior:
@@ -44,8 +48,8 @@ Branch naming: `lane/<letter>-<slug>` cut from `integration/design-0.3`. Worktre
   integration test after A merges.
 
 ### Lane D: Error text, translation, dev kit and quality infrastructure
-- Owns: `Errors/Text/**` (provider chain, ICU-subset formatter, culture resource files, `en` + a sample second
-  culture to prove the path), `IBobFieldErrorSink`, new catalog codes' final wording, `BobErrorCard` text wiring,
+- Owns: `Errors/Text/**` (provider chain, ICU-subset formatter, culture resource files, `en`; translations are a seam
+  only and never block, so a sample second culture is low priority and last), `IBobFieldErrorSink`, new catalog codes' final wording, `BobErrorCard` text wiring,
   trimmed/AOT publish CI job, render-count test helper, a11y smoke tooling, `scripts/**` additions.
 - Tasks include resolving `BOB-CB-002` (raise it or retire it, with Bob's approval for the retire).
 - Depends on: Phase 0.
@@ -56,6 +60,15 @@ Branch naming: `lane/<letter>-<slug>` cut from `integration/design-0.3`. Worktre
   (append-only via a per-lane fragment file merged by the lead).
 - Later (after B/C land): Tier 3 `Combobox` design doc and the Calendar core, since the docs lane is lightest.
 - Depends on: Phase 0.
+
+### Lane F: Data grid (wave 2)
+- Owns: `Components/Grid/**`, `wwwroot/css/components/grid*.css` and `data-table*.css`, `Tests/Grid/**`,
+  `Content/accessibility/grid*.md`, and [05-GRID.md](05-GRID.md).
+- Tasks follow the slices S1 to S10 in 05-GRID.md; each slice is one or more 1 to 3 hour tasks with its own exit tests.
+- Starts after lane C has merged `BobVirtualizer` and `BobCollection<T>`, and ideally after lane B's fields (inline edit
+  reuses them). S1 to S3 do not need the fields and may start as soon as C lands.
+- Takes the first free slot when a wave-1 lane finishes, so no more than five lanes are active at once.
+- Depends on: Phase 0, lane C, and (from S6) lane B. Uses lane A's pipeline for `bob.grid.*` behaviors.
 
 ## 4. File ownership and shared-file rules
 | Shared file | Rule |
@@ -70,7 +83,8 @@ Branch naming: `lane/<letter>-<slug>` cut from `integration/design-0.3`. Worktre
 
 ## 5. Merge order and gates
 1. Phase 0 -> `integration/design-0.3`.
-2. Lanes A, D, E merge first (infrastructure); then B and C (consumers), rebasing on integration.
+2. Lanes A, D, E merge first (infrastructure); then B and C (consumers), rebasing on integration. Lane F merges
+   slice by slice after C and B, rebasing on integration each time.
 3. Each lane PR must pass: `dotnet test BobsComponents.Tests`, `dotnet build BobsComponent.Client`, drift tests, and its
    own new tests. The integration branch additionally gets the API snapshot refresh and a demo smoke run.
 4. Integration -> PR to the release branch. Nothing pushes to main/master; no force pushes; no merge without Bob.
@@ -89,7 +103,7 @@ integration (a read that is not anchored on the author's own view: `code-review`
 | Event runtime and fields integrate late | Lane B ships against the frozen interface with a fake pipeline; one integration test lands the day A merges |
 | Merge conflicts in shared files | Rules in section 4 |
 | JS tooling (jsdom) absent in CI | Lane A adds the npm test step; lane D wires it into CI |
-| Scope creep into the grid | Grid is Tier 5; no lane starts it without a separate design doc |
+| Grid scope swallows the schedule | Grid is in V1 but staged (05-GRID.md); each slice ships on its own; lane F starts only after C and the collection model land |
 
 ## 8. Start commands (after approval)
 ```powershell

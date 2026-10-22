@@ -14,11 +14,11 @@ Status: draft. Builds on `BobComponentBase`, the `BobError` system and the event
 ```
 BobComponentBase                      (exists)
  └─ BobFieldBase<TValue>              value pipeline, EditContext bridge, shared parameters, ARIA ids
-     ├─ BobTextField / BobTextArea / BobPasswordField / BobSearchField     (string)
-     ├─ BobNumberField<T>             (int, long, decimal, double, nullable variants)
-     ├─ BobCheckbox / BobSwitch       (bool, bool?)
+     ├─ BobTextBox / BobTextArea / BobPasswordBox / BobSearchBox           (string)
+     ├─ BobNumberBox<T>               (int, long, decimal, double, nullable variants)
+     ├─ BobCheckBox / BobSwitch       (bool, bool?)
      ├─ BobRadioGroup<T> + BobRadio<T>
-     ├─ BobSelectField<T>             (migrate existing SelectField, keep its CSS contract)
+     ├─ BobSelectBox<T>               (new; the existing SelectField keeps its name and CSS contract)
      └─ later tiers: Date, Time, Slider, Combobox, MultiSelect, FileUpload ... (doc 03)
 
 BobField                              chrome component (label, control slot, hint, error list). Public, reusable.
@@ -29,7 +29,12 @@ IBobFieldValidator<T>                 optional sync/async rule objects (non-Data
 ```
 
 `SelectField` already ships. It migrates onto `BobFieldBase<T>` in lane B with its CSS and parameter names unchanged
-(no breaking change, only the plumbing moves).
+(no breaking change, only the plumbing moves). It is not renamed (no renames without approval); `BobSelectBox<T>` is the
+new-style name and `SelectField` is deprecated in its favor in a later release.
+
+**Naming (confirmed by Bob):** input components use short, own-brand `Bob<Thing>Box` names: `BobTextBox`, `BobPasswordBox`,
+`BobSearchBox`, `BobNumberBox<T>`, `BobSelectBox<T>`; plus `BobCheckBox`, `BobTextArea`, `BobSwitch`, `BobRadioGroup<T>`.
+Infrastructure keeps its role names: `BobFieldBase<T>`, `BobField`, `BobForm`, `BobFormScope`.
 
 ## 3. Shared parameters (every field)
 
@@ -152,6 +157,11 @@ public interface IBobErrorTextProvider
 
 Codes are final once documented. The existing wording rule applies: titles/messages say what happened and what to do.
 
+### 7.3 Translations: capability only, non-blocking
+Decision (Bob): plan for translations, do not let them block. In this release only the seam ships: `IBobErrorTextProvider`,
+the English catalog and the `Facts` contract. No component waits on culture files; no string is concatenated in a
+component, so adding cultures later changes no component code. A sample second culture proves the path (lane D, low priority).
+
 ## 8. Accessibility (done criteria for every field)
 - `<label for>` wired to the native control; `aria-describedby` lists hint and error ids; `aria-invalid` when errors exist.
 - Errors in a `role="alert"`-free live region (polite) so typing does not shout; the form summary uses `role="alert"` on submit.
@@ -165,8 +175,8 @@ Codes are final once documented. The existing wording rule applies: titles/messa
 
 ## 10. First deliverables (lane B, in order)
 1. `BobFieldBase<T>`, converters, `BobField` chrome, `BobFieldError`, text provider hookup (needs lane D contracts; stubbed until then).
-2. `BobTextField`, `BobTextArea`, `BobCheckbox`, `BobSwitch`.
-3. `BobNumberField<T>`, `BobRadioGroup<T>`, migrate `SelectField`.
+2. `BobTextBox`, `BobTextArea`, `BobCheckBox`, `BobSwitch`.
+3. `BobNumberBox<T>`, `BobRadioGroup<T>`, `BobSelectBox<T>`, migrate `SelectField` onto the field base.
 4. `BobForm`, `BobFormSummary`, `BobFormScope`, leave guard.
 Each with CSS, contract entry, `[Description]`, a11y doc, bUnit tests, docs steps (the existing "adding a component" checklist).
 
